@@ -28,4 +28,5 @@ dependencies {
     compile 'com.j256.ormlite:ormlite-core:4.48'
     compile 'com.j256.ormlite:ormlite-android:4.48'
     compile 'com.android.support:design:23.3.0'
+    compile 'com.nononsenseapps:filepicker:2.5.2'
 }
