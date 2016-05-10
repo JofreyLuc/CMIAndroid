@@ -9,13 +9,13 @@ import java.util.Date;
  * Created by jyeil on 10/05/16.
  */
 
-@DatabaseTable(tableName = "cmidba")
+@DatabaseTable(tableName = "annotation")
 public class Annotation {
 
     @DatabaseField(generatedId = true)
     private Long idAnnotation;
 
-    @DatabaseField(foreign = true)
+    @DatabaseField(foreign = true, columnName = "idBibliotheque")
     private Bibliotheque bibliotheque;
 
     @DatabaseField
@@ -30,4 +30,10 @@ public class Annotation {
     @DatabaseField
     private Date dateModification;
 
+    // Needed by ORMlite
+    Annotation() {}
+
+    public void setBibliotheque(Bibliotheque b){
+        bibliotheque = b;
+    }
 }

@@ -1,7 +1,5 @@
 package com.univ.lorraine.cmi.database.model;
 
-import android.net.Uri;
-
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -11,7 +9,7 @@ import java.util.Date;
  * Created by jyeil on 10/05/16.
  */
 
-@DatabaseTable(tableName = "cmidba")
+@DatabaseTable(tableName = "livre")
 public class Livre {
 
     @DatabaseField(generatedId = true)
@@ -46,4 +44,7 @@ public class Livre {
 
     @DatabaseField
     private String lienCouverture;
+
+    // Needed by ORMlite
+    Livre() {}
 }

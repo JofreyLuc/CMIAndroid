@@ -90,4 +90,6 @@ public class CmidbaOpenDatabaseHelper extends OrmLiteSqliteOpenHelper {
         }
         return annotationDao;
     }
+
+
 }
