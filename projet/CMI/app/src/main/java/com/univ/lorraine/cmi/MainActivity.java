@@ -10,6 +10,16 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
+import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
+import com.univ.lorraine.cmi.database.model.Livre;
+
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -58,8 +68,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         GridView gridView = (GridView) findViewById(R.id.grid);
         gridView.setAdapter(new ImageAdapter(this));
+        try {
+            testDatabase();
+        } catch (SQLException e){
+            Toast.makeText(getApplicationContext(), "bugbug", Toast.LENGTH_LONG).show();
+        }
 
+    }
 
+    private void testDatabase() throws SQLException{
+        CmidbaOpenDatabaseHelper dbhelper = OpenHelperManager.getHelper(this, CmidbaOpenDatabaseHelper.class);
+
+        Dao<Livre, Long> daolivre = dbhelper.getLivreDao();
+        Date currentTime = new Date(System.currentTimeMillis());
+
+        daolivre.create(new Livre(currentTime));
+
+        List<Livre> ll = daolivre.queryForAll();
+        Toast.makeText(getApplicationContext(), ll.get(0).toString(), Toast.LENGTH_LONG).show();
     }
 
     public class ImageAdapter extends BaseAdapter
