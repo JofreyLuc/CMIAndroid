@@ -1,0 +1,92 @@
+#
+# generated on 2016/05/10 12:54:44
+#
+# --table-start--
+dataClass=com.univ.lorraine.cmi.database.model.Livre
+tableName=cmidba
+# --table-fields-start--
+# --field-start--
+fieldName=idLivre
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=titre
+# --field-end--
+# --field-start--
+fieldName=auteur
+# --field-end--
+# --field-start--
+fieldName=langue
+# --field-end--
+# --field-start--
+fieldName=genre
+# --field-end--
+# --field-start--
+fieldName=dateParution
+# --field-end--
+# --field-start--
+fieldName=resume
+# --field-end--
+# --field-start--
+fieldName=nombrePages
+# --field-end--
+# --field-start--
+fieldName=noteMoyenne
+# --field-end--
+# --field-start--
+fieldName=lienDLEpub
+# --field-end--
+# --field-start--
+fieldName=lienCouverture
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.univ.lorraine.cmi.database.model.Annotation
+tableName=cmidba
+# --table-fields-start--
+# --field-start--
+fieldName=idAnnotation
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=bibliotheque
+foreign=true
+# --field-end--
+# --field-start--
+fieldName=numeroPage
+# --field-end--
+# --field-start--
+fieldName=numero
+# --field-end--
+# --field-start--
+fieldName=texte
+# --field-end--
+# --field-start--
+fieldName=dateModification
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.univ.lorraine.cmi.database.model.Bibliotheque
+tableName=cmidba
+# --table-fields-start--
+# --field-start--
+fieldName=idBibliotheque
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=livre
+foreign=true
+# --field-end--
+# --field-start--
+fieldName=numeroPage
+# --field-end--
+# --field-start--
+fieldName=dateModification
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
