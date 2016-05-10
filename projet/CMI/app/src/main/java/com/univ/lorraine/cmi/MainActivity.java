@@ -21,6 +21,8 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
+import java.io.File;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -86,6 +88,9 @@ public class MainActivity extends AppCompatActivity {
 
         List<Livre> ll = daolivre.queryForAll();
         Toast.makeText(getApplicationContext(), ll.get(0).toString(), Toast.LENGTH_LONG).show();
+        // Création du dossier interne de l'app
+        getApplicationContext().getDir("CallMeIshmael", Context.MODE_PRIVATE);
+
     }
 
     public class ImageAdapter extends BaseAdapter
