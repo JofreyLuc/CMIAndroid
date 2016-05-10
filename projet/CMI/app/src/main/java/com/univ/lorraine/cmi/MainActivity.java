@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
             "book5",
             "book6",
             "book7",
-            "book7",
             "book8",
             "book9",
             "book10",
@@ -52,8 +51,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     };
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         GridView gridView = (GridView) findViewById(R.id.grid);
@@ -62,8 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public class ImageAdapter extends BaseAdapter
-    {
+    public class ImageAdapter extends BaseAdapter {
         private Context context;
 
         public ImageAdapter(Context c)
@@ -71,37 +71,33 @@ public class MainActivity extends AppCompatActivity {
             context = c;
         }
 
-        //---returns the number of images---
+
+        @Override
         public int getCount() {
-            return imageIDs.length;
+            return 0;
         }
 
-        //---returns the ID of an item---
+        @Override
         public Object getItem(int position) {
-            return position;
+            return null;
         }
 
+        @Override
         public long getItemId(int position) {
-            return position;
+            return 0;
         }
 
-        //---returns an ImageView view---
         public View getView(int position, View convertView, ViewGroup parent)
         {
             ImageView icon;
-            icon = new ImageView(context);
-
-            LayoutInflater inflater = (LayoutInflater)             context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row=inflater.inflate(R.layout.grid_item, parent, false);
             TextView label=(TextView)row.findViewById(R.id.icon_text);
             label.setText(titles[position]);
             icon=(ImageView)row.findViewById(R.id.icon_image);
-
             icon.setImageResource(imageIDs[position]);
-
             return row;
         }
-
     }
 }
 
