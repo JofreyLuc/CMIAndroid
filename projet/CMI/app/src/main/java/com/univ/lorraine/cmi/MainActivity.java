@@ -11,6 +11,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -58,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         GridView gridView = (GridView) findViewById(R.id.grid);
         gridView.setAdapter(new ImageAdapter(this));
-
-
+        // Création du dossier interne de l'app
+        getApplicationContext().getDir("CallMeIshmael", Context.MODE_PRIVATE);
     }
 
     public class ImageAdapter extends BaseAdapter
