@@ -76,7 +76,8 @@ public class MainActivity extends AppCompatActivity {
         } catch (SQLException e){
             Toast.makeText(getApplicationContext(), "bugbug", Toast.LENGTH_LONG).show();
         }
-
+        // Création du dossier interne de l'app
+        getApplicationContext().getDir("CallMeIshmael", Context.MODE_PRIVATE);
     }
 
     private void testDatabase() throws SQLException{
@@ -89,9 +90,6 @@ public class MainActivity extends AppCompatActivity {
 
         List<Livre> ll = daolivre.queryForAll();
         Toast.makeText(getApplicationContext(), ll.get(0).toString(), Toast.LENGTH_LONG).show();
-        // Création du dossier interne de l'app
-        getApplicationContext().getDir("CallMeIshmael", Context.MODE_PRIVATE);
-
     }
 
     public class ImageAdapter extends BaseAdapter {
@@ -105,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 0;
+            return imageIDs.length;
         }
 
         @Override
