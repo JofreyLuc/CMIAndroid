@@ -12,12 +12,22 @@
     android:layout_height="150dp" >
 </ImageView>
 
-<TextView
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageButton"
+        android:background="@mipmap/ic_launcher"
+        android:nestedScrollingEnabled="false"
+        android:clickable="true"
+        android:layout_gravity="bottom|right" />
+
+    <TextView
 android:id="@+id/icon_text"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:text="TextView"
-    android:textColorHighlight="#656565" >
+    android:textColorHighlight="#656565"
+        android:layout_gravity="left|top">
     </TextView>
 </LinearLayout>
