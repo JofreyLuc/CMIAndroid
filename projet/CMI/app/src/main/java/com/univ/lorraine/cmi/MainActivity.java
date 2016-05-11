@@ -119,13 +119,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void testFilePicker() {
-        // This always works
-        Intent i = new Intent(getApplicationContext(), FilePickerActivity.class);
-        // This works if you defined the intent filter
-        // Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+        Intent i = new Intent(getApplicationContext(), MyFilePickerActivity.class);
 
-        // Set these depending on your use case. These are the defaults.
-        i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, true);
+        // Options
+        i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
         i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
         i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
 

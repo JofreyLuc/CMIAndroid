@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">CMI</string>
+    <!-- Strings de la librairie FilePicker -->
+    <!-- Strings originales de la librairie
+    <string name="nnf_create_folder_error">Failed to create folder</string>
+    <string name="nnf_name">Name</string>
+    <string name="nnf_new_folder">New folder</string>
+    <string name="nnf_permission_external_write_denied">Permisson to access filesystem denied</string>
+    <string name="nnf_select_something_first">Please select something first</string>
+    -->
+    <string name="nnf_create_folder_error">La création du dossier a échoué</string>
+    <string name="nnf_name">Nom</string>
+    <string name="nnf_new_folder">Nouveau dossier</string>
+    <string name="nnf_permission_external_write_denied">Permission d\'accèder au système de fichier refusée</string>
+    <string name="nnf_select_something_first">Veuillez sélectionner un fichier</string>
+    <!-- Fin strings de la librairie FilePicker -->
 </resources>
