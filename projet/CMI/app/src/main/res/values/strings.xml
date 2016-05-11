@@ -15,6 +15,10 @@
     <string name="nnf_select_something_first">Veuillez sélectionner un fichier</string>
     <!-- Fin strings de la librairie FilePicker -->
 
+    <string name="action_import">action import</string>
+    <string name="action_overflow">action overflow</string>
+    <string name="supp_book">supprimer</string>
+    <string name="book_details">détails</string>
 
     <!-- Strings de EPUB3Reader -->
 
@@ -189,4 +193,5 @@
     <!-- Fin des strings de EPUB3Reader -->
 
 
+>>>>>>> origin/master
 </resources>
