@@ -15,6 +15,9 @@ public class Annotation {
     @DatabaseField(generatedId = true)
     private Long idAnnotation;
 
+    @DatabaseField
+    private Long idServeur;
+
     @DatabaseField(foreign = true, columnName = "idBibliotheque")
     private Bibliotheque bibliotheque;
 

@@ -11,11 +11,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,13 +30,20 @@ import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.reader.EpubManipulator;
 
+
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
-import java.io.File;
+import nl.siegmann.epublib.util.IOUtil;
 
 import nl.siegmann.epublib.domain.Author;
 import nl.siegmann.epublib.domain.Book;
@@ -40,7 +51,8 @@ import nl.siegmann.epublib.domain.Metadata;
 import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.epub.EpubReader;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
+
 
     private CmidbaOpenDatabaseHelper dbhelper = null;
     private static final int FILEPICKER_CODE = 0;
@@ -93,6 +105,54 @@ public class MainActivity extends AppCompatActivity {
        testFilePicker();
     }
 
+    // fonction qui initialise un menu de lActionBar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_biblio_perso, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    // fonction qui gere les actions des items des menus de lActionBar
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_new:
+                // DO SOMETHING
+                //Toast.makeText(getApplicationContext(), "action_new", Toast.LENGTH_LONG).show();
+                testFilePicker();
+                return true;
+            case R.id.overflow1:
+                // DO SOMETHING
+                Toast.makeText(getApplicationContext(), "overflow1", Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.overflow2:
+                // DO SOMETHING
+                Toast.makeText(getApplicationContext(), "overflow2", Toast.LENGTH_LONG).show();
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    // fonction qui gere les actions des items du menu de chaque livre
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_supp:
+                // DO SOMETHING
+                Toast.makeText(getApplicationContext(), "action_supp", Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.action_details:
+                // DO SOMETHING
+                Toast.makeText(getApplicationContext(), "action_details", Toast.LENGTH_LONG).show();
+                return true;
+            default:
+                return false;
+        }
+    }
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch(requestCode) {
@@ -100,38 +160,70 @@ public class MainActivity extends AppCompatActivity {
             case FILEPICKER_CODE :
                 // Résultat OK
                 if (resultCode == Activity.RESULT_OK) {
-                    // Tableau contenant le/les uris
-                    Uri[] uriArray;
+                    // Tableau contenant les fichiers epubs
+                    File[] epubs;
                     // Sélection multiple de fichier
                     if (data.getBooleanExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false)) {
                         ClipData clip = data.getClipData();
-                        uriArray = new Uri[clip.getItemCount()];
+                        epubs = new File[clip.getItemCount()];
                         if (clip != null)
                             for (int i = 0; i < clip.getItemCount(); i++)
-                                uriArray[i] = clip.getItemAt(i).getUri();
+                                epubs[i] = new File(clip.getItemAt(i).getUri().getPath());
                     }
                     // Sélection unique de fichier
                     else {
-                        uriArray = new Uri[1];
-                        uriArray[0] = data.getData();
+                        epubs = new File[1];
+                        epubs[0] = new File(data.getData().getPath());
                     }
                     // On importe le/les epub(s)
-                    importEpubs(uriArray);
+                    importEpubs(epubs);
                 }
                 break;
         }
     }
 
-    private void importEpubs(Uri[] epubUris) {
+    public void copy(File src, File dst) {
+        try {
+            InputStream in = new FileInputStream(src);
+            OutputStream out = new FileOutputStream(dst);
+            IOUtil.copy(in, out);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Retourne le chemin du dossier de stockage des epubs.
+     * Crée les dossiers si besoin.
+     *
+     * @return le chemin du dossier de stockage des epubs.
+     */
+    public String getEpubStoragePath() {
+        // Définition du chemin pour le dossier où seront stockés les epubs
+        File dossier = new File(Environment.getExternalStorageDirectory()
+                + "/Android/data/"
+                + getApplicationContext().getPackageName()
+                + "/epubs");
+
+        // Création du dossier s'il n'existe pas déjà
+        if (!dossier.exists())
+            dossier.mkdirs();
+
+        return dossier.getAbsolutePath();
+    }
+
+    private void importEpubs(File[] epubs) {
         String path = "";
-        String fileName = "";
         FileInputStream fs = null;
         Book book = null;
-        for (int i = 0; i < epubUris.length; i++) {
+        for (int i = 0; i < epubs.length; i++) {
             //ProgressDialog.show(this, "Import", "Import epub").setCancelable(false);
-            // import livre local
-            path = epubUris[i].getPath();
-            fileName = epubUris[i].getLastPathSegment();
+            // On copie le fichier epub dans le dossier dédié de l'application
+            String newFilePath = getEpubStoragePath() + "/" + epubs[i].getName();
+            copy(epubs[i], new File(newFilePath));
+            path = epubs[i].getPath();
             try {
                 fs = new FileInputStream(path);
                 book = (new EpubReader().readEpub(fs));
@@ -175,9 +267,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
             nl.siegmann.epublib.domain.Date date = null;
+            String dateString;
             for (nl.siegmann.epublib.domain.Date d : meta.getDates()) {
                 if (d.getEvent() == nl.siegmann.epublib.domain.Date.Event.PUBLICATION) date = d;
             }
+            if (date == null) dateString = "";
+            else dateString = date.toString();
 
             delim = "";
             StringBuilder resumes = new StringBuilder();
@@ -187,7 +282,12 @@ public class MainActivity extends AppCompatActivity {
                 delim = ", ";
             }
             Dao<Livre, Long> daolivre = getHelper().getLivreDao();
-            daolivre.create(new Livre(titres.toString(), auteurs.toString(), meta.getLanguage(), types.toString(), date.toString(), resumes.toString(), 2, "", ""));
+            daolivre.create(new Livre(titres.toString(), auteurs.toString(), meta.getLanguage(), types.toString(), dateString, resumes.toString(), 2, "", ""));
+
+            List<Livre> ll = daolivre.queryForAll();
+            for (Livre l : ll){
+                Log.e("DIS", l.toString());
+            }
         } catch (SQLException e){
             Log.e("EXC", e.getMessage());
         }
@@ -209,9 +309,18 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(i, FILEPICKER_CODE);
     }
 
+
+    // inflate le menu de gestion des livres (suppression, details)
+    public void showMenu(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        popup.setOnMenuItemClickListener(this);
+        popup.inflate(R.menu.menu_livre);
+        popup.show();
+    }
+
     /**
      * Returns the database helper (created if null)
-     * @return
+     * @return dbhelper
      */
     private CmidbaOpenDatabaseHelper getHelper(){
         if (dbhelper == null){
@@ -231,6 +340,10 @@ public class MainActivity extends AppCompatActivity {
             dbhelper = null;
         }
     }
+
+    /**********************
+     * classe qui customise les items de la gridview
+     */
 
     public class ImageAdapter extends BaseAdapter {
         private Context context;
