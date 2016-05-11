@@ -1,13 +1,16 @@
 #
-# generated on 2016/05/10 12:54:44
+# generated on 2016/05/11 06:29:19
 #
 # --table-start--
 dataClass=com.univ.lorraine.cmi.database.model.Livre
-tableName=cmidba
+tableName=livre
 # --table-fields-start--
 # --field-start--
 fieldName=idLivre
 generatedId=true
+# --field-end--
+# --field-start--
+fieldName=idServeur
 # --field-end--
 # --field-start--
 fieldName=titre
@@ -28,9 +31,6 @@ fieldName=dateParution
 fieldName=resume
 # --field-end--
 # --field-start--
-fieldName=nombrePages
-# --field-end--
-# --field-start--
 fieldName=noteMoyenne
 # --field-end--
 # --field-start--
@@ -39,19 +39,26 @@ fieldName=lienDLEpub
 # --field-start--
 fieldName=lienCouverture
 # --field-end--
+# --field-start--
+fieldName=cheminFichier
+# --field-end--
 # --table-fields-end--
 # --table-end--
 #################################
 # --table-start--
 dataClass=com.univ.lorraine.cmi.database.model.Annotation
-tableName=cmidba
+tableName=annotation
 # --table-fields-start--
 # --field-start--
 fieldName=idAnnotation
 generatedId=true
 # --field-end--
 # --field-start--
+fieldName=idServeur
+# --field-end--
+# --field-start--
 fieldName=bibliotheque
+columnName=idBibliotheque
 foreign=true
 # --field-end--
 # --field-start--
@@ -71,14 +78,18 @@ fieldName=dateModification
 #################################
 # --table-start--
 dataClass=com.univ.lorraine.cmi.database.model.Bibliotheque
-tableName=cmidba
+tableName=bibliotheque
 # --table-fields-start--
 # --field-start--
 fieldName=idBibliotheque
 generatedId=true
 # --field-end--
 # --field-start--
+fieldName=idServeur
+# --field-end--
+# --field-start--
 fieldName=livre
+columnName=idLivre
 foreign=true
 # --field-end--
 # --field-start--

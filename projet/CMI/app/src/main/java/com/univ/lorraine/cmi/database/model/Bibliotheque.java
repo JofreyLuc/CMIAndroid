@@ -15,6 +15,9 @@ public class Bibliotheque {
     @DatabaseField(generatedId = true)
     private Long idBibliotheque;
 
+    @DatabaseField
+    private Long idServeur;
+
     @DatabaseField(foreign = true, columnName = "idLivre")
     private Livre livre;
 

@@ -26,11 +26,19 @@ import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.reader.EpubManipulator;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
 import java.io.File;
+
+import nl.siegmann.epublib.util.IOUtil;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -100,36 +108,70 @@ public class MainActivity extends AppCompatActivity {
             case FILEPICKER_CODE :
                 // Résultat OK
                 if (resultCode == Activity.RESULT_OK) {
-                    // Tableau contenant le/les uris
-                    Uri[] uriArray;
+                    // Tableau contenant les fichiers epubs
+                    File[] epubs;
                     // Sélection multiple de fichier
                     if (data.getBooleanExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false)) {
                         ClipData clip = data.getClipData();
-                        uriArray = new Uri[clip.getItemCount()];
+                        epubs = new File[clip.getItemCount()];
                         if (clip != null)
                             for (int i = 0; i < clip.getItemCount(); i++)
-                                uriArray[i] = clip.getItemAt(i).getUri();
+                                epubs[i] = new File(clip.getItemAt(i).getUri().getPath());
                     }
                     // Sélection unique de fichier
                     else {
-                        uriArray = new Uri[1];
-                        uriArray[0] = data.getData();
+                        epubs = new File[1];
+                        epubs[0] = new File(data.getData().getPath());
                     }
                     // On importe le/les epub(s)
-                    importEpubs(uriArray);
+                    importEpubs(epubs);
                 }
                 break;
         }
     }
 
-    private void importEpubs(Uri[] epubUris) {
+    public void copy(File src, File dst) {
+        try {
+            InputStream in = new FileInputStream(src);
+            OutputStream out = new FileOutputStream(dst);
+            IOUtil.copy(in, out);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Retourne le chemin du dossier de stockage des epubs.
+     * Crée les dossiers si besoin.
+     *
+     * @return le chemin du dossier de stockage des epubs.
+     */
+    public String getEpubStoragePath() {
+        // Définition du chemin pour le dossier où seront stockés les epubs
+        File dossier = new File(Environment.getExternalStorageDirectory()
+                + "/Android/data/"
+                + getApplicationContext().getPackageName()
+                + "/epubs");
+
+        // Création du dossier s'il n'existe pas déjà
+        if (!dossier.exists())
+            dossier.mkdirs();
+
+        return dossier.getAbsolutePath();
+    }
+
+    private void importEpubs(File[] epubs) {
         String path = "";
         String fileName = "";
-        for (int i = 0; i < epubUris.length; i++) {
+        for (int i = 0; i < epubs.length; i++) {
             //ProgressDialog.show(this, "Import", "Import epub").setCancelable(false);
-            // import livre local
-            path = epubUris[i].getPath();
-            fileName = epubUris[i].getLastPathSegment();
+            // On copie le fichier epub dans le dossier dédié de l'application
+            String newFilePath = getEpubStoragePath() + "/" + epubs[i].getName();
+            copy(epubs[i], new File(newFilePath));
+            path = epubs[i].getPath();
+            fileName = epubs[i].getName();
             try {
                 EpubManipulator epm = new EpubManipulator(path, fileName.substring(0, fileName.length() - 5), getApplicationContext());
                 Toast.makeText(getApplicationContext(),"Epub importé", Toast.LENGTH_SHORT).show();

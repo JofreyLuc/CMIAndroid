@@ -16,6 +16,9 @@ public class Livre {
     private Long idLivre;
 
     @DatabaseField
+    private Long idServeur;
+
+    @DatabaseField
     private String titre;
 
     @DatabaseField
@@ -34,9 +37,6 @@ public class Livre {
     private String resume;
 
     @DatabaseField
-    private int nombrePages;
-
-    @DatabaseField
     private float noteMoyenne;
 
     @DatabaseField
@@ -44,6 +44,9 @@ public class Livre {
 
     @DatabaseField
     private String lienCouverture;
+
+    @DatabaseField
+    private String cheminFichier;
 
     // Needed by ORMlite
     Livre() {}
@@ -55,7 +58,6 @@ public class Livre {
         genre = "roman";
         dateParution = d;
         resume = "hahahahah";
-        nombrePages = 50;
         noteMoyenne = 2;
     }
 
