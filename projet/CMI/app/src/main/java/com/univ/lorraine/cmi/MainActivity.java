@@ -24,6 +24,7 @@ import com.j256.ormlite.dao.Dao;
 import com.nononsenseapps.filepicker.FilePickerActivity;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Livre;
+import com.univ.lorraine.cmi.reader.EpubManipulator;
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -125,6 +126,12 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < epubUris.length; i++) {
             //ProgressDialog.show(this, "Import", "Import epub").setCancelable(false);
             // import livre local
+            try {
+                EpubManipulator epm = new EpubManipulator(epubUris[0].getPath(), epubUris[0].getLastPathSegment().substring(0, epubUris[0].getLastPathSegment().length() - 5), getApplicationContext());
+                Toast.makeText(getApplicationContext(),"Epub importé", Toast.LENGTH_SHORT).show();
+            } catch (Exception e){
+                Log.e("EXC", e.getMessage() + e.getStackTrace().toString());
+            }
         }
     }
 

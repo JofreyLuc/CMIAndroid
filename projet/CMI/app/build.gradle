@@ -29,4 +29,6 @@ dependencies {
     compile 'com.j256.ormlite:ormlite-android:4.48'
     compile 'com.android.support:design:23.3.0'
     compile 'com.nononsenseapps:filepicker:2.5.2'
+    compile 'org.slf4j:slf4j-android:1.7.21'
+    compile files('/home/jyeil/Documents/CMIAndroid/CMIAndroid/projet/CMI/libs/epublib-core-3.1.jar')
 }
