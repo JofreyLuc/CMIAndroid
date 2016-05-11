@@ -30,6 +30,7 @@ import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.reader.EpubManipulator;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -39,6 +40,8 @@ import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+
+import nl.siegmann.epublib.util.IOUtil;
 
 
 public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
