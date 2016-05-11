@@ -32,6 +32,7 @@ import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
+    private CmidbaOpenDatabaseHelper dbhelper = null;
     private static final int FILEPICKER_CODE = 0;
 
     Integer[] imageIDs = {
@@ -144,6 +145,30 @@ public class MainActivity extends AppCompatActivity {
 
         List<Livre> ll = daolivre.queryForAll();
         Toast.makeText(getApplicationContext(), ll.get(0).toString(), Toast.LENGTH_LONG).show();
+    }
+
+
+    /**
+     * Returns the database helper (created if null)
+     * @return
+     */
+    private CmidbaOpenDatabaseHelper getHelper(){
+        if (dbhelper == null){
+            dbhelper = OpenHelperManager.getHelper(this, CmidbaOpenDatabaseHelper.class);
+        }
+        return dbhelper;
+    }
+
+    /**
+     * Overriden in order to close the database
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (dbhelper != null){
+            OpenHelperManager.releaseHelper();
+            dbhelper = null;
+        }
     }
 
     public class ImageAdapter extends BaseAdapter {
