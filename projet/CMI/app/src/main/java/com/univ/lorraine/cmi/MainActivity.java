@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -217,7 +218,6 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         Toast.makeText(getApplicationContext(), ll.get(0).toString(), Toast.LENGTH_LONG).show();
     }
 
-<<<<<<< HEAD
     // inflate le menu de gestion des livres (suppression, details)
     public void showMenu(View v) {
         PopupMenu popup = new PopupMenu(this, v);
@@ -227,14 +227,9 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     }
 
 
-    /**********************
-     * classe qui customise les items de la gridview
-     */
-=======
-
     /**
      * Returns the database helper (created if null)
-     * @return
+     * @return dbhelper
      */
     private CmidbaOpenDatabaseHelper getHelper(){
         if (dbhelper == null){
@@ -255,7 +250,10 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         }
     }
 
->>>>>>> origin/master
+    /**********************
+     * classe qui customise les items de la gridview
+     */
+
     public class ImageAdapter extends BaseAdapter {
         private Context context;
 
