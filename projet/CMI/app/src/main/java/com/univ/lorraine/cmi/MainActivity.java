@@ -1,6 +1,7 @@
 package com.univ.lorraine.cmi;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import com.j256.ormlite.dao.Dao;
 import com.nononsenseapps.filepicker.FilePickerActivity;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Livre;
+import com.univ.lorraine.cmi.reader.EpubManipulator;
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -34,6 +36,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
+    private CmidbaOpenDatabaseHelper dbhelper = null;
     private static final int FILEPICKER_CODE = 0;
 
     Integer[] imageIDs = {
@@ -147,32 +150,50 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             case FILEPICKER_CODE :
                 // Résultat OK
                 if (resultCode == Activity.RESULT_OK) {
+                    // Tableau contenant le/les uris
+                    Uri[] uriArray;
                     // Sélection multiple de fichier
                     if (data.getBooleanExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false)) {
                         ClipData clip = data.getClipData();
+                        uriArray = new Uri[clip.getItemCount()];
                         if (clip != null)
-                            for (int i = 0; i < clip.getItemCount(); i++) {
-                                Uri uri = clip.getItemAt(i).getUri();
-                                Toast.makeText(getApplicationContext(), uri.toString(), Toast.LENGTH_LONG).show();
-                                // import livre local
-                            }
+                            for (int i = 0; i < clip.getItemCount(); i++)
+                                uriArray[i] = clip.getItemAt(i).getUri();
                     }
                     // Sélection unique de fichier
                     else {
-                        Uri uri = data.getData();
-                        Toast.makeText(getApplicationContext(), uri.toString(), Toast.LENGTH_LONG).show();
-                        // import livre local
+                        uriArray = new Uri[1];
+                        uriArray[0] = data.getData();
                     }
+                    // On importe le/les epub(s)
+                    importEpubs(uriArray);
                 }
                 break;
         }
     }
 
+    private void importEpubs(Uri[] epubUris) {
+        String path = "";
+        String fileName = "";
+        for (int i = 0; i < epubUris.length; i++) {
+            //ProgressDialog.show(this, "Import", "Import epub").setCancelable(false);
+            // import livre local
+            path = epubUris[i].getPath();
+            fileName = epubUris[i].getLastPathSegment();
+            try {
+                EpubManipulator epm = new EpubManipulator(path, fileName.substring(0, fileName.length() - 5), getApplicationContext());
+                Toast.makeText(getApplicationContext(),"Epub importé", Toast.LENGTH_SHORT).show();
+            } catch (Exception e){
+                Log.e("EXC", e.getMessage());
+            }
+        }
+    }
+
     private void testFilePicker() {
-        Intent i = new Intent(getApplicationContext(), MyFilePickerActivity.class);
+        Intent i = new Intent(this, MyFilePickerActivity.class);
 
         // Options
-        i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
+        i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, true);
         i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
         i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
 
@@ -196,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         Toast.makeText(getApplicationContext(), ll.get(0).toString(), Toast.LENGTH_LONG).show();
     }
 
+<<<<<<< HEAD
     // inflate le menu de gestion des livres (suppression, details)
     public void showMenu(View v) {
         PopupMenu popup = new PopupMenu(this, v);
@@ -208,6 +230,32 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     /**********************
      * classe qui customise les items de la gridview
      */
+=======
+
+    /**
+     * Returns the database helper (created if null)
+     * @return
+     */
+    private CmidbaOpenDatabaseHelper getHelper(){
+        if (dbhelper == null){
+            dbhelper = OpenHelperManager.getHelper(this, CmidbaOpenDatabaseHelper.class);
+        }
+        return dbhelper;
+    }
+
+    /**
+     * Overriden in order to close the database
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (dbhelper != null){
+            OpenHelperManager.releaseHelper();
+            dbhelper = null;
+        }
+    }
+
+>>>>>>> origin/master
     public class ImageAdapter extends BaseAdapter {
         private Context context;
 
