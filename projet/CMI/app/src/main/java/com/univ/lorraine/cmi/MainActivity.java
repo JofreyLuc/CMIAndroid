@@ -288,6 +288,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             for (Livre l : ll){
                 Log.e("DIS", l.toString());
             }
+
         } catch (SQLException e){
             Log.e("EXC", e.getMessage());
         }

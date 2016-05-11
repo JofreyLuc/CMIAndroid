@@ -21,7 +21,7 @@ import java.sql.SQLException;
 public class CmidbaOpenDatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     private static final String DATABASE_NAME = "cmidba";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 1;
 
     public CmidbaOpenDatabaseHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
@@ -53,7 +53,6 @@ public class CmidbaOpenDatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.dropTable(connectionSource, Bibliotheque.class, false);
             TableUtils.dropTable(connectionSource, Annotation.class, false);
             onCreate(database, connectionSource);
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
