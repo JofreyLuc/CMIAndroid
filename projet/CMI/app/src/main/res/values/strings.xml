@@ -16,7 +16,7 @@
     <!-- Fin strings de la librairie FilePicker -->
 
 
-    <!--String de EPUB3Reader -->
+    <!-- Strings de EPUB3Reader -->
 
     <color name="dark_grey">#696969</color>
 
@@ -185,6 +185,8 @@
     <string name="rew">&lt;&lt;</string>
     <string name="exAudio">exAudio</string>
     <string name="no_audio">Can\'t find any audio file</string>
+
+    <!-- Fin des strings de EPUB3Reader -->
 
 
 </resources>

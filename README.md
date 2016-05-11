@@ -4,7 +4,8 @@ Projet PPIL, 2016
 
 # Idées
 
-- Commencer les id des bouquins à un nombre fixe (500 par ex) pour différencier les livres Gutembert des livres importés
+- Commencer les id des bouquins à un nombre fixe (500 par ex) pour différencier les livres Gutembert des livres importés -> Du coup gérer la suppression des bouquins locaux (-> cascade pour la bibliothèque etc.)
+- Ou alors ajouter un idGutembert dans Livre qui serait null en cas de livre local
 
 Concernant la synchronisation serveur / device mobile :
 - L'application mobile se synchronise avec le serveur après un événement X à définir (temps, autres...)

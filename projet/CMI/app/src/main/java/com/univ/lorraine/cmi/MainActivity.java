@@ -123,14 +123,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void importEpubs(Uri[] epubUris) {
+        String path = "";
+        String fileName = "";
         for (int i = 0; i < epubUris.length; i++) {
             //ProgressDialog.show(this, "Import", "Import epub").setCancelable(false);
             // import livre local
+            path = epubUris[i].getPath();
+            fileName = epubUris[i].getLastPathSegment();
             try {
-                EpubManipulator epm = new EpubManipulator(epubUris[0].getPath(), epubUris[0].getLastPathSegment().substring(0, epubUris[0].getLastPathSegment().length() - 5), getApplicationContext());
+                EpubManipulator epm = new EpubManipulator(path, fileName.substring(0, fileName.length() - 5), getApplicationContext());
                 Toast.makeText(getApplicationContext(),"Epub importé", Toast.LENGTH_SHORT).show();
             } catch (Exception e){
-                Log.e("EXC", e.getMessage() + e.getStackTrace().toString());
+                Log.e("EXC", e.getMessage());
             }
         }
     }
