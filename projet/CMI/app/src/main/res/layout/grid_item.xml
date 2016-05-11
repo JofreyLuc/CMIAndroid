@@ -1,33 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/GridItem"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/GridItem"
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    android:clickable="true" >
 
     <ImageView
         android:id="@+id/icon_image"
-    android:layout_width="200dp"
-    android:layout_height="150dp" >
-</ImageView>
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageButton"
-        android:background="@mipmap/ic_launcher"
-        android:nestedScrollingEnabled="false"
-        android:clickable="true"
-        android:layout_gravity="bottom|right" />
+        android:layout_width="200dp"
+        android:layout_height="150dp">
+    </ImageView>
 
     <TextView
-android:id="@+id/icon_text"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
-    android:text="TextView"
-    android:textColorHighlight="#656565"
-        android:layout_gravity="left|top">
-    </TextView>
+        android:id="@+id/icon_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Textview"
+        android:textColorHighlight="#656565" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/ic_more_vert_black_24dp"
+        android:clickable="true"
+        android:layout_gravity="right"
+        android:onClick="showMenu"/>
 </LinearLayout>

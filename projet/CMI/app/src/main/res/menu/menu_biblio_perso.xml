@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_new"
+        android:icon="@mipmap/ic_add_white_48dp"
+        app:showAsAction="ifRoom"
+        android:title="@string/action_import"/>
+    <item
+        android:id="@+id/action_overflow"
+        android:icon="@mipmap/ic_more_vert_white_48dp"
+        app:showAsAction="always"
+        android:title="@string/action_overflow">
+        <menu>
+            <item
+                android:id="@+id/overflow1"
+                app:showAsAction="never"
+                android:title="@string/action_overflow" />
+            <item
+                android:id="@+id/overflow2"
+                app:showAsAction="never"
+                android:title="@string/action_overflow" />
+        </menu>
+    </item>
+</menu>

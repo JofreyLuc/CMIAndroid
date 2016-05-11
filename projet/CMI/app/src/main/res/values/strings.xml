@@ -14,4 +14,9 @@
     <string name="nnf_permission_external_write_denied">Permission d\'accèder au système de fichier refusée</string>
     <string name="nnf_select_something_first">Veuillez sélectionner un fichier</string>
     <!-- Fin strings de la librairie FilePicker -->
+
+    <string name="action_import">action import</string>
+    <string name="action_overflow">action overflow</string>
+    <string name="supp_book">supprimer</string>
+    <string name="book_details">détails</string>
 </resources>

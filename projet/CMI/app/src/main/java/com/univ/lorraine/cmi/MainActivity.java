@@ -8,13 +8,16 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,9 +31,8 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
-import java.io.File;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
     private static final int FILEPICKER_CODE = 0;
 
@@ -90,6 +92,54 @@ public class MainActivity extends AppCompatActivity {
        testFilePicker();
     }
 
+    // fonction qui initialise un menu de lActionBar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_biblio_perso, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    // fonction qui gere les actions des items des menus de lActionBar
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_new:
+                // DO SOMETHING
+                //Toast.makeText(getApplicationContext(), "action_new", Toast.LENGTH_LONG).show();
+                testFilePicker();
+                return true;
+            case R.id.overflow1:
+                // DO SOMETHING
+                Toast.makeText(getApplicationContext(), "overflow1", Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.overflow2:
+                // DO SOMETHING
+                Toast.makeText(getApplicationContext(), "overflow2", Toast.LENGTH_LONG).show();
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    // fonction qui gere les actions des items du menu de chaque livre
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_supp:
+                // DO SOMETHING
+                Toast.makeText(getApplicationContext(), "action_supp", Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.action_details:
+                // DO SOMETHING
+                Toast.makeText(getApplicationContext(), "action_details", Toast.LENGTH_LONG).show();
+                return true;
+            default:
+                return false;
+        }
+    }
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch(requestCode) {
@@ -146,6 +196,18 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), ll.get(0).toString(), Toast.LENGTH_LONG).show();
     }
 
+    // inflate le menu de gestion des livres (suppression, details)
+    public void showMenu(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        popup.setOnMenuItemClickListener(this);
+        popup.inflate(R.menu.menu_livre);
+        popup.show();
+    }
+
+
+    /**********************
+     * classe qui customise les items de la gridview
+     */
     public class ImageAdapter extends BaseAdapter {
         private Context context;
 
