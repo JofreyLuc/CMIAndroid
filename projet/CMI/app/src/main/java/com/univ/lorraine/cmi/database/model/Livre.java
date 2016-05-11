@@ -28,7 +28,7 @@ public class Livre {
     private String genre;
 
     @DatabaseField
-    private Date dateParution;
+    private String dateParution;
 
     @DatabaseField
     private String resume;
@@ -48,15 +48,17 @@ public class Livre {
     // Needed by ORMlite
     Livre() {}
 
-    public Livre(Date d){
-        titre = "title";
-        auteur = "moi";
-        langue = "fr";
-        genre = "roman";
+    public Livre(String t, String a, String l, String g, String d, String r, float noteM, String lienDL, String lienCou){
+        titre = t;
+        auteur = a;
+        langue = l;
+        genre = g;
         dateParution = d;
-        resume = "hahahahah";
-        nombrePages = 50;
-        noteMoyenne = 2;
+        resume = r;
+        noteMoyenne = noteM;
+        lienDLEpub = lienDL;
+        lienCouverture = lienCou;
+
     }
 
     @Override

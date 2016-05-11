@@ -26,11 +26,19 @@ import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.reader.EpubManipulator;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
 import java.io.File;
+
+import nl.siegmann.epublib.domain.Author;
+import nl.siegmann.epublib.domain.Book;
+import nl.siegmann.epublib.domain.Metadata;
+import nl.siegmann.epublib.domain.Resource;
+import nl.siegmann.epublib.epub.EpubReader;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
             R.mipmap.book,
             R.mipmap.book,
             R.mipmap.book,
-
     };
 
     String[] titles = {
@@ -71,8 +78,6 @@ public class MainActivity extends AppCompatActivity {
             "book13",
             "book14",
             "book15",
-
-
     };
 
     @Override
@@ -82,11 +87,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         GridView gridView = (GridView) findViewById(R.id.grid);
         gridView.setAdapter(new ImageAdapter(this));
-        try {
-            testDatabase();
-        } catch (SQLException e){
-            Toast.makeText(getApplicationContext(), "bugbug", Toast.LENGTH_LONG).show();
-        }
         // Création du dossier interne de l'app
         getApplicationContext().getDir("CallMeIshmael", Context.MODE_PRIVATE);
 
@@ -125,17 +125,71 @@ public class MainActivity extends AppCompatActivity {
     private void importEpubs(Uri[] epubUris) {
         String path = "";
         String fileName = "";
+        FileInputStream fs = null;
+        Book book = null;
         for (int i = 0; i < epubUris.length; i++) {
             //ProgressDialog.show(this, "Import", "Import epub").setCancelable(false);
             // import livre local
             path = epubUris[i].getPath();
             fileName = epubUris[i].getLastPathSegment();
             try {
-                EpubManipulator epm = new EpubManipulator(path, fileName.substring(0, fileName.length() - 5), getApplicationContext());
-                Toast.makeText(getApplicationContext(),"Epub importé", Toast.LENGTH_SHORT).show();
-            } catch (Exception e){
+                fs = new FileInputStream(path);
+                book = (new EpubReader().readEpub(fs));
+                saveBook(book);
+            } catch (IOException e){
                 Log.e("EXC", e.getMessage());
             }
+        }
+    }
+
+    private void saveBook(Book book){
+        try {
+            Metadata meta = book.getMetadata();
+            StringBuilder titres = new StringBuilder();
+            String delim = "";
+            for (String t : meta.getTitles()) {
+                titres.append(delim);
+                titres.append(t);
+                delim = ", ";
+            }
+
+            delim = "";
+            StringBuilder auteurs = new StringBuilder();
+            for (Author a : meta.getAuthors()) {
+                titres.append(delim);
+                if (a.getFirstname() != null) {
+                    auteurs.append(a.getFirstname() + " ");
+                }
+                if (a.getLastname() != null) {
+                    auteurs.append(a.getLastname());
+                }
+                delim = ", ";
+            }
+
+            delim = "";
+            StringBuilder types = new StringBuilder();
+            for (String g : meta.getTypes()) {
+                titres.append(delim);
+                types.append(g);
+                delim = ", ";
+            }
+
+            nl.siegmann.epublib.domain.Date date = null;
+            for (nl.siegmann.epublib.domain.Date d : meta.getDates()) {
+                if (d.getEvent() == nl.siegmann.epublib.domain.Date.Event.PUBLICATION) date = d;
+            }
+
+            delim = "";
+            StringBuilder resumes = new StringBuilder();
+            for (String r : meta.getDescriptions()) {
+                titres.append(delim);
+                resumes.append(r);
+                delim = ", ";
+            }
+            Dao<Livre, Long> daolivre = getHelper().getLivreDao();
+            daolivre.create(new Livre(titres.toString(), auteurs.toString(), meta.getLanguage(), types.toString(), date.toString(), resumes.toString(), 2, "", ""));
+        } catch (SQLException e){
+            Log.e("EXC", e.getMessage());
         }
     }
 
@@ -154,19 +208,6 @@ public class MainActivity extends AppCompatActivity {
         i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
         startActivityForResult(i, FILEPICKER_CODE);
     }
-
-    private void testDatabase() throws SQLException{
-        CmidbaOpenDatabaseHelper dbhelper = OpenHelperManager.getHelper(this, CmidbaOpenDatabaseHelper.class);
-
-        Dao<Livre, Long> daolivre = dbhelper.getLivreDao();
-        Date currentTime = new Date(System.currentTimeMillis());
-
-        daolivre.create(new Livre(currentTime));
-
-        List<Livre> ll = daolivre.queryForAll();
-        Toast.makeText(getApplicationContext(), ll.get(0).toString(), Toast.LENGTH_LONG).show();
-    }
-
 
     /**
      * Returns the database helper (created if null)
