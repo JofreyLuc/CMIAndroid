@@ -1,10 +1,14 @@
 package com.univ.lorraine.cmi;
 
+import android.app.Activity;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +30,9 @@ import java.util.List;
 
 import java.io.File;
 
-
 public class MainActivity extends AppCompatActivity {
+
+    private static final int FILEPICKER_CODE = 0;
 
     Integer[] imageIDs = {
             R.mipmap.book,
@@ -85,6 +90,34 @@ public class MainActivity extends AppCompatActivity {
        testFilePicker();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(requestCode) {
+            // Choix d'un livre (fichier epub) via le Filepicker
+            case FILEPICKER_CODE :
+                // Résultat OK
+                if (resultCode == Activity.RESULT_OK) {
+                    // Sélection multiple de fichier
+                    if (data.getBooleanExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false)) {
+                        ClipData clip = data.getClipData();
+                        if (clip != null)
+                            for (int i = 0; i < clip.getItemCount(); i++) {
+                                Uri uri = clip.getItemAt(i).getUri();
+                                Toast.makeText(getApplicationContext(), uri.toString(), Toast.LENGTH_LONG).show();
+                                // import livre local
+                            }
+                    }
+                    // Sélection unique de fichier
+                    else {
+                        Uri uri = data.getData();
+                        Toast.makeText(getApplicationContext(), uri.toString(), Toast.LENGTH_LONG).show();
+                        // import livre local
+                    }
+                }
+                break;
+        }
+    }
+
     private void testFilePicker() {
         // This always works
         Intent i = new Intent(getApplicationContext(), FilePickerActivity.class);
@@ -92,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
         // Intent i = new Intent(Intent.ACTION_GET_CONTENT);
 
         // Set these depending on your use case. These are the defaults.
-        i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
+        i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, true);
         i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
         i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
 
@@ -101,8 +134,7 @@ public class MainActivity extends AppCompatActivity {
         // dangerous. Always use Android's API calls to get paths to the SD-card or
         // internal memory.
         i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
-
-        startActivityForResult(i, 1);
+        startActivityForResult(i, FILEPICKER_CODE);
     }
 
     private void testDatabase() throws SQLException{
