@@ -1,16 +1,10 @@
 package com.univ.lorraine.cmi;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Icon;
-import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,25 +26,18 @@ import com.j256.ormlite.dao.Dao;
 import com.nononsenseapps.filepicker.FilePickerActivity;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Livre;
-import com.univ.lorraine.cmi.reader.EpubManipulator;
-import java.io.ByteArrayOutputStream;
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import nl.siegmann.epublib.util.IOUtil;
-import nl.siegmann.epublib.domain.Author;
+
 import nl.siegmann.epublib.domain.Book;
-import nl.siegmann.epublib.domain.Metadata;
 import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.epub.EpubReader;
 
@@ -60,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
     private static final int FILEPICKER_CODE = 0;
 
-    private ArrayList<Livre> livres;
+    private List<Livre> livres;
     private GridView gridView;
 
     @Override
@@ -160,16 +147,11 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     public class ImageAdapter extends BaseAdapter {
         private Context context;
 
-        public ImageAdapter(Context c)
-        {
-            context = c;
-        }
+        public ImageAdapter(Context c) { context = c; }
 
 
         @Override
-        public int getCount() {
-            return livres.size();
-        }
+        public int getCount() { return livres.size(); }
 
         @Override
         public Object getItem(int position) {
@@ -191,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             if (Utilities.hasACover(getApplicationContext(), livres.get(position))) {
                 icon.setImageBitmap(BitmapFactory.decodeFile(Utilities.getBookCoverPath(getApplicationContext(), livres.get(position))));
             } else {
-                icon.setImageResource(R.mipmap.defaultBook);
+                icon.setImageResource(R.mipmap.defaultbook);
             }
             return row;
         }
