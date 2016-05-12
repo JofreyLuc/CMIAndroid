@@ -155,13 +155,17 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_supp:
-                // DO SOMETHING
-                Toast.makeText(getApplicationContext(), "action_supp", Toast.LENGTH_LONG).show();
-                return true;
             case R.id.action_details:
                 // DO SOMETHING
                 Toast.makeText(getApplicationContext(), "action_details", Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.action_evaluate:
+                // DO SOMETHING
+                Toast.makeText(getApplicationContext(), "action_evaluate", Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.action_supp:
+                // DO SOMETHING
+                Toast.makeText(getApplicationContext(), "action_supp", Toast.LENGTH_LONG).show();
                 return true;
             default:
                 return false;
