@@ -63,23 +63,6 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
     private static final int FILEPICKER_CODE = 0;
 
-    Integer[] imageIDs = {
-            R.mipmap.book,
-            R.mipmap.book,
-            R.mipmap.book,
-            R.mipmap.book,
-            R.mipmap.book,
-            R.mipmap.book,
-            R.mipmap.book,
-            R.mipmap.book,
-            R.mipmap.book,
-            R.mipmap.book,
-            R.mipmap.book,
-            R.mipmap.book,
-            R.mipmap.book,
-            R.mipmap.book,
-    };
-
     String[] titles = {
             "book1",
             "book2",
@@ -99,14 +82,17 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     };
 
     private ArrayList<Resource> covers;
+    private GridView gridView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         covers = new ArrayList<>();
+        Log.e("INFO", "Covers début");
         setCovers();
-        GridView gridView = (GridView) findViewById(R.id.grid);
+        Log.e("INFO", "Covers fin");
+        gridView = (GridView) findViewById(R.id.grid);
         gridView.setAdapter(new ImageAdapter(this));
     }
 
@@ -201,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
         @Override
         public int getCount() {
-            return imageIDs.length;
+            return covers.size();
         }
 
         @Override
@@ -222,7 +208,6 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             label.setText(titles[position]);
             ImageView icon;
             icon=(ImageView)row.findViewById(R.id.icon_image);
-            //icon.setImageResource(imageIDs[position]);
             applyInputStream(icon, position);
             return row;
         }
@@ -240,6 +225,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
     private void setCovers(){
         try {
+            covers.clear();
             Dao<Livre, Long> daolivre = getHelper().getLivreDao();
             List<Livre> ll = daolivre.queryForAll();
             for (Livre l : ll) {
@@ -357,6 +343,9 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 Log.e("DIS", l.toString());
             }
         }
+        setCovers();
+        gridView.setAdapter(new ImageAdapter(this));
+
     }
 
 }
