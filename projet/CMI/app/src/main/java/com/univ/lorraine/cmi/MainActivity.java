@@ -33,15 +33,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+
 import java.util.List;
 
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.epub.EpubReader;
 
-public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
+public class MainActivity extends AppCompatActivity {
 
     private CmidbaOpenDatabaseHelper dbhelper = null;
 
@@ -111,31 +110,35 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         }
     }
 
-    // fonction qui gere les actions des items du menu de chaque livre
-    @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_details:
-                // DO SOMETHING
-                Toast.makeText(getApplicationContext(), "action_details", Toast.LENGTH_LONG).show();
-                return true;
-            case R.id.action_evaluate:
-                // DO SOMETHING
-                Toast.makeText(getApplicationContext(), "action_evaluate", Toast.LENGTH_LONG).show();
-                return true;
-            case R.id.action_supp:
-                // DO SOMETHING
-                Toast.makeText(getApplicationContext(), "action_supp", Toast.LENGTH_LONG).show();
-                return true;
-            default:
-                return false;
-        }
-    }
-
     // inflate le menu de gestion des livres (suppression, details)
     public void showMenu(View v) {
+        // On récupère le livre lié à cet item de la gridview
+        final Livre livre = (Livre)((View)v.getParent()).getTag();
         PopupMenu popup = new PopupMenu(this, v);
-        popup.setOnMenuItemClickListener(this);
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_details:
+                        // DO SOMETHING
+                        Toast.makeText(getApplicationContext(), "action_details" + livre.getIdLivre(), Toast.LENGTH_LONG).show();
+                        return true;
+                    case R.id.action_evaluate:
+                        // DO SOMETHING
+                        Toast.makeText(getApplicationContext(), "action_evaluate" + livre.getIdLivre(), Toast.LENGTH_LONG).show();
+                        return true;
+                    case R.id.action_supp:
+                        // DO SOMETHING
+                        Toast.makeText(getApplicationContext(), "action_supp" + livre.getIdLivre(), Toast.LENGTH_LONG).show();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+        // On affiche le sous-menu Evaluer si le livre n'est pas un livre importé localement
+        if (!livre.estImporteLocalement())
+            popup.getMenu().getItem(R.id.action_evaluate).setVisible(true);
         popup.inflate(R.menu.menu_livre);
         popup.show();
     }
@@ -148,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         private Context context;
 
         public ImageAdapter(Context c) { context = c; }
-
 
         @Override
         public int getCount() { return livres.size(); }
@@ -166,12 +168,14 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row=inflater.inflate(R.layout.grid_item, parent, false);
             TextView label=(TextView)row.findViewById(R.id.icon_text);
+            Livre livre = livres.get(position);
+            row.setTag(livre);  // On bind le livre à la view
             // Récupération du titre
-            label.setText(livres.get(position).getTitre());
+            label.setText(livre.getTitre());
             // Récupération de la couverture
             ImageView icon=(ImageView)row.findViewById(R.id.icon_image);
-            if (Utilities.hasACover(getApplicationContext(), livres.get(position))) {
-                icon.setImageBitmap(BitmapFactory.decodeFile(Utilities.getBookCoverPath(getApplicationContext(), livres.get(position))));
+            if (Utilities.hasACover(getApplicationContext(), livre)) {
+                icon.setImageBitmap(BitmapFactory.decodeFile(Utilities.getBookCoverPath(getApplicationContext(), livre)));
             } else {
                 icon.setImageResource(R.mipmap.defaultbook);
             }
