@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:clickable="true"
-    android:onClick="clickOnBook">
+    android:clickable="false"
+    android:descendantFocusability="blocksDescendants">
 
     <ImageView
         android:id="@+id/icon_image"
@@ -28,7 +28,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@mipmap/ic_more_vert_black_24dp"
-        android:clickable="true"
         android:layout_gravity="right"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:onClick="showMenu"/>
 </LinearLayout>

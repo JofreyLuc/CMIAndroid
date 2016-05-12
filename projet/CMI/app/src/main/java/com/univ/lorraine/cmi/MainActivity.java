@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -57,6 +58,14 @@ public class MainActivity extends AppCompatActivity {
         setLivres();
         gridView = (GridView) findViewById(R.id.grid);
         gridView.setAdapter(new ImageAdapter(this));
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Livre livre = (Livre)view.getTag();
+                // DO SOMETHING
+                Toast.makeText(MainActivity.this, "lire "+livre.getIdLivre(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**
@@ -299,10 +308,5 @@ public class MainActivity extends AppCompatActivity {
         gridView.setAdapter(new ImageAdapter(this));
     }
 
-    public void clickOnBook(View v) {
-        Livre livre = (Livre)v.getTag();
-        // DO SOMETHING
-        Toast.makeText(MainActivity.this, "lire "+livre.getIdLivre(), Toast.LENGTH_SHORT).show();
-    }
 }
 
