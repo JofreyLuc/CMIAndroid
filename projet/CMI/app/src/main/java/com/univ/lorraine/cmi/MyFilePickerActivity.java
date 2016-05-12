@@ -1,7 +1,10 @@
 package com.univ.lorraine.cmi;
 
 import android.annotation.SuppressLint;
+import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
+import android.widget.Toast;
 
 import com.nononsenseapps.filepicker.AbstractFilePickerActivity;
 import com.nononsenseapps.filepicker.AbstractFilePickerFragment;
@@ -16,6 +19,13 @@ public class MyFilePickerActivity extends AbstractFilePickerActivity<File> {
 
     public MyFilePickerActivity() {
         super();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // On affiche un toast informant l'utilisateur qu'il peut choisir des fichiers epub
+        Toast.makeText(MyFilePickerActivity.this, "Veuillez sélectionner les livres au format EPUB que vous souhaitez importer", Toast.LENGTH_SHORT).show();
     }
 
     @Override

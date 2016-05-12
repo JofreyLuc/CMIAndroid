@@ -53,8 +53,8 @@ import nl.siegmann.epublib.epub.EpubReader;
 
 public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
-
     private CmidbaOpenDatabaseHelper dbhelper = null;
+
     private static final int FILEPICKER_CODE = 0;
 
     Integer[] imageIDs = {
@@ -93,16 +93,34 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     };
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         GridView gridView = (GridView) findViewById(R.id.grid);
         gridView.setAdapter(new ImageAdapter(this));
-        // Création du dossier interne de l'app
-        getApplicationContext().getDir("CallMeIshmael", Context.MODE_PRIVATE);
+    }
 
-       testFilePicker();
+    /**
+     * Overriden in order to close the database
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (dbhelper != null){
+            OpenHelperManager.releaseHelper();
+            dbhelper = null;
+        }
+    }
+
+    /**
+     * Returns the database helper (created if null)
+     * @return dbhelper
+     */
+    private CmidbaOpenDatabaseHelper getHelper(){
+        if (dbhelper == null){
+            dbhelper = OpenHelperManager.getHelper(this, CmidbaOpenDatabaseHelper.class);
+        }
+        return dbhelper;
     }
 
     // fonction qui initialise un menu de lActionBar
@@ -118,9 +136,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_new:
-                // DO SOMETHING
-                //Toast.makeText(getApplicationContext(), "action_new", Toast.LENGTH_LONG).show();
-                testFilePicker();
+                pickEpubFiles();   // On demande à l'utilisateur de choisir les fichiers epub à importer.
                 return true;
             case R.id.overflow1:
                 // DO SOMETHING
@@ -152,6 +168,54 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         }
     }
 
+    // inflate le menu de gestion des livres (suppression, details)
+    public void showMenu(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        popup.setOnMenuItemClickListener(this);
+        popup.inflate(R.menu.menu_livre);
+        popup.show();
+    }
+
+    /**********************
+     * classe qui customise les items de la gridview
+     */
+
+    public class ImageAdapter extends BaseAdapter {
+        private Context context;
+
+        public ImageAdapter(Context c)
+        {
+            context = c;
+        }
+
+
+        @Override
+        public int getCount() {
+            return imageIDs.length;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return position;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            ImageView icon;
+            LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View row=inflater.inflate(R.layout.grid_item, parent, false);
+            TextView label=(TextView)row.findViewById(R.id.icon_text);
+            label.setText(titles[position]);
+            icon=(ImageView)row.findViewById(R.id.icon_image);
+            icon.setImageResource(imageIDs[position]);
+            return row;
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -182,10 +246,12 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         }
     }
 
-
-
-
-
+    /**
+     * Importe les livres à partir de leurs fichiers epub.
+     * Insert le livre dans la base de données locale et copie le fichier epub dans le dossier dédié de l'application.
+     *
+     * @param epubs Les fichier epub des livres.
+     */
     private void importEpubs(File[] epubs) {
         String path = "";
         FileInputStream fs = null;
@@ -206,6 +272,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         }
     }
 
+    // A VOIR : peut-être crée un constructeur Livre(Book) à la place ?
     private void saveBook(Book book){
         try {
             Metadata meta = book.getMetadata();
@@ -266,7 +333,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         }
     }
 
-    private void testFilePicker() {
+    private void pickEpubFiles() {
         Intent i = new Intent(this, MyFilePickerActivity.class);
 
         // Options
@@ -280,79 +347,6 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         // internal memory.
         i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
         startActivityForResult(i, FILEPICKER_CODE);
-    }
-
-
-    // inflate le menu de gestion des livres (suppression, details)
-    public void showMenu(View v) {
-        PopupMenu popup = new PopupMenu(this, v);
-        popup.setOnMenuItemClickListener(this);
-        popup.inflate(R.menu.menu_livre);
-        popup.show();
-    }
-
-    /**
-     * Returns the database helper (created if null)
-     * @return dbhelper
-     */
-    private CmidbaOpenDatabaseHelper getHelper(){
-        if (dbhelper == null){
-            dbhelper = OpenHelperManager.getHelper(this, CmidbaOpenDatabaseHelper.class);
-        }
-        return dbhelper;
-    }
-
-    /**
-     * Overriden in order to close the database
-     */
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (dbhelper != null){
-            OpenHelperManager.releaseHelper();
-            dbhelper = null;
-        }
-    }
-
-    /**********************
-     * classe qui customise les items de la gridview
-     */
-
-    public class ImageAdapter extends BaseAdapter {
-        private Context context;
-
-        public ImageAdapter(Context c)
-        {
-            context = c;
-        }
-
-
-        @Override
-        public int getCount() {
-            return imageIDs.length;
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return position;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        public View getView(int position, View convertView, ViewGroup parent)
-        {
-            ImageView icon;
-            LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View row=inflater.inflate(R.layout.grid_item, parent, false);
-            TextView label=(TextView)row.findViewById(R.id.icon_text);
-            label.setText(titles[position]);
-            icon=(ImageView)row.findViewById(R.id.icon_image);
-            icon.setImageResource(imageIDs[position]);
-            return row;
-        }
     }
 }
 

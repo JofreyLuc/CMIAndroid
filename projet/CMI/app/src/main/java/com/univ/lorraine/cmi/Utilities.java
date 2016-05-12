@@ -14,13 +14,13 @@ import java.io.OutputStream;
 import nl.siegmann.epublib.util.IOUtil;
 
 /**
- * Classe contenant uniquement des méthodes statiques utilitaires
- * Cette classe ne doit pas être instancié
+ * Classe contenant uniquement des méthodes statiques utilitaires.
+ * Cette classe ne doit pas être instancié.
  */
 public final class Utilities {
 
     /**
-     * Constructeur privé pour éviter l'instanciation
+     * Constructeur privé pour éviter l'instanciation.
      */
     private Utilities() {
     }
