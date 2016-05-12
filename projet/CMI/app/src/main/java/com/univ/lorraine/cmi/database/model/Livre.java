@@ -132,6 +132,10 @@ public class Livre {
         return idLivre;
     }
 
+    public boolean estImporteLocalement() {
+        return idServeur == null;
+    }
+
     @Override
     public String toString() {
         return titre +" " +  auteur + " " + dateParution + " id  : " + idLivre;
