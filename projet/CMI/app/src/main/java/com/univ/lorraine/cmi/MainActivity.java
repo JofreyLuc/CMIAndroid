@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.nononsenseapps.filepicker.FilePickerActivity;
+import com.squareup.picasso.Picasso;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Livre;
 
@@ -175,9 +176,9 @@ public class MainActivity extends AppCompatActivity {
             // Récupération de la couverture
             ImageView icon=(ImageView)row.findViewById(R.id.icon_image);
             if (Utilities.hasACover(getApplicationContext(), livre)) {
-                icon.setImageBitmap(BitmapFactory.decodeFile(Utilities.getBookCoverPath(getApplicationContext(), livre)));
+                Picasso.with(context).load(new File(Utilities.getBookCoverPath(getApplicationContext(), livre))).fit().into(icon);
             } else {
-                icon.setImageResource(R.mipmap.defaultbook);
+                Picasso.with(context).load(R.mipmap.defaultbook).fit().into(icon);
             }
             return row;
         }
