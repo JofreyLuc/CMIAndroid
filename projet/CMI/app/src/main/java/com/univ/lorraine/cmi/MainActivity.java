@@ -5,6 +5,10 @@ import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +35,7 @@ import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.reader.EpubManipulator;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -40,6 +45,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -92,10 +98,14 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             "book15",
     };
 
+    private ArrayList<Resource> covers;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        covers = new ArrayList<>();
+        setCovers();
         GridView gridView = (GridView) findViewById(R.id.grid);
         gridView.setAdapter(new ImageAdapter(this));
     }
@@ -206,14 +216,42 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
         public View getView(int position, View convertView, ViewGroup parent)
         {
-            ImageView icon;
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row=inflater.inflate(R.layout.grid_item, parent, false);
             TextView label=(TextView)row.findViewById(R.id.icon_text);
             label.setText(titles[position]);
+            ImageView icon;
             icon=(ImageView)row.findViewById(R.id.icon_image);
-            icon.setImageResource(imageIDs[position]);
+            //icon.setImageResource(imageIDs[position]);
+            applyInputStream(icon, position);
             return row;
+        }
+    }
+
+    private void applyInputStream(ImageView iv, int pos){
+        try {
+            InputStream is = covers.get(pos).getInputStream();
+            iv.setImageBitmap(BitmapFactory.decodeStream(is));
+            is.close();
+        } catch (IOException e){
+            Log.e("EXC", e.getMessage());
+        }
+    }
+
+    private void setCovers(){
+        try {
+            Dao<Livre, Long> daolivre = getHelper().getLivreDao();
+            List<Livre> ll = daolivre.queryForAll();
+            for (Livre l : ll) {
+                FileInputStream fs = new FileInputStream(getApplicationContext(), Utilities.getBookFilePath(l));
+                Book book = new EpubReader().readEpub(fs);
+                covers.add(book.getCoverImage());
+                fs.close();
+            }
+        } catch (SQLException e){
+            Log.e("EXC", e.getMessage());
+        } catch (IOException e){
+            Log.e("Exc", e.getMessage());
         }
     }
 
@@ -278,7 +316,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         Book book = null;
         for (int i = 0; i < epubs.length; i++) {
             //ProgressDialog.show(this, "Import", "Import epub").setCancelable(false);
-            // On copie le fichier epub dans le dossier dédié de l'application
+            //On copie le fichier epub dans le dossier dédié de l'application
             String newFilePath = Utilities.getBookStoragePath(this) + "/" + epubs[i].getName();
             Utilities.copyFile(epubs[i], new File(newFilePath));
             path = epubs[i].getPath();
