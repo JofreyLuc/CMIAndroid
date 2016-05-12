@@ -20,7 +20,8 @@
         android:layout_height="wrap_content"
         android:text="Textview"
         android:textColorHighlight="#656565"
-        android:lines="3"/>
+        android:lines="3"
+        android:gravity="center_horizontal"/>
 
     <ImageButton
         android:id="@+id/imageButton"
