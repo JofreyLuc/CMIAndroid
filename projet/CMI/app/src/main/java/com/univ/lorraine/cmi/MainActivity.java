@@ -1,16 +1,10 @@
 package com.univ.lorraine.cmi;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Icon;
-import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,29 +26,20 @@ import com.j256.ormlite.dao.Dao;
 import com.nononsenseapps.filepicker.FilePickerActivity;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Livre;
-import com.univ.lorraine.cmi.reader.EpubManipulator;
-import java.io.ByteArrayOutputStream;
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import nl.siegmann.epublib.util.IOUtil;
-import nl.siegmann.epublib.domain.Author;
+
 import nl.siegmann.epublib.domain.Book;
-import nl.siegmann.epublib.domain.Metadata;
 import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.epub.EpubReader;
 
-public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
+public class MainActivity extends AppCompatActivity {
 
     private CmidbaOpenDatabaseHelper dbhelper = null;
 
@@ -124,31 +109,35 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         }
     }
 
-    // fonction qui gere les actions des items du menu de chaque livre
-    @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_details:
-                // DO SOMETHING
-                Toast.makeText(getApplicationContext(), "action_details", Toast.LENGTH_LONG).show();
-                return true;
-            case R.id.action_evaluate:
-                // DO SOMETHING
-                Toast.makeText(getApplicationContext(), "action_evaluate", Toast.LENGTH_LONG).show();
-                return true;
-            case R.id.action_supp:
-                // DO SOMETHING
-                Toast.makeText(getApplicationContext(), "action_supp", Toast.LENGTH_LONG).show();
-                return true;
-            default:
-                return false;
-        }
-    }
-
     // inflate le menu de gestion des livres (suppression, details)
     public void showMenu(View v) {
+        // On récupère le livre lié à cet item de la gridview
+        final Livre livre = (Livre)((View)v.getParent()).getTag();
         PopupMenu popup = new PopupMenu(this, v);
-        popup.setOnMenuItemClickListener(this);
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_details:
+                        // DO SOMETHING
+                        Toast.makeText(getApplicationContext(), "action_details" + livre.getIdLivre(), Toast.LENGTH_LONG).show();
+                        return true;
+                    case R.id.action_evaluate:
+                        // DO SOMETHING
+                        Toast.makeText(getApplicationContext(), "action_evaluate" + livre.getIdLivre(), Toast.LENGTH_LONG).show();
+                        return true;
+                    case R.id.action_supp:
+                        // DO SOMETHING
+                        Toast.makeText(getApplicationContext(), "action_supp" + livre.getIdLivre(), Toast.LENGTH_LONG).show();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+        // On affiche le sous-menu Evaluer si le livre n'est pas un livre importé localement
+        if (!livre.estImporteLocalement())
+            popup.getMenu().getItem(R.id.action_evaluate).setVisible(true);
         popup.inflate(R.menu.menu_livre);
         popup.show();
     }
@@ -164,7 +153,6 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         {
             context = c;
         }
-
 
         @Override
         public int getCount() {
@@ -184,14 +172,16 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row=inflater.inflate(R.layout.grid_item, parent, false);
             TextView label=(TextView)row.findViewById(R.id.icon_text);
+            Livre livre = livres.get(position);
+            row.setTag(livre);  // On bind le livre à la view
             // Récupération du titre
-            label.setText(livres.get(position).getTitre());
+            label.setText(livre.getTitre());
             // Récupération de la couverture
             ImageView icon=(ImageView)row.findViewById(R.id.icon_image);
-            if (Utilities.hasACover(getApplicationContext(), livres.get(position))) {
-                icon.setImageBitmap(BitmapFactory.decodeFile(Utilities.getBookCoverPath(getApplicationContext(), livres.get(position))));
+            if (Utilities.hasACover(getApplicationContext(), livre)) {
+                icon.setImageBitmap(BitmapFactory.decodeFile(Utilities.getBookCoverPath(getApplicationContext(), livre)));
             } else {
-                icon.setImageResource(R.mipmap.defaultBook);
+                icon.setImageResource(R.mipmap.no_cover);
             }
             return row;
         }

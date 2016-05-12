@@ -9,7 +9,8 @@
     <item
         android:id="@+id/action_evaluate"
         app:showAsAction="always"
-        android:title="@string/book_evaluate">
+        android:title="@string/book_evaluate"
+        android:visible="false">
     </item>
     <item
         android:id="@+id/action_supp"
