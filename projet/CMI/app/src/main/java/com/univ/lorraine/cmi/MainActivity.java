@@ -169,9 +169,10 @@ public class MainActivity extends AppCompatActivity {
             View row=inflater.inflate(R.layout.grid_item, parent, false);
             TextView label=(TextView)row.findViewById(R.id.icon_text);
             Livre livre = livres.get(position);
-            row.setTag(livre);  // On bind le livre à la view
+            // On bind le livre à la view
+            row.setTag(livre);
             // Récupération du titre
-            label.setText(livre.getTitre());
+            label.setText(livre.getTitre() + '\n' + livre.getAuteur());
             // Récupération de la couverture
             ImageView icon=(ImageView)row.findViewById(R.id.icon_image);
             if (Utilities.hasACover(getApplicationContext(), livre)) {

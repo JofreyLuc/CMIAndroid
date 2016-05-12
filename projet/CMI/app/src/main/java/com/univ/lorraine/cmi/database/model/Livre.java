@@ -140,6 +140,10 @@ public class Livre {
         return titre;
     }
 
+    public String getAuteur(){
+        return auteur;
+    }
+
     @Override
     public String toString() {
         return titre +" " +  auteur + " " + dateParution + " id  : " + idLivre;
