@@ -132,6 +132,10 @@ public class Livre {
         return idLivre;
     }
 
+    public boolean estImporteLocalement() {
+        return idServeur == null;
+    }
+
     public String getTitre(){
         return titre;
     }
