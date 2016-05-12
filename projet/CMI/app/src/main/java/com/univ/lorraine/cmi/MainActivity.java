@@ -243,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             Dao<Livre, Long> daolivre = getHelper().getLivreDao();
             List<Livre> ll = daolivre.queryForAll();
             for (Livre l : ll) {
-                FileInputStream fs = new FileInputStream(getApplicationContext(), Utilities.getBookFilePath(l));
+                FileInputStream fs = new FileInputStream(Utilities.getBookFilePath(getApplicationContext(), l));
                 Book book = new EpubReader().readEpub(fs);
                 covers.add(book.getCoverImage());
                 fs.close();
@@ -311,84 +311,53 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
      * @param epubs Les fichier epub des livres.
      */
     private void importEpubs(File[] epubs) {
-        String path = "";
+        String epubFilePath = "";
         FileInputStream fs = null;
         Book book = null;
+        Livre livre = null;
+        // Pour chaque fichier epub
         for (int i = 0; i < epubs.length; i++) {
             //ProgressDialog.show(this, "Import", "Import epub").setCancelable(false);
-            //On copie le fichier epub dans le dossier dédié de l'application
-            String newFilePath = Utilities.getBookStoragePath(this) + "/" + epubs[i].getName();
-            Utilities.copyFile(epubs[i], new File(newFilePath));
-            path = epubs[i].getPath();
+            // On va enregistrer les metadata du livre dans la base de données
+            epubFilePath = epubs[i].getPath();
+            // Création de l'objet book à partir du fichier epub
             try {
-                fs = new FileInputStream(path);
+                fs = new FileInputStream(epubFilePath);
                 book = (new EpubReader().readEpub(fs));
-                saveBook(book);
-            } catch (IOException e){
+            } catch (IOException e) {
                 Log.e("EXC", e.getMessage());
             }
-        }
-    }
-
-    // A VOIR : peut-être crée un constructeur Livre(Book) à la place ?
-    private void saveBook(Book book){
-        try {
-            Metadata meta = book.getMetadata();
-            StringBuilder titres = new StringBuilder();
-            String delim = "";
-            for (String t : meta.getTitles()) {
-                titres.append(delim);
-                titres.append(t);
-                delim = ", ";
+            // Création du livre à partir de l'objet book
+            livre = new Livre(book);
+            // Sauvegarde du livre dans la base de données
+            try {
+                Dao<Livre, Long> daolivre = getHelper().getLivreDao();
+                daolivre.create(livre);
+            } catch (SQLException e){
+                Log.e("EXC", e.getMessage());
             }
 
-            delim = "";
-            StringBuilder auteurs = new StringBuilder();
-            for (Author a : meta.getAuthors()) {
-                titres.append(delim);
-                if (a.getFirstname() != null) {
-                    auteurs.append(a.getFirstname() + " ");
-                }
-                if (a.getLastname() != null) {
-                    auteurs.append(a.getLastname());
-                }
-                delim = ", ";
-            }
+            // On va crée le dossier du livre et copier le fichier epub à l'intérieur
+            String epubFileNewName = "livre.epub";
+            String dirPath = Utilities.getBookStoragePath(this) + "/" + livre.getIdLivre();
+            String newFilePath = dirPath + "/" + epubFileNewName;
+            new File(dirPath).mkdirs();                             // Création du dossier
+            Utilities.copyFile(epubs[i], new File(newFilePath));    // Copie du fichier
 
-            delim = "";
-            StringBuilder types = new StringBuilder();
-            for (String g : meta.getTypes()) {
-                titres.append(delim);
-                types.append(g);
-                delim = ", ";
+            // Test
+            List<Livre> ll = null;
+            Dao<Livre, Long> daolivre = null;
+            try {
+                daolivre = getHelper().getLivreDao();
+            ll = daolivre.queryForAll();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-
-            nl.siegmann.epublib.domain.Date date = null;
-            String dateString;
-            for (nl.siegmann.epublib.domain.Date d : meta.getDates()) {
-                if (d.getEvent() == nl.siegmann.epublib.domain.Date.Event.PUBLICATION) date = d;
-            }
-            if (date == null) dateString = "";
-            else dateString = date.toString();
-
-            delim = "";
-            StringBuilder resumes = new StringBuilder();
-            for (String r : meta.getDescriptions()) {
-                titres.append(delim);
-                resumes.append(r);
-                delim = ", ";
-            }
-            Dao<Livre, Long> daolivre = getHelper().getLivreDao();
-            daolivre.create(new Livre(titres.toString(), auteurs.toString(), meta.getLanguage(), types.toString(), dateString, resumes.toString(), 2, "", ""));
-
-            List<Livre> ll = daolivre.queryForAll();
             for (Livre l : ll){
                 Log.e("DIS", l.toString());
             }
-
-        } catch (SQLException e){
-            Log.e("EXC", e.getMessage());
         }
     }
+
 }
 

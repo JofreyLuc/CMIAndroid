@@ -3,6 +3,8 @@ package com.univ.lorraine.cmi;
 import android.content.Context;
 import android.os.Environment;
 
+import com.univ.lorraine.cmi.database.model.Livre;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -88,6 +90,19 @@ public final class Utilities {
             dossier.mkdirs();
 
         return dossier.getAbsolutePath();
+    }
+
+    /**
+     *  Retourne le chemin du fichier epub de ce livre.
+     *
+     * @param livre Le livre.
+     *
+     * @return le chemin du fichier epub de ce livre.
+     */
+    public static String getBookFilePath(Context context, Livre livre) {
+        return getBookStoragePath(context)
+                + "/" + livre.getIdLivre()
+                + "/livre.epub";
     }
 
     /**
