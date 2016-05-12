@@ -14,6 +14,6 @@
     </item>
     <item
         android:id="@+id/action_supp"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         android:title="@string/book_delete"/>
 </menu>
