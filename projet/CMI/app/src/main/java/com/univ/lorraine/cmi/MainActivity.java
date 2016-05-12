@@ -27,15 +27,12 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.nononsenseapps.filepicker.FilePickerActivity;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.reader.EpubManipulator;
-
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,16 +41,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
 import java.io.Reader;
 import java.io.Writer;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import nl.siegmann.epublib.util.IOUtil;
-
 import nl.siegmann.epublib.domain.Author;
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Metadata;
@@ -65,24 +59,6 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     private CmidbaOpenDatabaseHelper dbhelper = null;
 
     private static final int FILEPICKER_CODE = 0;
-
-    String[] titles = {
-            "book1",
-            "book2",
-            "book3",
-            "book4",
-            "book5",
-            "book6",
-            "book7",
-            "book8",
-            "book9",
-            "book10",
-            "book11",
-            "book12",
-            "book13",
-            "book14",
-            "book15",
-    };
 
     private ArrayList<Livre> livres;
     private GridView gridView;
@@ -110,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     }
 
     /**
-     * Returns the database helper (created if null)
+     * Retourne le databaseHelper (crée si il n'existe pas)
      * @return dbhelper
      */
     private CmidbaOpenDatabaseHelper getHelper(){
@@ -201,23 +177,29 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         }
 
         @Override
-        public long getItemId(int position) {
-            return position;
-        }
+        public long getItemId(int position) { return position; }
 
         public View getView(int position, View convertView, ViewGroup parent)
         {
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row=inflater.inflate(R.layout.grid_item, parent, false);
             TextView label=(TextView)row.findViewById(R.id.icon_text);
+            // Récupération du titre
             label.setText(livres.get(position).getTitre());
-            ImageView icon;
-            icon=(ImageView)row.findViewById(R.id.icon_image);
-            icon.setImageBitmap(BitmapFactory.decodeFile(Utilities.getBookCoverPath(getApplicationContext(), livres.get(position))));
+            // Récupération de la couverture
+            ImageView icon=(ImageView)row.findViewById(R.id.icon_image);
+            if (Utilities.hasACover(getApplicationContext(), livres.get(position))) {
+                icon.setImageBitmap(BitmapFactory.decodeFile(Utilities.getBookCoverPath(getApplicationContext(), livres.get(position))));
+            } else {
+                icon.setImageResource(R.mipmap.defaultBook);
+            }
             return row;
         }
     }
 
+    /**
+     * Met à jour la liste de livres actuelle (pour couvertures et titres)
+     */
     private void setLivres(){
         try {
             livres.clear();
@@ -242,12 +224,8 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, true);
         i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
         i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
-
-        // Configure initial directory by specifying a String.
-        // You could specify a String like "/storage/emulated/0/", but that can
-        // dangerous. Always use Android's API calls to get paths to the SD-card or
-        // internal memory.
         i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
+
         startActivityForResult(i, FILEPICKER_CODE);
     }
 
@@ -315,15 +293,21 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
                 // Extraction de la couverture dans le dossier crée précédemment
                 String coverPath = dirPath + "/cover";
-                InputStream coverIS = book.getCoverImage().getInputStream();
-                Utilities.copyFile(coverIS, new File(coverPath));
-                coverIS.close();
+                Resource cover = book.getCoverImage();
+                if (cover != null) {
+                    InputStream coverIS = book.getCoverImage().getInputStream();
+                    Utilities.copyFile(coverIS, new File(coverPath));
+                    coverIS.close();
+                } else {
+                    // Génération d'image automatique ?
+                }
             }
         } catch (SQLException e) {
             Log.e("Exc", e.getMessage());
         } catch (IOException e) {
             Log.e("Exc", e.getMessage());
         }
+        // Mise à jour de la liste de livres et des vues
         setLivres();
         gridView.setAdapter(new ImageAdapter(this));
     }

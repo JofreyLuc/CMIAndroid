@@ -119,6 +119,17 @@ public final class Utilities {
     }
 
     /**
+     * Retourne vrai si ce livre possède une couverture enregistrée
+     *
+     * @param livre Le livre.
+     *
+     * @return Un booléen.
+     */
+    public static boolean hasACover(Context context, Livre livre){
+        return (new File(getBookCoverPath(context, livre)).exists());
+    }
+
+    /**
      * Copie le fichier source à la destination.
      * Utilise IOUtil de la librairie Apache incluse dans la librairie epublib.
      *
