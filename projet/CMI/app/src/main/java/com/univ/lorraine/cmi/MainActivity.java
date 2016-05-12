@@ -182,37 +182,9 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         }
     }
 
-    public void copy(File src, File dst) {
-        try {
-            InputStream in = new FileInputStream(src);
-            OutputStream out = new FileOutputStream(dst);
-            IOUtil.copy(in, out);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
-    /**
-     * Retourne le chemin du dossier de stockage des epubs.
-     * Crée les dossiers si besoin.
-     *
-     * @return le chemin du dossier de stockage des epubs.
-     */
-    public String getEpubStoragePath() {
-        // Définition du chemin pour le dossier où seront stockés les epubs
-        File dossier = new File(Environment.getExternalStorageDirectory()
-                + "/Android/data/"
-                + getApplicationContext().getPackageName()
-                + "/epubs");
 
-        // Création du dossier s'il n'existe pas déjà
-        if (!dossier.exists())
-            dossier.mkdirs();
 
-        return dossier.getAbsolutePath();
-    }
 
     private void importEpubs(File[] epubs) {
         String path = "";
@@ -221,8 +193,8 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         for (int i = 0; i < epubs.length; i++) {
             //ProgressDialog.show(this, "Import", "Import epub").setCancelable(false);
             // On copie le fichier epub dans le dossier dédié de l'application
-            String newFilePath = getEpubStoragePath() + "/" + epubs[i].getName();
-            copy(epubs[i], new File(newFilePath));
+            String newFilePath = Utilities.getBookStoragePath(this) + "/" + epubs[i].getName();
+            Utilities.copyFile(epubs[i], new File(newFilePath));
             path = epubs[i].getPath();
             try {
                 fs = new FileInputStream(path);
