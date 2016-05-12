@@ -301,5 +301,11 @@ public class MainActivity extends AppCompatActivity {
         setLivres();
         gridView.setAdapter(new ImageAdapter(this));
     }
+
+    public void clickOnBook(View v) {
+        Livre livre = (Livre)v.getTag();
+        // DO SOMETHING
+        Toast.makeText(MainActivity.this, "lire "+livre.getIdLivre(), Toast.LENGTH_SHORT).show();
+    }
 }
 
