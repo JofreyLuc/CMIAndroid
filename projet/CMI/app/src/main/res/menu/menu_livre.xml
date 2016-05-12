@@ -2,12 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_supp"
-        app:showAsAction="ifRoom"
-        android:title="@string/supp_book"/>
-    <item
         android:id="@+id/action_details"
         app:showAsAction="always"
         android:title="@string/book_details">
     </item>
+    <item
+        android:id="@+id/action_evaluate"
+        app:showAsAction="always"
+        android:title="@string/book_evaluate">
+    </item>
+    <item
+        android:id="@+id/action_supp"
+        app:showAsAction="ifRoom"
+        android:title="@string/book_delete"/>
 </menu>

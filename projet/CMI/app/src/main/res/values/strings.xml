@@ -17,8 +17,12 @@
 
     <string name="action_import">action import</string>
     <string name="action_overflow">action overflow</string>
-    <string name="supp_book">supprimer</string>
-    <string name="book_details">détails</string>
+
+    <!-- Strings du popmenu des livres dans la bibliothèque -->
+    <string name="book_details">Voir les détails</string>
+    <string name="book_evaluate">Évaluer</string>
+    <string name="book_delete">Supprimer</string>
+    <!-- Fin strings du popmenu des livres dans la bibliothèque -->
 
     <!-- Strings de EPUB3Reader -->
 
