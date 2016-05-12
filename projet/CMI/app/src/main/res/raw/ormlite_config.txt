@@ -1,5 +1,5 @@
 #
-# generated on 2016/05/11 06:55:40
+# generated on 2016/05/12 10:58:56
 #
 # --table-start--
 dataClass=com.univ.lorraine.cmi.database.model.Livre
@@ -38,9 +38,6 @@ fieldName=lienDLEpub
 # --field-end--
 # --field-start--
 fieldName=lienCouverture
-# --field-end--
-# --field-start--
-fieldName=cheminFichier
 # --field-end--
 # --table-fields-end--
 # --table-end--
