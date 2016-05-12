@@ -106,6 +106,19 @@ public final class Utilities {
     }
 
     /**
+     *  Retourne le chemin de la couverture de ce livre.
+     *
+     * @param livre Le livre.
+     *
+     * @return le chemin de la couverture de ce livre.
+     */
+    public static String getBookCoverPath(Context context, Livre livre) {
+        return getBookStoragePath(context)
+                + "/" + livre.getIdLivre()
+                + "/cover";
+    }
+
+    /**
      * Copie le fichier source à la destination.
      * Utilise IOUtil de la librairie Apache incluse dans la librairie epublib.
      *
@@ -117,6 +130,28 @@ public final class Utilities {
             InputStream in = new FileInputStream(src);
             OutputStream out = new FileOutputStream(dst);
             IOUtil.copy(in, out);
+            in.close();
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Crée un fichier à partir d'un stream.
+     * Utilise IOUtil de la librairie Apache incluse dans la librairie epublib.
+     *
+     * @param in Stream source.
+     * @param dst La destination
+     */
+    public static void copyFile(InputStream in, File dst){
+        try {
+            OutputStream out = new FileOutputStream(dst);
+            IOUtil.copy(in, out);
+            in.close();
+            out.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

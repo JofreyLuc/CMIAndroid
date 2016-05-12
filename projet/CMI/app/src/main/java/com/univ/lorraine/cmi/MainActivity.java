@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -44,6 +45,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import java.io.Reader;
+import java.io.Writer;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -81,17 +84,15 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             "book15",
     };
 
-    private ArrayList<Resource> covers;
+    private ArrayList<Livre> livres;
     private GridView gridView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        covers = new ArrayList<>();
-        Log.e("INFO", "Covers début");
-        setCovers();
-        Log.e("INFO", "Covers fin");
+        livres = new ArrayList<>();
+        setLivres();
         gridView = (GridView) findViewById(R.id.grid);
         gridView.setAdapter(new ImageAdapter(this));
     }
@@ -191,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
         @Override
         public int getCount() {
-            return covers.size();
+            return livres.size();
         }
 
         @Override
@@ -209,39 +210,24 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row=inflater.inflate(R.layout.grid_item, parent, false);
             TextView label=(TextView)row.findViewById(R.id.icon_text);
-            label.setText(titles[position]);
+            label.setText(livres.get(position).getTitre());
             ImageView icon;
             icon=(ImageView)row.findViewById(R.id.icon_image);
-            applyInputStream(icon, position);
+            icon.setImageBitmap(BitmapFactory.decodeFile(Utilities.getBookCoverPath(getApplicationContext(), livres.get(position))));
             return row;
         }
     }
 
-    private void applyInputStream(ImageView iv, int pos){
+    private void setLivres(){
         try {
-            InputStream is = covers.get(pos).getInputStream();
-            iv.setImageBitmap(BitmapFactory.decodeStream(is));
-            is.close();
-        } catch (IOException e){
-            Log.e("EXC", e.getMessage());
-        }
-    }
-
-    private void setCovers(){
-        try {
-            covers.clear();
+            livres.clear();
             Dao<Livre, Long> daolivre = getHelper().getLivreDao();
             List<Livre> ll = daolivre.queryForAll();
             for (Livre l : ll) {
-                FileInputStream fs = new FileInputStream(Utilities.getBookFilePath(getApplicationContext(), l));
-                Book book = new EpubReader().readEpub(fs);
-                covers.add(book.getCoverImage());
-                fs.close();
+                livres.add(l);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             Log.e("EXC", e.getMessage());
-        } catch (IOException e){
-            Log.e("Exc", e.getMessage());
         }
     }
 
@@ -301,56 +287,45 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
      * @param epubs Les fichier epub des livres.
      */
     private void importEpubs(File[] epubs) {
-        String epubFilePath = "";
-        FileInputStream fs = null;
-        Book book = null;
-        Livre livre = null;
-        // Pour chaque fichier epub
-        for (int i = 0; i < epubs.length; i++) {
-            //ProgressDialog.show(this, "Import", "Import epub").setCancelable(false);
-            // On va enregistrer les metadata du livre dans la base de données
-            epubFilePath = epubs[i].getPath();
-            // Création de l'objet book à partir du fichier epub
-            try {
+        try {
+            String epubFilePath = "";
+            FileInputStream fs = null;
+            Book book = null;
+            Livre livre = null;
+            // Pour chaque fichier epub
+            for (int i = 0; i < epubs.length; i++) {
+                //ProgressDialog.show(this, "Import", "Import epub").setCancelable(false);
+                // On va enregistrer les metadata du livre dans la base de données
+                epubFilePath = epubs[i].getPath();
+                // Création de l'objet book à partir du fichier epub
                 fs = new FileInputStream(epubFilePath);
                 book = (new EpubReader().readEpub(fs));
-            } catch (IOException e) {
-                Log.e("EXC", e.getMessage());
-            }
-            // Création du livre à partir de l'objet book
-            livre = new Livre(book);
-            // Sauvegarde du livre dans la base de données
-            try {
+                // Création du livre à partir de l'objet book
+                livre = new Livre(book);
+                // Sauvegarde du livre dans la base de données
                 Dao<Livre, Long> daolivre = getHelper().getLivreDao();
                 daolivre.create(livre);
-            } catch (SQLException e){
-                Log.e("EXC", e.getMessage());
-            }
 
-            // On va crée le dossier du livre et copier le fichier epub à l'intérieur
-            String epubFileNewName = "livre.epub";
-            String dirPath = Utilities.getBookStoragePath(this) + "/" + livre.getIdLivre();
-            String newFilePath = dirPath + "/" + epubFileNewName;
-            new File(dirPath).mkdirs();                             // Création du dossier
-            Utilities.copyFile(epubs[i], new File(newFilePath));    // Copie du fichier
+                // On va créer le dossier du livre et copier le fichier epub à l'intérieur
+                String epubFileNewName = "livre.epub";
+                String dirPath = Utilities.getBookStoragePath(this) + "/" + livre.getIdLivre();
+                String newFilePath = dirPath + "/" + epubFileNewName;
+                new File(dirPath).mkdirs();                             // Création du dossier
+                Utilities.copyFile(epubs[i], new File(newFilePath));    // Copie du fichier
 
-            // Test
-            List<Livre> ll = null;
-            Dao<Livre, Long> daolivre = null;
-            try {
-                daolivre = getHelper().getLivreDao();
-            ll = daolivre.queryForAll();
-            } catch (SQLException e) {
-                e.printStackTrace();
+                // Extraction de la couverture dans le dossier crée précédemment
+                String coverPath = dirPath + "/cover";
+                InputStream coverIS = book.getCoverImage().getInputStream();
+                Utilities.copyFile(coverIS, new File(coverPath));
+                coverIS.close();
             }
-            for (Livre l : ll){
-                Log.e("DIS", l.toString());
-            }
+        } catch (SQLException e) {
+            Log.e("Exc", e.getMessage());
+        } catch (IOException e) {
+            Log.e("Exc", e.getMessage());
         }
-        setCovers();
+        setLivres();
         gridView.setAdapter(new ImageAdapter(this));
-
     }
-
 }
 
