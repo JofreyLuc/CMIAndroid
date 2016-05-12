@@ -217,6 +217,26 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         }
     }
 
+    /**
+     * Lance l'activité du FilePicker et demande à l'utilisateur de sélectionner un/des livre(s) au format epub.
+     * Est appelé lorsque l'utilisateur demande à importe un/des livres(s).
+     */
+    private void pickEpubFiles() {
+        Intent i = new Intent(this, MyFilePickerActivity.class);
+
+        // Options
+        i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, true);
+        i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
+        i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
+
+        // Configure initial directory by specifying a String.
+        // You could specify a String like "/storage/emulated/0/", but that can
+        // dangerous. Always use Android's API calls to get paths to the SD-card or
+        // internal memory.
+        i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
+        startActivityForResult(i, FILEPICKER_CODE);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch(requestCode) {
@@ -331,22 +351,6 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         } catch (SQLException e){
             Log.e("EXC", e.getMessage());
         }
-    }
-
-    private void pickEpubFiles() {
-        Intent i = new Intent(this, MyFilePickerActivity.class);
-
-        // Options
-        i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, true);
-        i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
-        i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
-
-        // Configure initial directory by specifying a String.
-        // You could specify a String like "/storage/emulated/0/", but that can
-        // dangerous. Always use Android's API calls to get paths to the SD-card or
-        // internal memory.
-        i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
-        startActivityForResult(i, FILEPICKER_CODE);
     }
 }
 
