@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 import java.util.List;
 
 import nl.siegmann.epublib.domain.Book;
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int FILEPICKER_CODE = 0;
 
-    private ArrayList<Livre> livres;
+    private List<Livre> livres;
     private GridView gridView;
 
     @Override
@@ -149,15 +150,10 @@ public class MainActivity extends AppCompatActivity {
     public class ImageAdapter extends BaseAdapter {
         private Context context;
 
-        public ImageAdapter(Context c)
-        {
-            context = c;
-        }
+        public ImageAdapter(Context c) { context = c; }
 
         @Override
-        public int getCount() {
-            return livres.size();
-        }
+        public int getCount() { return livres.size(); }
 
         @Override
         public Object getItem(int position) {
@@ -181,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
             if (Utilities.hasACover(getApplicationContext(), livre)) {
                 icon.setImageBitmap(BitmapFactory.decodeFile(Utilities.getBookCoverPath(getApplicationContext(), livre)));
             } else {
-                icon.setImageResource(R.mipmap.no_cover);
+                icon.setImageResource(R.mipmap.defaultbook);
             }
             return row;
         }
