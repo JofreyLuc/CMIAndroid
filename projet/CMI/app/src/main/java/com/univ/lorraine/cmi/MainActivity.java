@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -176,9 +175,9 @@ public class MainActivity extends AppCompatActivity {
             // Récupération de la couverture
             ImageView icon=(ImageView)row.findViewById(R.id.icon_image);
             if (Utilities.hasACover(getApplicationContext(), livre)) {
-                Picasso.with(context).load(new File(Utilities.getBookCoverPath(getApplicationContext(), livre))).fit().into(icon);
+                Picasso.with(context).load(new File(Utilities.getBookCoverPath(getApplicationContext(), livre))).fit().centerInside().into(icon);
             } else {
-                Picasso.with(context).load(R.mipmap.defaultbook).fit().into(icon);
+                Picasso.with(context).load(R.mipmap.defaultbook).fit().centerInside().into(icon);
             }
             return row;
         }
