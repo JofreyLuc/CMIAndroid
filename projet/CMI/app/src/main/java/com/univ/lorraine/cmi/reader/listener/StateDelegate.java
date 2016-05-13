@@ -21,12 +21,10 @@ public class StateDelegate implements StateListener {
     public void onStateChanged(State state) {
         switch (state) {
             case NORMAL:
-                reader.getLoadingBar().setVisibility(View.GONE);
                 break;
             case BUSY:
                 break;
             case LOADING:
-                reader.getLoadingBar().setVisibility(View.VISIBLE);
                 break;
             case ROTATING:
                 break;

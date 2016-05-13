@@ -1,5 +1,6 @@
 package com.univ.lorraine.cmi.reader;
 
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -62,7 +63,7 @@ public class ReaderActivity extends AppCompatActivity {
     /**
      * Barre de chargement lors du chargement d'un epub.
      */
-    private ProgressBar loadingBar;
+    private ProgressDialog progress;
 
     /**
      * Id du livre à lire permettant de déduire le chemin du fichier.
@@ -76,14 +77,13 @@ public class ReaderActivity extends AppCompatActivity {
         idLivre = (Long)bundle.get("idLivre");
 
         this.keyManager = new SkyKeyManager("", "");
+        progress=new ProgressDialog(this);
+        progress.setMessage("Chargement...");
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        //progress.setIndeterminate(true);
+        progress.setProgress(0);
+        progress.show();
         this.makeLayout();
-
-        loadingBar = (ProgressBar)findViewById(R.id.spinner);
-        loadingBar.setVisibility(View.GONE);
-    }
-
-    public ProgressBar getLoadingBar() {
-        return loadingBar;
     }
 
     // Création et arrangement du ReflowableControl
