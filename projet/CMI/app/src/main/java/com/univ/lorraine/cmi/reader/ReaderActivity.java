@@ -1,4 +1,4 @@
-package com.univ.lorraine.cmi;
+package com.univ.lorraine.cmi.reader;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -22,54 +23,89 @@ import com.skytree.epub.ReflowableControl;
 import com.skytree.epub.SkyKeyManager;
 import com.skytree.epub.SkyProvider;
 
-import java.util.Observable;
-import java.util.Observer;
+import com.univ.lorraine.cmi.R;
+import com.univ.lorraine.cmi.Utilities;
+import com.univ.lorraine.cmi.reader.listener.ContentHandler;
+import com.univ.lorraine.cmi.reader.listener.HighlightDelegate;
+import com.univ.lorraine.cmi.reader.listener.PageMovedDelegate;
+import com.univ.lorraine.cmi.reader.listener.SearchDelegate;
+import com.univ.lorraine.cmi.reader.listener.SelectionDelegate;
+import com.univ.lorraine.cmi.reader.listener.StateDelegate;
 
-import static com.skytree.epub.Setting.debug;
+/**
+ * Activité principale du reader.
+ * Utilise le SDK SkyEpub.
+ */
+public class ReaderActivity extends AppCompatActivity {
 
-public class ReflowableActivity extends AppCompatActivity {
+    /** ReflowableControl hérite de RelativeLayout.
+     * Permet la lecture des fichiers epub.
+     */
+    private ReflowableControl rv;
 
-    // Insert these variables as member variables of Activity.
+    /**
+     * Bouton Highlight
+     */
+    private Button markButton;
 
-    ReflowableControl rv;       // ReflowableControl
+    /**
+     * Vue basique de l'activité
+     */
+    private RelativeLayout ePubView;
 
-    Button markButton;          // the button to mark selected text.
+    /**
+     * Permet de gérer les epubs encryptés.
+     * Nécessaire au ContentProvider qui se charge de lire le fichier epub.
+     */
+    private SkyKeyManager keyManager;
 
-    RelativeLayout ePubView;    // Basic View of Activity.
+    /**
+     * Barre de chargement lors du chargement d'un epub.
+     */
+    private ProgressBar loadingBar;
 
-    SkyKeyManager keyManager;
-
-    Long idLivre;               // Id du livre à lire (bdd)
+    /**
+     * Id du livre à lire permettant de déduire le chemin du fichier.
+     */
+    private Long idLivre;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // call the routine for creation and arrangement of ReflowableControl.
-        this.keyManager = new SkyKeyManager("A3UBZzJNCoXmXQlBWD4xNo", "zfZl40AQXu8xHTGKMRwG69");
+        // On récupère l'id du livre passé dans l'Intent
         Bundle bundle = getIntent().getExtras();
         idLivre = (Long)bundle.get("idLivre");
+
+        this.keyManager = new SkyKeyManager("", "");
         this.makeLayout();
+
+        loadingBar = (ProgressBar)findViewById(R.id.spinner);
+        loadingBar.setVisibility(View.GONE);
     }
 
-    // the function for creation and arrangement of ReflowableControl.
-    public void makeLayout() {
+    public ProgressBar getLoadingBar() {
+        return loadingBar;
+    }
 
+    // Création et arrangement du ReflowableControl
+    public void makeLayout() {
+        // Chemin du fichier epub déduit de l'id du livre
         String bookFilePath = (Utilities.getBookStoragePath(getApplicationContext())
                 + "/" + idLivre
                 +"/livre.epub");
 
-        // Create Highlights Object.
+        // Création des highlights (surlignage)
         Highlights highlights = new Highlights();
 
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         float density = metrics.density;
 
-        // Create ReflowableControl Object.
+        // Création de l'objet ReflowableControl
         rv = new ReflowableControl(this);
 
-        // set base directory
+        // Passe le répertoire de base.
         rv.setBaseDirectory(Utilities.getBookStoragePath(getApplicationContext()));
 
-        // set the epub file path.
+        // Passe le chemin de l'epub.
         rv.setBookPath(bookFilePath);
 
         // Read PagesStack and save it to Bitmap.
@@ -99,16 +135,20 @@ public class ReflowableActivity extends AppCompatActivity {
         rv.setVerticalGapRatio(0.1);
 
         // set the Listener for Highlight processing.
-        //rv.setHighlightListener(new HighlightDelegate());
+        rv.setHighlightListener(new HighlightDelegate());
 
         // set the Listener for Page Moving.
         rv.setPageMovedListener(new PageMovedDelegate());
 
         // set the Listener for text processing
-        //rv.setSelectionListener(new SelectionDelegate());
+        rv.setSelectionListener(new SelectionDelegate());
 
         // set the Listener for Searching.
-        //rv.setSearchListener(new SearchDelegate());
+        rv.setSearchListener(new SearchDelegate());
+
+        // set the Content processing listener.
+        ContentHandler contentListener = new ContentHandler();
+        rv.setContentListener(contentListener);
 
         // ContentProvider
         SkyProvider skyProvider = new SkyProvider();
@@ -116,10 +156,7 @@ public class ReflowableActivity extends AppCompatActivity {
         rv.setContentProvider(skyProvider);
 
         // set the Listener to detect the change of state
-        //rv.setStateListener(new StateDelegate());
-        // set the Content processing listener.
-        ContentHandler contentListener = new ContentHandler();
-        //rv.setContentListener(contentListener);
+        rv.setStateListener(new StateDelegate(this));
 
         // set the start point to read.
         rv.setStartPositionInBook(0);
@@ -141,7 +178,7 @@ public class ReflowableActivity extends AppCompatActivity {
                 RelativeLayout.LayoutParams.FILL_PARENT,
                 RelativeLayout.LayoutParams.FILL_PARENT);
         ePubView.setLayoutParams(rlp);
-        // insert RelativeVie into ContentView.
+        // insert RelativeView into ContentView.
         ePubView.addView(rv);
 
         // Create the button to show up when text selected.

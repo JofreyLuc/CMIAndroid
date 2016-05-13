@@ -1,4 +1,4 @@
-package com.univ.lorraine.cmi;
+package com.univ.lorraine.cmi.reader.listener;
 
 import com.skytree.epub.ContentListener;
 
@@ -9,7 +9,7 @@ import java.io.InputStream;
 /**
  * Created by alexis on 13/05/2016.
  */
-class ContentHandler implements ContentListener {
+public class ContentHandler implements ContentListener {
     // you should return the length of file.
     public long getLength(String baseDirectory,String contentPath) {
         String path = baseDirectory + "/" + contentPath;
