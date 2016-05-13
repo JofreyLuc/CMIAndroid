@@ -59,13 +59,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setLivres();
         gridView = (GridView) findViewById(R.id.grid);
         gridView.setAdapter(new ImageAdapter(this));
-        final MainActivity thisActivity = this;
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                thisActivity.lancerLecture((Livre) view.getTag());
-            }
-        });
+        gridView.setOnItemClickListener(this);
     }
 
     /**
@@ -100,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     // Fonction qui gère l'action lors d'un clic sur un livre
-
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
