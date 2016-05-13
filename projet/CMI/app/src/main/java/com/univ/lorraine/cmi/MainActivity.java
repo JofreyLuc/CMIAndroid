@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
     // inflate le menu de gestion des livres (suppression, details)
     public void showMenu(View v) {
         // On récupère le livre lié à cet item de la gridview
-        final Livre livre = (Livre)((View)v.getParent()).getTag();
+        final Livre livre = (Livre)((View)v.getParent().getParent()).getTag();
         PopupMenu popup = new PopupMenu(this, v);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
