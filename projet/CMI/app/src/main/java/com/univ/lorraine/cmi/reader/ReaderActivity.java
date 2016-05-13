@@ -1,6 +1,7 @@
 package com.univ.lorraine.cmi.reader;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -29,6 +31,7 @@ import com.univ.lorraine.cmi.Utilities;
 import com.univ.lorraine.cmi.reader.listener.ContentHandler;
 import com.univ.lorraine.cmi.reader.listener.HighlightDelegate;
 import com.univ.lorraine.cmi.reader.listener.PageMovedDelegate;
+import com.univ.lorraine.cmi.reader.listener.ReflowableControlCustom;
 import com.univ.lorraine.cmi.reader.listener.SearchDelegate;
 import com.univ.lorraine.cmi.reader.listener.SelectionDelegate;
 import com.univ.lorraine.cmi.reader.listener.StateDelegate;
@@ -42,7 +45,7 @@ public class ReaderActivity extends AppCompatActivity {
     /** ReflowableControl hérite de RelativeLayout.
      * Permet la lecture des fichiers epub.
      */
-    private ReflowableControl rv;
+    private ReflowableControlCustom rv;
 
     /**
      * Bouton Highlight
@@ -76,14 +79,32 @@ public class ReaderActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         idLivre = (Long)bundle.get("idLivre");
 
-        this.keyManager = new SkyKeyManager("", "");
+        // ProgressDialog non annulable en cliquant sur l'écran
+        // mais annulable avec la touche Back + fin de l'activité
         progress=new ProgressDialog(this);
         progress.setMessage("Chargement...");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        //progress.setIndeterminate(true);
+        progress.setIndeterminate(true);
         progress.setProgress(0);
-        progress.show();
+        progress.setCancelable(true);
+        progress.setCanceledOnTouchOutside(false);
+        progress.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                finish();
+            }
+        });
+
+        this.keyManager = new SkyKeyManager("", "");
         this.makeLayout();
+    }
+
+    public ProgressDialog getProgressDialog() {
+        return progress;
+    }
+
+    public ViewGroup getView() {
+        return rv;
     }
 
     // Création et arrangement du ReflowableControl
@@ -100,13 +121,15 @@ public class ReaderActivity extends AppCompatActivity {
         float density = metrics.density;
 
         // Création de l'objet ReflowableControl
-        rv = new ReflowableControl(this);
+        rv = new ReflowableControlCustom(this);
 
         // Passe le répertoire de base.
         rv.setBaseDirectory(Utilities.getBookStoragePath(getApplicationContext()));
 
         // Passe le chemin de l'epub.
         rv.setBookPath(bookFilePath);
+
+        rv.setStartPosition(0);
 
         // Read PagesStack and save it to Bitmap.
         Bitmap pagesStack = BitmapFactory.decodeResource(getResources(), R.drawable.pages_stack);
@@ -158,8 +181,6 @@ public class ReaderActivity extends AppCompatActivity {
         // set the Listener to detect the change of state
         rv.setStateListener(new StateDelegate(this));
 
-        // set the start point to read.
-        rv.setStartPositionInBook(0);
         rv.setNavigationAreaWidthRatio(0.4f); // both left and right side.
 
         // Create Layout Params for ReflowableControl

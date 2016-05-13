@@ -2,12 +2,9 @@ package com.univ.lorraine.cmi.database.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
-import java.util.Date;
 
 import nl.siegmann.epublib.domain.Author;
 import nl.siegmann.epublib.domain.Book;
@@ -20,7 +17,7 @@ import nl.siegmann.epublib.domain.Metadata;
  */
 
 @DatabaseTable(tableName = "livre")
-public class Livre implements Parcelable{
+public class Livre implements Parcelable {
 
     // Id local du livre
     @DatabaseField(generatedId = true)
@@ -224,6 +221,9 @@ public class Livre implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(idLivre);
+        // idServeur à -1 si null pour éviter une NullPointerException
+        if (idServeur == null)
+            idServeur = Long.valueOf(-1);
         dest.writeLong(idServeur);
         dest.writeString(titre);
         dest.writeString(auteur);
