@@ -152,8 +152,6 @@ public class ReflowableActivity extends AppCompatActivity {
         setContentView(ePubView);
     }
 
-    public void unzip
-
     public void unzipBook2(String fileName) {
 
         String targetDir = new String(Utilities.getBookStoragePath(getApplicationContext()) + "/test");

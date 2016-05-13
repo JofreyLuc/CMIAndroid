@@ -311,6 +311,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     void lancerLecture(Livre livre) {
         Intent i = new Intent(getApplicationContext(), ReflowableActivity.class);
+        i.putExtra("idLivre", livre.getIdLivre());
+        startActivity(i);
     }
 }
 
