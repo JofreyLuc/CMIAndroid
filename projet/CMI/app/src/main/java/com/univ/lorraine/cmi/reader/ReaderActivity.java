@@ -135,7 +135,7 @@ public class ReaderActivity extends AppCompatActivity {
         rv.setVerticalGapRatio(0.1);
 
         // set the Listener for Highlight processing.
-        rv.setHighlightListener(new HighlightDelegate());
+        rv.setHighlightListener(new HighlightDelegate(highlights));
 
         // set the Listener for Page Moving.
         rv.setPageMovedListener(new PageMovedDelegate());

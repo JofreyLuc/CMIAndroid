@@ -14,14 +14,29 @@ import com.skytree.epub.Highlights;
  */
 public class HighlightDelegate implements HighlightListener {
 
-    @Override
-    public void onHighlightDeleted(Highlight highlight) {
+    // <RAJOUTE
+    Highlights highlights;
 
+    public HighlightDelegate(Highlights h){
+        highlights = h;
+    }
+    // RAJOUTE>
+
+    public void onHighlightDeleted(Highlight highlight) {
+        for (int index = 0; index < highlights.getSize(); index++) {
+            Highlight temp = highlights.getHighlight(index);
+            if (temp.chapterIndex == highlight.chapterIndex
+                    && temp.startIndex == highlight.startIndex
+                    && temp.endIndex == highlight.endIndex
+                    && temp.startOffset == highlight.startOffset
+                    && temp.endOffset == highlight.endOffset) {
+                highlights.removeHighlight(index);
+            }
+        }
     }
 
-    @Override
     public void onHighlightInserted(Highlight highlight) {
-
+        highlights.addHighlight(highlight);
     }
 
     @Override
@@ -34,9 +49,15 @@ public class HighlightDelegate implements HighlightListener {
 
     }
 
-    @Override
-    public Highlights getHighlightsForChapter(int i) {
-        return null;
+    public Highlights getHighlightsForChapter(int chapterIndex) {
+        Highlights results = new Highlights();
+        for (int index = 0; index < highlights.getSize(); index++) {
+            Highlight highlight = highlights.getHighlight(index);
+            if (highlight.chapterIndex == chapterIndex) {
+                results.addHighlight(highlight);
+            }
+        }
+        return results;
     }
 
     @Override
