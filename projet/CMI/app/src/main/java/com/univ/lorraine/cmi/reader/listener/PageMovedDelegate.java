@@ -1,18 +1,21 @@
-package com.univ.lorraine.cmi;
+package com.univ.lorraine.cmi.reader.listener;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.skytree.epub.Highlight;
 import com.skytree.epub.PageInformation;
 import com.skytree.epub.PageMovedListener;
 
-import static com.skytree.epub.Setting.debug;
-
 /**
- * Created by alexis on 13/05/2016.
+ * Listener appelé lors d'un changement de page.
  */
-class PageMovedDelegate implements PageMovedListener {
+public class PageMovedDelegate implements PageMovedListener {
+
+    /**
+     * Changement de page.
+     *
+     * @param pi Informations sur la page et le livre.
+     */
     public void onPageMoved(PageInformation pi) {
         String msg = "chapterIndex: "+pi.chapterIndex
                 +"\nnumberOfChaptersInBook: "+pi.numberOfChaptersInBook
@@ -37,11 +40,21 @@ class PageMovedDelegate implements PageMovedListener {
         Log.e("SKY", msg);
     }
 
+    /**
+     * Changement de chapitre.
+     *
+     * @param i Numéro du chapitre.
+     */
     @Override
     public void onChapterLoaded(int i) {
 
     }
 
+    /**
+     * Tentative de changement de page au début ou à la fin d'un livre.
+     *
+     * @param b
+     */
     @Override
     public void onFailedToMove(boolean b) {
 

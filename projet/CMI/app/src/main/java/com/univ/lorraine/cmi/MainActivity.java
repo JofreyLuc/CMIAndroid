@@ -27,6 +27,7 @@ import com.nononsenseapps.filepicker.FilePickerActivity;
 import com.squareup.picasso.Picasso;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Livre;
+import com.univ.lorraine.cmi.reader.ReaderActivity;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -311,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     void lancerLecture(Livre livre) {
-        Intent i = new Intent(getApplicationContext(), ReflowableActivity.class);
+        Intent i = new Intent(getApplicationContext(), ReaderActivity.class);
         i.putExtra("idLivre", livre.getIdLivre());
         startActivity(i);
     }
