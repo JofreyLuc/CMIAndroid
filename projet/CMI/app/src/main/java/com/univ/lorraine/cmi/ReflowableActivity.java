@@ -157,7 +157,7 @@ public class ReflowableActivity extends AppCompatActivity {
         markButton.setLayoutParams(markButtonParam);
         markButton.setId(8083);
         //markButton.setOnClickListener(onClickListener);
-        markButton.setVisibility(View.INVISIBLE);
+        markButton.setVisibility(View.VISIBLE);
         ePubView.addView(markButton);
 
         //  Specify ePubView including ReflowableView and mark Button as a ContentView of Activity.

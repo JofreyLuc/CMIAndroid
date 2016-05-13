@@ -130,8 +130,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_details:
-                        // DO SOMETHING
-                        Toast.makeText(getApplicationContext(), "action_details" + livre.getIdLivre(), Toast.LENGTH_LONG).show();
+                        // Visualisation des détails du livre
+                        Intent i = new Intent(getApplicationContext(), BookDetailsActivity.class);
+                        i.putExtra("LIVRE", livre);
+                        startActivity(i);
                         return true;
                     case R.id.action_evaluate:
                         // DO SOMETHING
@@ -147,8 +149,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
         // On affiche le sous-menu Evaluer si le livre n'est pas un livre importé localement
-        if (!livre.estImporteLocalement())
-            popup.getMenu().getItem(R.id.action_evaluate).setVisible(true);
+        if (!livre.estImporteLocalement()) popup.getMenu().getItem(R.id.action_evaluate).setVisible(true);
         popup.inflate(R.menu.menu_livre);
         popup.show();
     }

@@ -31,7 +31,8 @@
         <activity
             android:name=".ReflowableActivity"
             android:label="@string/title_activity_reflowable"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".BookDetailsActivity"></activity>
     </application>
 
 </manifest>
