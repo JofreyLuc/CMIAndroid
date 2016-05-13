@@ -12,10 +12,15 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import com.skytree.epub.Book;
 import com.skytree.epub.HighlightListener;
 import com.skytree.epub.Highlights;
+import com.skytree.epub.KeyListener;
 import com.skytree.epub.ReflowableControl;
+import com.skytree.epub.SkyKeyManager;
+import com.skytree.epub.SkyProvider;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -32,28 +37,40 @@ public class ReflowableActivity extends AppCompatActivity {
 
     RelativeLayout ePubView;    // Basic View of Activity.
 
+    SkyKeyManager keyManager;
+
+    Long idLivre;               // Id du livre à lire (bdd)
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // call the routine for creation and arrangement of ReflowableControl.
+        this.keyManager = new SkyKeyManager("A3UBZzJNCoXmXQlBWD4xNo", "zfZl40AQXu8xHTGKMRwG69");
+        Bundle bundle = getIntent().getExtras();
+        idLivre = (Long)bundle.get("idLivre");
         this.makeLayout();
     }
 
     // the function for creation and arrangement of ReflowableControl.
     public void makeLayout() {
 
+        String bookFilePath = (Utilities.getBookStoragePath(getApplicationContext())
+                + "/" + idLivre
+                +"/livre.epub");
+
         // Create Highlights Object.
         Highlights highlights = new Highlights();
-        String fileName = new String();
-
-        // Set the epub file name to open.
-        fileName = "Alice.epub";
 
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         float density = metrics.density;
 
-
         // Create ReflowableControl Object.
         rv = new ReflowableControl(this);
+
+        // set base directory
+        rv.setBaseDirectory(Utilities.getBookStoragePath(getApplicationContext()));
+
+        // set the epub file path.
+        rv.setBookPath(bookFilePath);
 
         // Read PagesStack and save it to Bitmap.
         Bitmap pagesStack = BitmapFactory.decodeResource(getResources(), R.drawable.pages_stack);
@@ -66,14 +83,6 @@ public class ReflowableActivity extends AppCompatActivity {
 
         // Register pagesCenter to ReflowableControl.
         rv.setPagesCenterImage(pagesCenter);
-
-        // set base directory
-        rv.setBaseDirectory(Utilities.getBookStoragePath(getApplicationContext()));
-
-        unzipBook2("livre.epub");
-
-        // set the epub file name.
-        rv.setBookName("test");
 
         // set two pages mode(double paged mode) when landscape view.
         rv.setDoublePagedForLandscape(true);
@@ -101,11 +110,16 @@ public class ReflowableActivity extends AppCompatActivity {
         // set the Listener for Searching.
         //rv.setSearchListener(new SearchDelegate());
 
+        // ContentProvider
+        SkyProvider skyProvider = new SkyProvider();
+        skyProvider.setKeyListener(new KeyDelegate());
+        rv.setContentProvider(skyProvider);
+
         // set the Listener to detect the change of state
         //rv.setStateListener(new StateDelegate());
         // set the Content processing listener.
         ContentHandler contentListener = new ContentHandler();
-        rv.setContentListener(contentListener);
+        //rv.setContentListener(contentListener);
 
         // set the start point to read.
         rv.setStartPositionInBook(0);
@@ -121,7 +135,6 @@ public class ReflowableActivity extends AppCompatActivity {
         params.height = RelativeLayout.LayoutParams.FILL_PARENT;
         rv.setLayoutParams(params);
 
-
         // Create RelativeLayout for ContentView.
         ePubView = new RelativeLayout(this);
         RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
@@ -130,7 +143,6 @@ public class ReflowableActivity extends AppCompatActivity {
         ePubView.setLayoutParams(rlp);
         // insert RelativeVie into ContentView.
         ePubView.addView(rv);
-
 
         // Create the button to show up when text selected.
         RelativeLayout.LayoutParams markButtonParam = new RelativeLayout.LayoutParams(
@@ -152,25 +164,16 @@ public class ReflowableActivity extends AppCompatActivity {
         setContentView(ePubView);
     }
 
-    public void unzipBook2(String fileName) {
-
-        String targetDir = new String(Utilities.getBookStoragePath(getApplicationContext()) + "/test");
-
-        String filePath = new String(Utilities.getBookStoragePath(getApplicationContext()) + "/2");
-        Unzip unzip = new Unzip(fileName, filePath, targetDir);
-        unzip.addObserver(new UnzipHandler2());
-        unzip.unzip();
-    }
-
-    class UnzipHandler2 implements Observer {
+    class KeyDelegate implements KeyListener {
         @Override
-        public void update(Observable observable, Object data) {
-            //Unzip completed
-            (new Handler()).postDelayed(new Runnable() {
-                public void run() {
+        public String getKeyForEncryptedData(String uuidForContent, String contentName, String uuidForEpub) {
+            String key = keyManager.getKey(uuidForContent,uuidForEpub);
+            return key;
+        }
 
-                }
-            },500);
+        @Override
+        public Book getBook() {
+            return rv.getBook();
         }
     }
 }
