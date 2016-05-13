@@ -41,13 +41,14 @@ import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.epub.EpubReader;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private CmidbaOpenDatabaseHelper dbhelper = null;
 
     private static final int FILEPICKER_CODE = 0;
 
     private List<Livre> livres;
+
     private GridView gridView;
 
     @Override
@@ -58,12 +59,11 @@ public class MainActivity extends AppCompatActivity {
         setLivres();
         gridView = (GridView) findViewById(R.id.grid);
         gridView.setAdapter(new ImageAdapter(this));
+        final MainActivity thisActivity = this;
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Livre livre = (Livre)view.getTag();
-                // DO SOMETHING
-                Toast.makeText(MainActivity.this, "lire "+livre.getIdLivre(), Toast.LENGTH_SHORT).show();
+                thisActivity.lancerLecture((Livre) view.getTag());
             }
         });
     }
@@ -97,6 +97,14 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_biblio_perso, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    // Fonction qui gère l'action lors d'un clic sur un livre
+
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        lancerLecture((Livre) view.getTag());
     }
 
     // fonction qui gere les actions des items des menus de lActionBar
@@ -308,5 +316,8 @@ public class MainActivity extends AppCompatActivity {
         gridView.setAdapter(new ImageAdapter(this));
     }
 
+    void lancerLecture(Livre livre) {
+        Intent i = new Intent(getApplicationContext(), ReflowableActivity.class);
+    }
 }
 

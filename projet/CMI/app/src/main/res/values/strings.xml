@@ -193,9 +193,10 @@
     <string name="rew">&lt;&lt;</string>
     <string name="exAudio">exAudio</string>
     <string name="no_audio">Can\'t find any audio file</string>
+    <string name="title_activity_reflowable">ReflowableActivity</string>
 
     <!-- Fin des strings de EPUB3Reader -->
 
 
->>>>>>> origin/master
+    >>>>>>> origin/master
 </resources>
