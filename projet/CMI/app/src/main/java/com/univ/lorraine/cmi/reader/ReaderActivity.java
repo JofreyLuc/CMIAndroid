@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -22,6 +23,7 @@ import com.skytree.epub.Book;
 import com.skytree.epub.HighlightListener;
 import com.skytree.epub.Highlights;
 import com.skytree.epub.KeyListener;
+import com.skytree.epub.PageTransition;
 import com.skytree.epub.ReflowableControl;
 import com.skytree.epub.SkyKeyManager;
 import com.skytree.epub.SkyProvider;
@@ -130,6 +132,9 @@ public class ReaderActivity extends AppCompatActivity {
         rv.setBookPath(bookFilePath);
 
         rv.setStartPosition(0);
+
+        rv.setPageTransition(PageTransition.Curl);
+        //rv.setCurlQuality(0.5f);
 
         // Read PagesStack and save it to Bitmap.
         Bitmap pagesStack = BitmapFactory.decodeResource(getResources(), R.drawable.pages_stack);

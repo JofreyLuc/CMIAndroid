@@ -19,7 +19,7 @@ public class PageMovedDelegate implements PageMovedListener {
     public void onPageMoved(PageInformation pi) {
         String msg = "chapterIndex: "+pi.chapterIndex
                 +"\nnumberOfChaptersInBook: "+pi.numberOfChaptersInBook
-                +"\nnumberOfPagesInBook"+pi.numberOfPagesInBook
+                +"\nnumberOfPagesInBook: "+pi.numberOfPagesInBook
                 +"\npageIndex: "+pi.pageIndex
                 +"\nnumberOfPagesInChapter: "+pi.numberOfPagesInChapter
                 +"\nchapterTitle: "+pi.chapterTitle
@@ -36,7 +36,6 @@ public class PageMovedDelegate implements PageMovedListener {
                 Highlight th = pi.highlightsInPage.getHighlight(i);
                 msg+=String.format(" highlight si:%d so:%d ei:%d eo:%d",th.startIndex,th.startOffset,th.endIndex,th.endOffset);
             }
-        msg+=pi.pageDescription;
         Log.e("SKY", msg);
     }
 
