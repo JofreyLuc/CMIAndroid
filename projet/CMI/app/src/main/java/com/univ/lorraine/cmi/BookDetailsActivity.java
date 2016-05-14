@@ -32,7 +32,8 @@ public class BookDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_book_details);
 
         //Récupération du livre via les extras de l'intent
-        livre = getIntent().getParcelableExtra("LIVRE");
+        Bundle b = getIntent().getBundleExtra("bundle");
+        livre = b.getParcelable("livre");
 
         // Initialisation des vues
         cover = (ImageView) findViewById(R.id.details_cover);

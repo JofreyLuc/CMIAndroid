@@ -2,6 +2,7 @@ package com.univ.lorraine.cmi.reader;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ import com.skytree.epub.SkyProvider;
 
 import com.univ.lorraine.cmi.R;
 import com.univ.lorraine.cmi.Utilities;
+import com.univ.lorraine.cmi.database.model.Bibliotheque;
+import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.reader.listener.ContentHandler;
 import com.univ.lorraine.cmi.reader.listener.HighlightDelegate;
 import com.univ.lorraine.cmi.reader.listener.PageMovedDelegate;
@@ -71,15 +74,15 @@ public class ReaderActivity extends AppCompatActivity {
     private ProgressDialog progress;
 
     /**
-     * Id du livre à lire permettant de déduire le chemin du fichier.
+     * Objet bibliothèque lié au livre à lire.
      */
-    private Long idLivre;
+    private Bibliotheque bibliotheque;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // On récupère l'id du livre passé dans l'Intent
-        Bundle bundle = getIntent().getExtras();
-        idLivre = (Long)bundle.get("idLivre");
+        // On récupère l'objet bibliothèque lié au livre passé dans l'Intent
+        Bundle b = getIntent().getBundleExtra("bundle");
+        bibliotheque = b.getParcelable("bibliotheque");
 
         // ProgressDialog non annulable en cliquant sur l'écran
         // mais annulable avec la touche Back + fin de l'activité
@@ -111,10 +114,12 @@ public class ReaderActivity extends AppCompatActivity {
 
     // Création et arrangement du ReflowableControl
     public void makeLayout() {
+
+        Livre livre = bibliotheque.getLivre();
         // Chemin du fichier epub déduit de l'id du livre
-        String bookFilePath = (Utilities.getBookStoragePath(getApplicationContext())
-                + "/" + idLivre
-                +"/livre.epub");
+        String bookFilePath = Utilities.getBookFilePath(getApplicationContext(), livre);
+        // Position de lecture de départ
+        float startPosition = bibliotheque.getPositionLecture();
 
         // Création des highlights (surlignage)
         Highlights highlights = new Highlights();
@@ -131,7 +136,7 @@ public class ReaderActivity extends AppCompatActivity {
         // Passe le chemin de l'epub.
         rv.setBookPath(bookFilePath);
 
-        rv.setStartPosition(0);
+        rv.setStartPosition(startPosition);
 
         rv.setPageTransition(PageTransition.Curl);
         //rv.setCurlQuality(0.5f);
@@ -141,6 +146,7 @@ public class ReaderActivity extends AppCompatActivity {
 
         // Read PagesCenter and save it to Bitmap.
         Bitmap pagesCenter = BitmapFactory.decodeResource(getResources(), R.drawable.pages_center);
+
 
         // Register pagesStack to ReflowableControl.
         rv.setPagesStackImage(pagesStack);

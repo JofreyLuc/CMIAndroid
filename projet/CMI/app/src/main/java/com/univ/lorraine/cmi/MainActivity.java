@@ -26,6 +26,7 @@ import com.j256.ormlite.dao.Dao;
 import com.nononsenseapps.filepicker.FilePickerActivity;
 import com.squareup.picasso.Picasso;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
+import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.reader.ReaderActivity;
 
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private static final int FILEPICKER_CODE = 0;
 
-    private List<Livre> livres;
+    private List<Bibliotheque> bibliotheques;
 
     private GridView gridView;
 
@@ -56,8 +57,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        livres = new ArrayList<>();
-        setLivres();
+        bibliotheques = new ArrayList<>();
+        setBibliotheques();
         gridView = (GridView) findViewById(R.id.grid);
         gridView.setAdapter(new ImageAdapter(this));
         gridView.setOnItemClickListener(this);
@@ -98,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        lancerLecture((Livre) view.getTag());
+        lancerLecture((Bibliotheque) view.getTag());
     }
 
     // fonction qui gere les actions des items des menus de lActionBar
@@ -123,23 +124,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     // inflate le menu de gestion des livres (suppression, details)
     public void showMenu(View v) {
-        // On récupère le livre lié à cet item de la gridview
-        final Livre livre = (Livre)((View)v.getParent().getParent()).getTag();
+        // On récupère la bibliotheque lié à cet item de la gridview
+        final Bibliotheque bibliotheque = (Bibliotheque)((View)v.getParent().getParent()).getTag();
+        final Livre livre = bibliotheque.getLivre();
         PopupMenu popup = new PopupMenu(this, v);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
+                    // Visualisation des détails du livre
                     case R.id.action_details:
-                        // Visualisation des détails du livre
+                        Bundle b = new Bundle();
+                        b.putParcelable("livre", livre);
                         Intent i = new Intent(getApplicationContext(), BookDetailsActivity.class);
-                        i.putExtra("LIVRE", livre);
+                        i.putExtra("bundle", b);
                         startActivity(i);
                         return true;
+                    // Page d'évaluation
                     case R.id.action_evaluate:
                         // DO SOMETHING
                         Toast.makeText(getApplicationContext(), "action_evaluate" + livre.getIdLivre(), Toast.LENGTH_LONG).show();
                         return true;
+                    // Suppression du livre
                     case R.id.action_supp:
                         // DO SOMETHING
                         Toast.makeText(getApplicationContext(), "action_supp" + livre.getIdLivre(), Toast.LENGTH_LONG).show();
@@ -165,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         public ImageAdapter(Context c) { context = c; }
 
         @Override
-        public int getCount() { return livres.size(); }
+        public int getCount() { return bibliotheques.size(); }
 
         @Override
         public Object getItem(int position) {
@@ -175,14 +181,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         public long getItemId(int position) { return position; }
 
-        public View getView(int position, View convertView, ViewGroup parent)
-        {
+        public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row=inflater.inflate(R.layout.grid_item, parent, false);
             TextView label=(TextView)row.findViewById(R.id.icon_text);
-            Livre livre = livres.get(position);
-            // On bind le livre à la view
-            row.setTag(livre);
+            Bibliotheque bibliotheque = bibliotheques.get(position);
+            Livre livre = bibliotheque.getLivre();
+            // On bind la bibliotheque à la view
+            row.setTag(bibliotheque);
             // Récupération du titre
             label.setText(livre.getTitre() + '\n' + livre.getAuteur());
             // Récupération de la couverture
@@ -197,16 +203,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     /**
-     * Met à jour la liste de livres actuelle (pour couvertures et titres)
+     * Met à jour la liste de bibliothèques actuelle (pour couvertures et titres)
      */
-    private void setLivres(){
+    private void setBibliotheques() {
         try {
-            livres.clear();
-            Dao<Livre, Long> daolivre = getHelper().getLivreDao();
-            List<Livre> ll = daolivre.queryForAll();
-            for (Livre l : ll) {
-                livres.add(l);
+            bibliotheques.clear();
+            Dao<Bibliotheque, Long> daobibliotheque = getHelper().getBibliothequeDao();
+            List<Bibliotheque> lb = daobibliotheque.queryForAll();
+            for (Bibliotheque b : lb) {
+                bibliotheques.add(b);
             }
+            for (Bibliotheque b : bibliotheques)
+            Log.e("SKY", b.getLivre().toString());
         } catch (SQLException e) {
             Log.e("EXC", e.getMessage());
         }
@@ -283,6 +291,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Dao<Livre, Long> daolivre = getHelper().getLivreDao();
                 daolivre.create(livre);
 
+                // Création de la Biblothèque à partir du livre
+                Bibliotheque biblio = new Bibliotheque(livre);
+                // Sauvegarde de l'objet Bibliothèque correspondant à ce livre
+                Dao<Bibliotheque, Long> daobiblio = getHelper().getBibliothequeDao();
+                daobiblio.create(biblio);
+
                 // On va créer le dossier du livre et copier le fichier epub à l'intérieur
                 String epubFileNewName = "livre.epub";
                 String dirPath = Utilities.getBookStoragePath(this) + "/" + livre.getIdLivre();
@@ -306,14 +320,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } catch (IOException e) {
             Log.e("Exc", e.getMessage());
         }
-        // Mise à jour de la liste de livres et des vues
-        setLivres();
+        // Mise à jour de la liste de bibliothèques et des vues
+        setBibliotheques();
         gridView.setAdapter(new ImageAdapter(this));
     }
 
-    void lancerLecture(Livre livre) {
+    void lancerLecture(Bibliotheque bibliotheque) {
+        Bundle b = new Bundle();
+        b.putParcelable("bibliotheque", bibliotheque);
         Intent i = new Intent(getApplicationContext(), ReaderActivity.class);
-        i.putExtra("idLivre", livre.getIdLivre());
+        i.putExtra("bundle", b);
         startActivity(i);
     }
 }

@@ -57,7 +57,7 @@ public class Livre implements Parcelable {
     /**
      * Crée un livre à partir de données directes (titre, auteur...).
      */
-    public Livre(String t, String a, String l, String g, String d, String r, float noteM, String lienDL){
+    public Livre(String t, String a, String l, String g, String d, String r, float noteM, String lienDL) {
         titre = t;
         auteur = a;
         langue = l;
@@ -144,7 +144,7 @@ public class Livre implements Parcelable {
     }
 
     public boolean estImporteLocalement() {
-        return idServeur == 0;
+        return idServeur == null || idServeur == 0;
     }
 
     public Long getIdLivre() {
@@ -194,6 +194,11 @@ public class Livre implements Parcelable {
 
     /* Parcelable */
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
     /**
      * Permet de recréer un Livre à partir d'une Parcel in.
      */
@@ -208,11 +213,6 @@ public class Livre implements Parcelable {
         dateParution = in.readString();
         lienDLEpub = in.readString();
         noteMoyenne = in.readFloat();
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     /**
