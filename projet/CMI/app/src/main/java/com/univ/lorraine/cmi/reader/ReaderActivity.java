@@ -2,41 +2,32 @@ package com.univ.lorraine.cmi.reader;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
+import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.skytree.epub.Book;
-import com.skytree.epub.HighlightListener;
 import com.skytree.epub.Highlights;
 import com.skytree.epub.KeyListener;
 import com.skytree.epub.PageTransition;
-import com.skytree.epub.ReflowableControl;
 import com.skytree.epub.SkyKeyManager;
 import com.skytree.epub.SkyProvider;
 
 import com.univ.lorraine.cmi.R;
 import com.univ.lorraine.cmi.Utilities;
+import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.reader.listener.ContentHandler;
 import com.univ.lorraine.cmi.reader.listener.HighlightDelegate;
 import com.univ.lorraine.cmi.reader.listener.PageMovedDelegate;
-import com.univ.lorraine.cmi.reader.listener.ReflowableControlCustom;
 import com.univ.lorraine.cmi.reader.listener.SearchDelegate;
 import com.univ.lorraine.cmi.reader.listener.SelectionDelegate;
 import com.univ.lorraine.cmi.reader.listener.StateDelegate;
@@ -78,6 +69,8 @@ public class ReaderActivity extends AppCompatActivity {
      */
     private Bibliotheque bibliotheque;
 
+    private CmidbaOpenDatabaseHelper dbhelper = null;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // On récupère l'objet bibliothèque lié au livre passé dans l'Intent
@@ -104,6 +97,33 @@ public class ReaderActivity extends AppCompatActivity {
         this.makeLayout();
     }
 
+    /**
+     * Overriden in order to close the database
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (dbhelper != null){
+            OpenHelperManager.releaseHelper();
+            dbhelper = null;
+        }
+    }
+
+    /**
+     * Retourne le databaseHelper (crée si il n'existe pas)
+     * @return dbhelper
+     */
+    public CmidbaOpenDatabaseHelper getHelper(){
+        if (dbhelper == null){
+            dbhelper = OpenHelperManager.getHelper(this, CmidbaOpenDatabaseHelper.class);
+        }
+        return dbhelper;
+    }
+
+    public Bibliotheque getBibliotheque() {
+        return bibliotheque;
+    }
+
     public ProgressDialog getProgressDialog() {
         return progress;
     }
@@ -119,7 +139,7 @@ public class ReaderActivity extends AppCompatActivity {
         // Chemin du fichier epub déduit de l'id du livre
         String bookFilePath = Utilities.getBookFilePath(getApplicationContext(), livre);
         // Position de lecture de départ
-        float startPosition = bibliotheque.getPositionLecture();
+        float startPosition = (float)bibliotheque.getPositionLecture();
 
         // Création des highlights (surlignage)
         Highlights highlights = new Highlights();
@@ -172,7 +192,7 @@ public class ReaderActivity extends AppCompatActivity {
         rv.setHighlightListener(new HighlightDelegate(highlights));
 
         // set the Listener for Page Moving.
-        rv.setPageMovedListener(new PageMovedDelegate());
+        rv.setPageMovedListener(new PageMovedDelegate(this));
 
         // set the Listener for text processing
         rv.setSelectionListener(new SelectionDelegate());

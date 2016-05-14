@@ -26,7 +26,7 @@ public class Bibliotheque implements Parcelable {
     private Livre livre;
 
     @DatabaseField
-    private float positionLecture;
+    private double positionLecture;
 
     @DatabaseField
     private Date dateModification;
@@ -41,16 +41,16 @@ public class Bibliotheque implements Parcelable {
      */
     public Bibliotheque(Livre l) {
         livre = l;
-        positionLecture = 0f;
+        positionLecture = 0d;
         dateModification = new Date();
     }
 
-    public float getPositionLecture() {
+    public double getPositionLecture() {
         return positionLecture;
     }
 
-    public void setPositionLecture(float pos) {
-        if (pos <= 1f)
+    public void setPositionLecture(double pos) {
+        if (pos <= 1d)
             positionLecture = pos;
     }
 
@@ -76,7 +76,7 @@ public class Bibliotheque implements Parcelable {
         idBibliotheque = in.readLong();
         idServeur = in.readLong();
         livre = in.readParcelable(getClass().getClassLoader());
-        positionLecture = in.readFloat();
+        positionLecture = in.readDouble();
         dateModification = new Date(in.readLong());
     }
 
@@ -94,7 +94,7 @@ public class Bibliotheque implements Parcelable {
             idServeur = Long.valueOf(-1);
         dest.writeLong(idServeur);
         dest.writeParcelable(livre, flags);
-        dest.writeFloat(positionLecture);
+        dest.writeDouble(positionLecture);
         dest.writeLong(dateModification.getTime());
     }
 

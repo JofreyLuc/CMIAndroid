@@ -2,14 +2,28 @@ package com.univ.lorraine.cmi.reader.listener;
 
 import android.util.Log;
 
+import com.j256.ormlite.dao.Dao;
 import com.skytree.epub.Highlight;
 import com.skytree.epub.PageInformation;
 import com.skytree.epub.PageMovedListener;
+import com.univ.lorraine.cmi.database.model.Bibliotheque;
+import com.univ.lorraine.cmi.reader.ReaderActivity;
+
+import java.sql.SQLException;
+import java.util.Locale;
 
 /**
  * Listener appelé lors d'un changement de page.
  */
 public class PageMovedDelegate implements PageMovedListener {
+
+    ReaderActivity reader;
+
+    Dao<Bibliotheque, Long> daobibliotheque;
+
+    public PageMovedDelegate(ReaderActivity r) {
+        reader = r;
+    }
 
     /**
      * Changement de page.
@@ -37,6 +51,17 @@ public class PageMovedDelegate implements PageMovedListener {
                 msg+=String.format(" highlight si:%d so:%d ei:%d eo:%d",th.startIndex,th.startOffset,th.endIndex,th.endOffset);
             }
         Log.e("SKY", msg);
+
+        // TEST
+        Bibliotheque bibliotheque = reader.getBibliotheque();
+        bibliotheque.setPositionLecture(pi.pagePositionInBook);
+
+        try {
+            Dao<Bibliotheque, Long> daobibliotheque = reader.getHelper().getBibliothequeDao();
+            daobibliotheque.update(bibliotheque);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private static final int FILEPICKER_CODE = 0;
 
+    private static final int READER_CODE = 1;
+
     private List<Bibliotheque> bibliotheques;
 
     private GridView gridView;
@@ -213,8 +215,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             for (Bibliotheque b : lb) {
                 bibliotheques.add(b);
             }
-            for (Bibliotheque b : bibliotheques)
-            Log.e("SKY", b.getLivre().toString());
         } catch (SQLException e) {
             Log.e("EXC", e.getMessage());
         }
@@ -261,6 +261,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     // On importe le/les epub(s)
                     importEpubs(epubs);
                 }
+                break;
+            // Retour depuis le reader
+            case READER_CODE :
+                // On met à jour les bibliothèques
+                // afin que les changements effectués sur la bibliothèque (livre) qui y était soit pris en compte
+                setBibliotheques();
+                gridView.setAdapter(new ImageAdapter(this));    // Màj des vues
                 break;
         }
     }
@@ -330,7 +337,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         b.putParcelable("bibliotheque", bibliotheque);
         Intent i = new Intent(getApplicationContext(), ReaderActivity.class);
         i.putExtra("bundle", b);
-        startActivity(i);
+        startActivityForResult(i, READER_CODE);
     }
 }
 

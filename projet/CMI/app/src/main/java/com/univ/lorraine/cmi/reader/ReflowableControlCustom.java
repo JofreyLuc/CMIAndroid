@@ -1,4 +1,4 @@
-package com.univ.lorraine.cmi.reader.listener;
+package com.univ.lorraine.cmi.reader;
 
 import android.content.Context;
 import android.os.AsyncTask;
