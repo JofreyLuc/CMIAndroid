@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -28,6 +29,7 @@ import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.reader.listener.ContentHandler;
 import com.univ.lorraine.cmi.reader.listener.HighlightDelegate;
 import com.univ.lorraine.cmi.reader.listener.PageMovedDelegate;
+import com.univ.lorraine.cmi.reader.listener.PagingDelegate;
 import com.univ.lorraine.cmi.reader.listener.SearchDelegate;
 import com.univ.lorraine.cmi.reader.listener.SelectionDelegate;
 import com.univ.lorraine.cmi.reader.listener.StateDelegate;
@@ -160,6 +162,30 @@ public class ReaderActivity extends AppCompatActivity {
 
         rv.setPageTransition(PageTransition.Curl);
         //rv.setCurlQuality(0.5f);
+
+        rv.setGlobalPagination(true);   // marche pas
+        rv.setPagingListener(new PagingDelegate());
+
+        /*
+        // delay times for proper operations.
+        // !! DO NOT SET these values if there's no issue on your epub reader. !!
+        // !! if delayTime is decresed, performance will be increase
+        // !! if delayTime is set to too low value, a lot of problem can be occurred.
+        // bringDelayTime(default 500 ms) is for curlView and mainView transition - if the value is too short, blink may happen.
+        rv.setBringDelayTime(500);
+        // reloadDelayTime(default 100) is used for delay before reload (eg. changeFont, loadChapter or etc)
+        rv.setReloadDelayTime(100);
+        // reloadDelayTimeForRotation(default 1000) is used for delay before rotation
+        rv.setReloadDelayTimeForRotation(1000);
+        // retotaionDelayTime(default 1500) is used for delay after rotation.
+        rv.setRotationDelayTime(1500);
+        // finalDelayTime(default 500) is used for the delay after loading chapter.
+        rv.setFinalDelayTime(500);
+        // rotationFactor affects the delayTime before Rotation. default value 1.0f
+        rv.setRotationFactor(1.0f);
+        // If recalcDelayTime is too short, setContentBackground function failed to work properly.
+        rv.setRecalcDelayTime(2500);
+        */
 
         // Read PagesStack and save it to Bitmap.
         Bitmap pagesStack = BitmapFactory.decodeResource(getResources(), R.drawable.pages_stack);
