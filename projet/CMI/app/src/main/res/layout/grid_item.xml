@@ -30,6 +30,20 @@
                     android:focusableInTouchMode="false"
                     android:onClick="showMenu"/>
         </RelativeLayout>
+    <!-- Barre de progression de lecture-->
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dip"
+        android:id="@+id/book_reading_progress_bar"
+        android:layout_gravity="center_horizontal"
+        android:indeterminate="false"
+        android:maxHeight="5dip"
+        android:minHeight="5dip"
+        android:progressDrawable="@drawable/reading_progress_bar"
+        />
+
     <TextView
         android:id="@+id/icon_text"
         android:layout_width="wrap_content"

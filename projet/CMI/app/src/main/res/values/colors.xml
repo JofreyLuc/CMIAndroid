@@ -3,4 +3,11 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <!-- Book_reading_progress_bar colors -->
+    <color name="progress_gradient_start_color">#98AFC7</color>
+    <color name="progress_gradient_end_color">#00FFFF</color>
+    <color name="progress_bar_background_gradient_start_color">#E5E4E2</color>
+    <color name="progress_bar_background_gradient_end_color">#FFFFFF</color>
+    <color name="progress_bar_border">#444444</color>
+    <!-- Fin book_reading_progress_bar_colors -->
 </resources>

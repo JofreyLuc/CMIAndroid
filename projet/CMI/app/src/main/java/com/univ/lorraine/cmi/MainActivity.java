@@ -19,6 +19,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         gridView = (GridView) findViewById(R.id.grid);
         gridView.setAdapter(new ImageAdapter(this));
         gridView.setOnItemClickListener(this);
+        //setContentView(R.layout.book_reading_progress_bar);
     }
 
     /**
@@ -185,22 +187,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View row=inflater.inflate(R.layout.grid_item, parent, false);
-            TextView label=(TextView)row.findViewById(R.id.icon_text);
+            View grid_item=inflater.inflate(R.layout.grid_item, parent, false);
+            TextView label=(TextView)grid_item.findViewById(R.id.icon_text);
             Bibliotheque bibliotheque = bibliotheques.get(position);
             Livre livre = bibliotheque.getLivre();
             // On bind la bibliotheque à la view
-            row.setTag(bibliotheque);
+            grid_item.setTag(bibliotheque);
             // Récupération du titre
             label.setText(livre.getTitre() + '\n' + livre.getAuteur());
             // Récupération de la couverture
-            ImageView icon=(ImageView)row.findViewById(R.id.icon_image);
+            ImageView icon=(ImageView)grid_item.findViewById(R.id.icon_image);
             if (Utilities.hasACover(getApplicationContext(), livre)) {
                 Picasso.with(context).load(new File(Utilities.getBookCoverPath(getApplicationContext(), livre))).fit().centerInside().into(icon);
             } else {
                 Picasso.with(context).load(R.mipmap.defaultbook).fit().centerInside().into(icon);
             }
-            return row;
+            // Barre de progression de lecture
+            ProgressBar BarreProgressionLecture = (ProgressBar)grid_item.findViewById(R.id.book_reading_progress_bar);
+            int progressionLecture = (int)(bibliotheque.getPositionLecture() * 100);
+            BarreProgressionLecture.setProgress(progressionLecture);
+            return grid_item;
         }
     }
 
