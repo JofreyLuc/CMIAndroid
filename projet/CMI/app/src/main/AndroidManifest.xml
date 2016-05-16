@@ -9,8 +9,8 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
         android:largeHeap="true"
+        android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -33,7 +33,24 @@
             android:name=".reader.ReaderActivity"
             android:label="@string/title_activity_reflowable"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".BookDetailsActivity"></activity>
+        <activity
+            android:name=".BookDetailsActivity"
+            android:label="Détails">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.univ.lorraine.cmi.MainActivity" />
+        </activity>
+        <activity
+            android:name=".SearchActivity"
+            android:label="@string/book_search">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.univ.lorraine.cmi.MainActivity"/>
+        </activity>
     </application>
 
 </manifest>

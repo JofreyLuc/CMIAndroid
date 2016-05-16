@@ -115,7 +115,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 return true;
             case R.id.overflow1:
                 // DO SOMETHING
-                Toast.makeText(getApplicationContext(), "overflow1", Toast.LENGTH_LONG).show();
+                Intent i = new Intent(getApplicationContext(), SearchActivity.class);
+                startActivity(i);
+                //Toast.makeText(getApplicationContext(), "overflow1", Toast.LENGTH_LONG).show();
                 return true;
             case R.id.overflow2:
                 // DO SOMETHING
