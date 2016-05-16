@@ -15,7 +15,6 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -25,13 +24,11 @@
             android:theme="@style/FilePickerTheme">
             <intent-filter>
                 <action android:name="android.intent.action.GET_CONTENT" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name=".reader.ReaderActivity"
-            android:label="@string/title_activity_reflowable"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".BookDetailsActivity"
