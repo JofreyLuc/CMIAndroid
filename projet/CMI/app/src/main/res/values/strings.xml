@@ -17,6 +17,7 @@
 
     <string name="action_import">action import</string>
     <string name="action_overflow">action overflow</string>
+    <string name="book_search">Rechercher un livre</string>
 
     <!-- Strings du popmenu des livres dans la bibliothèque -->
     <string name="book_details">Voir les détails</string>
@@ -204,6 +205,6 @@
 
     <!-- Fin des strings de EPUB3Reader -->
 
-
-    >>>>>>> origin/master
+    <string name="menu_search">Search</string>
+    <string name="title_activity_search_result">SearchResultActivity</string>
 </resources>

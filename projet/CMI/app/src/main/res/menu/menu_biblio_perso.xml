@@ -15,7 +15,7 @@
             <item
                 android:id="@+id/overflow1"
                 app:showAsAction="never"
-                android:title="@string/action_overflow" />
+                android:title="@string/book_search" />
             <item
                 android:id="@+id/overflow2"
                 app:showAsAction="never"
