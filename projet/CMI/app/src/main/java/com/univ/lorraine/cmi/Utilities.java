@@ -93,6 +93,18 @@ public final class Utilities {
     }
 
     /**
+     *  Retourne le chemin du dossier de ce livre.
+     *
+     * @param livre Le livre.
+     *
+     * @return le chemin du dossier de ce livre.
+     */
+    public static String getBookDirPath(Context context, Livre livre) {
+        return getBookStoragePath(context)
+                + "/" + livre.getIdLivre();
+    }
+
+    /**
      *  Retourne le chemin du fichier epub de ce livre.
      *
      * @param livre Le livre.
@@ -168,5 +180,17 @@ public final class Utilities {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Supprime un fichier ou un dossier de manière récursive (tout le contenu du dossier).
+     *
+     * @param fileOrDirectory Fichier ou dossier.
+     */
+    public static void deleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory())
+            for (File child : fileOrDirectory.listFiles())
+                deleteRecursive(child);
+        fileOrDirectory.delete();
     }
 }

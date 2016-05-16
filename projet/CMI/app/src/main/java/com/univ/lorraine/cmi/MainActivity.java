@@ -1,8 +1,10 @@
 package com.univ.lorraine.cmi;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +29,7 @@ import com.j256.ormlite.dao.Dao;
 import com.nononsenseapps.filepicker.FilePickerActivity;
 import com.squareup.picasso.Picasso;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
+import com.univ.lorraine.cmi.database.model.Annotation;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.reader.ReaderActivity;
@@ -65,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         gridView = (GridView) findViewById(R.id.grid);
         gridView.setAdapter(new ImageAdapter(this));
         gridView.setOnItemClickListener(this);
-        //setContentView(R.layout.book_reading_progress_bar);
     }
 
     /**
@@ -151,8 +153,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         return true;
                     // Suppression du livre
                     case R.id.action_supp:
-                        // DO SOMETHING
-                        Toast.makeText(getApplicationContext(), "action_supp" + livre.getIdLivre(), Toast.LENGTH_LONG).show();
+                        // On demande à l'utilisateur si il est certain de vouloir supprimer ce livre
+                        demanderConfirmationSuppressionLivre(bibliotheque);
                         return true;
                     default:
                         return false;
@@ -188,13 +190,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View grid_item=inflater.inflate(R.layout.grid_item, parent, false);
-            TextView label=(TextView)grid_item.findViewById(R.id.icon_text);
+            TextView titre=(TextView)grid_item.findViewById(R.id.titre);
+            TextView auteur=(TextView)grid_item.findViewById(R.id.auteur);
             Bibliotheque bibliotheque = bibliotheques.get(position);
             Livre livre = bibliotheque.getLivre();
             // On bind la bibliotheque à la view
             grid_item.setTag(bibliotheque);
             // Récupération du titre
-            label.setText(livre.getTitre() + '\n' + livre.getAuteur());
+            titre.setText(livre.getTitre());
+            // Récupération de l'auteur
+            auteur.setText(livre.getAuteur());
             // Récupération de la couverture
             ImageView icon=(ImageView)grid_item.findViewById(R.id.icon_image);
             if (Utilities.hasACover(getApplicationContext(), livre)) {
@@ -338,12 +343,65 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         gridView.setAdapter(new ImageAdapter(this));
     }
 
-    void lancerLecture(Bibliotheque bibliotheque) {
+    private void lancerLecture(Bibliotheque bibliotheque) {
         Bundle b = new Bundle();
         b.putParcelable("bibliotheque", bibliotheque);
         Intent i = new Intent(getApplicationContext(), ReaderActivity.class);
         i.putExtra("bundle", b);
         startActivityForResult(i, READER_CODE);
+    }
+
+    private void demanderConfirmationSuppressionLivre(final Bibliotheque bibliotheque) {
+        Livre livre = bibliotheque.getLivre();
+        new AlertDialog.Builder(this)
+            .setTitle(getResources().getString(R.string.confirmation_suppression_title))
+            .setMessage(getResources().getString(R.string.confirmation_suppression_message_start)
+                    + livre.getTitre()
+                    + getResources().getString(R.string.confirmation_suppression_message_end))
+            .setPositiveButton(getResources().getString(R.string.confirmation_suppression_yes),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            supprimerLivreBibliotheque(bibliotheque);
+                        }
+                    })
+            .setNegativeButton(getResources().getString(R.string.confirmation_suppression_no),
+                    new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // do nothing
+                }
+            })
+            .show();
+    }
+
+    // A déplacer plus tard
+    private void supprimerLivreBibliotheque(Bibliotheque bibliotheque) {
+        Livre livre = bibliotheque.getLivre();
+        try {
+            // Suppression du dossier local du livre (contenant l'epub et la couverture)
+            Utilities.deleteRecursive(
+                    new File(Utilities.getBookDirPath(getApplicationContext(), livre)));
+
+            // Suppression des annotations de ce livre
+            Dao<Annotation, Long> daoannotation = getHelper().getAnnotationDao();
+            List<Annotation> listeAnnotations =
+                    daoannotation.queryBuilder().where()
+                            .eq(Annotation.BIBLIOTHEQUE_FIELD_NAME, bibliotheque.getIdBibliotheque())
+                            .query();
+            daoannotation.delete(listeAnnotations);
+
+            // Suppression du livre
+            Dao<Livre, Long> daolivre = getHelper().getLivreDao();
+            daolivre.delete(livre);
+
+            // Suppression de l'objet bibliothèque
+            Dao<Bibliotheque, Long> daobibliotheque = getHelper().getBibliothequeDao();
+            daobibliotheque.delete(bibliotheque);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        // On met à jour l'affichage de la bibliothèque
+        setBibliotheques();
+        gridView.setAdapter(new ImageAdapter(this));    // Màj des vues
     }
 }
 
