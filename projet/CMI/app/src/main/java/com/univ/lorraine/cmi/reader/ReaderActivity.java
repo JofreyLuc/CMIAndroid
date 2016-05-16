@@ -2,6 +2,7 @@ package com.univ.lorraine.cmi.reader;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -163,8 +164,8 @@ public class ReaderActivity extends AppCompatActivity {
         rv.setPageTransition(PageTransition.Curl);
         //rv.setCurlQuality(0.5f);
 
-        rv.setGlobalPagination(true);   // marche pas
-        rv.setPagingListener(new PagingDelegate());
+        /*rv.setGlobalPagination(true);
+        rv.setPagingListener(new PagingDelegate());*/
 
 
         // delay times for proper operations.
