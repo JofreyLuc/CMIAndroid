@@ -16,19 +16,31 @@ import java.util.Date;
 @DatabaseTable(tableName = "bibliotheque")
 public class Bibliotheque implements Parcelable {
 
-    @DatabaseField(generatedId = true)
+    public static final String TABLE_NAME = "bibliotheque";
+
+    public static final String ID_FIELD_NAME = "idBibliotheque";
+
+    public static final String ID_SERVEUR_FIELD_NAME = "idServeur";
+
+    public static final String LIVRE_FIELD_NAME = "idLivre";
+
+    public static final String POSITION_LECTURE_FIELD_NAME = "positionLecture";
+
+    public static final String DATE_MODIFICATION_FIELD_NAME = "dateModification";
+
+    @DatabaseField(columnName = ID_FIELD_NAME, generatedId = true)
     private Long idBibliotheque;
 
-    @DatabaseField
+    @DatabaseField(columnName = ID_SERVEUR_FIELD_NAME)
     private Long idServeur;
 
-    @DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "idLivre")
+    @DatabaseField(columnName = LIVRE_FIELD_NAME, foreign = true, foreignAutoRefresh = true)
     private Livre livre;
 
-    @DatabaseField
+    @DatabaseField(columnName = POSITION_LECTURE_FIELD_NAME)
     private double positionLecture;
 
-    @DatabaseField
+    @DatabaseField(columnName = DATE_MODIFICATION_FIELD_NAME)
     private Date dateModification;
 
     // Needed by ORMlite
@@ -43,6 +55,10 @@ public class Bibliotheque implements Parcelable {
         livre = l;
         positionLecture = 0d;
         dateModification = new Date();
+    }
+
+    public Long getIdBibliotheque() {
+        return idBibliotheque;
     }
 
     public double getPositionLecture() {
