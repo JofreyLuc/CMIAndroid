@@ -190,13 +190,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View grid_item=inflater.inflate(R.layout.grid_item, parent, false);
-            TextView label=(TextView)grid_item.findViewById(R.id.icon_text);
+            TextView titre=(TextView)grid_item.findViewById(R.id.titre);
+            TextView auteur=(TextView)grid_item.findViewById(R.id.auteur);
             Bibliotheque bibliotheque = bibliotheques.get(position);
             Livre livre = bibliotheque.getLivre();
             // On bind la bibliotheque à la view
             grid_item.setTag(bibliotheque);
             // Récupération du titre
-            label.setText(livre.getTitre() + '\n' + livre.getAuteur());
+            titre.setText(livre.getTitre());
+            // Récupération de l'auteur
+            auteur.setText(livre.getAuteur());
             // Récupération de la couverture
             ImageView icon=(ImageView)grid_item.findViewById(R.id.icon_image);
             if (Utilities.hasACover(getApplicationContext(), livre)) {
