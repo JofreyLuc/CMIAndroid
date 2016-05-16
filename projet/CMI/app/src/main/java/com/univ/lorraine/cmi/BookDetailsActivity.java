@@ -1,10 +1,12 @@
 package com.univ.lorraine.cmi;
 
+import android.app.ActionBar;
 import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,23 +34,28 @@ public class BookDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_book_details);
 
         //Récupération du livre via les extras de l'intent
-        Bundle b = getIntent().getBundleExtra("bundle");
-        livre = b.getParcelable("livre");
+        livre = getIntent().getBundleExtra("bundle").getParcelable("livre");
 
         // Initialisation des vues
         cover = (ImageView) findViewById(R.id.details_cover);
         details = (TextView) findViewById(R.id.details_tags);
-        details.setMovementMethod(new ScrollingMovementMethod());
 
         // Chargement de l'image de couverture
         if (Utilities.hasACover(getApplicationContext(), livre)) {
-            Picasso.with(getApplicationContext()).load(new File(Utilities.getBookCoverPath(getApplicationContext(), livre))).into(cover);
+            Picasso.with(getApplicationContext()).load(new File(Utilities.getBookCoverPath(getApplicationContext(), livre))).fit().centerInside().into(cover);
         } else {
-            Picasso.with(getApplicationContext()).load(R.mipmap.defaultbook).into(cover);
+            Picasso.with(getApplicationContext()).load(R.mipmap.defaultbook).fit().centerInside().into(cover);
         }
 
         // Création du texte des détails
         details.setText(processText());
+
+        // Bouon retour dans l'actionBar
+        android.support.v7.app.ActionBar ab = getSupportActionBar();
+        if (ab != null) {
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
+
     }
 
     /**
@@ -72,5 +79,17 @@ public class BookDetailsActivity extends AppCompatActivity {
         if (!livre.getResume().equals("")) sb.append("Résumé : " + livre.getResume() + '\n');
 
         return sb.toString();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Bouton retour dans l'actionBar
+            case android.R.id.home:
+                this.finish();
+                return true;
+            default:
+                return false;
+        }
     }
 }

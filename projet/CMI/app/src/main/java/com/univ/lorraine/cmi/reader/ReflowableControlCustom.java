@@ -24,6 +24,7 @@ public class ReflowableControlCustom extends ReflowableControl {
         try {
             return super.isRTL();
         } catch (NullPointerException e) {
+            Log.e("RTL", "RTL");
             // Sleep requis
             return false;
             //return isRTL();
