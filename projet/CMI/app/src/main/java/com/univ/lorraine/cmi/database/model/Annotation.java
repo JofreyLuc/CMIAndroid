@@ -12,25 +12,41 @@ import java.util.Date;
 @DatabaseTable(tableName = "annotation")
 public class Annotation {
 
-    @DatabaseField(generatedId = true)
+    public static final String TABLE_NAME = "annotation";
+
+    public static final String ID_FIELD_NAME = "idAnnotation";
+
+    public static final String ID_SERVEUR_FIELD_NAME = "idServeur";
+
+    public static final String BIBLIOTHEQUE_FIELD_NAME = "idBibliotheque";
+
+    public static final String NUMERO_PAGE_FIELD_NAME = "numeroPage";
+
+    public static final String NUMERO_FIELD_NAME = "numero";
+
+    public static final String TEXTE_FIELD_NAME = "texte";
+
+    public static final String DATE_MODIFICATION_FIELD_NAME = "dateModification";
+
+    @DatabaseField(columnName = ID_FIELD_NAME, generatedId = true)
     private Long idAnnotation;
 
-    @DatabaseField
+    @DatabaseField(columnName = ID_SERVEUR_FIELD_NAME)
     private Long idServeur;
 
-    @DatabaseField(foreign = true, columnName = "idBibliotheque")
+    @DatabaseField(columnName = BIBLIOTHEQUE_FIELD_NAME, foreign = true)
     private Bibliotheque bibliotheque;
 
-    @DatabaseField
+    @DatabaseField(columnName = NUMERO_PAGE_FIELD_NAME)
     private int numeroPage;
 
-    @DatabaseField
+    @DatabaseField(columnName = NUMERO_FIELD_NAME)
     private int numero;
 
-    @DatabaseField
+    @DatabaseField(columnName = TEXTE_FIELD_NAME)
     private String texte;
 
-    @DatabaseField
+    @DatabaseField(columnName = DATE_MODIFICATION_FIELD_NAME)
     private Date dateModification;
 
     // Needed by ORMlite

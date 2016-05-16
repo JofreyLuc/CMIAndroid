@@ -19,36 +19,58 @@ import nl.siegmann.epublib.domain.Metadata;
 @DatabaseTable(tableName = "livre")
 public class Livre implements Parcelable {
 
+    public static final String TABLE_NAME = "livre";
+
+    public static final String ID_FIELD_NAME = "idLivre";
+
+    public static final String ID_SERVEUR_FIELD_NAME = "idServeur";
+
+    public static final String TITRE_FIELD_NAME = "titre";
+
+    public static final String AUTEUR_FIELD_NAME = "auteur";
+
+    public static final String LANGUE_FIELD_NAME = "langue";
+
+    public static final String GENRE_FIELD_NAME = "genre";
+
+    public static final String DATE_PARUTION_FIELD_NAME = "dateParution";
+
+    public static final String RESUME_FIELD_NAME = "resume";
+
+    public static final String NOTE_MOYENNE_FIELD_NAME = "noteMoyenne";
+
+    public static final String LIEN_DL_EPUB_FIELD_NAME = "lienDLEpub";
+
     // Id local du livre
-    @DatabaseField(generatedId = true)
+    @DatabaseField(columnName = ID_FIELD_NAME, generatedId = true)
     private Long idLivre;
 
     // Id serveur (Gutembert) du livre, si non-importé en local
-    @DatabaseField
+    @DatabaseField(columnName = ID_SERVEUR_FIELD_NAME)
     private Long idServeur;
 
-    @DatabaseField
+    @DatabaseField(columnName = TITRE_FIELD_NAME)
     private String titre;
 
-    @DatabaseField
+    @DatabaseField(columnName = AUTEUR_FIELD_NAME)
     private String auteur;
 
-    @DatabaseField
+    @DatabaseField(columnName = LANGUE_FIELD_NAME)
     private String langue;
 
-    @DatabaseField
+    @DatabaseField(columnName = GENRE_FIELD_NAME)
     private String genre;
 
-    @DatabaseField
+    @DatabaseField(columnName = DATE_PARUTION_FIELD_NAME)
     private String dateParution;
 
-    @DatabaseField
+    @DatabaseField(columnName = RESUME_FIELD_NAME)
     private String resume;
 
-    @DatabaseField
+    @DatabaseField(columnName = NOTE_MOYENNE_FIELD_NAME)
     private float noteMoyenne;
 
-    @DatabaseField
+    @DatabaseField(columnName = LIEN_DL_EPUB_FIELD_NAME)
     private String lienDLEpub;
 
     // Nécéssaire pour ORMlite

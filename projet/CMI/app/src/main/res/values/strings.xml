@@ -24,6 +24,13 @@
     <string name="book_evaluate">Évaluer</string>
     <string name="book_delete">Supprimer</string>
     <!-- Fin strings du popmenu des livres dans la bibliothèque -->
+    <!-- Strings confirmation de suppression d'un livre -->
+    <string name="confirmation_suppression_title">Suppression d\'un livre</string>
+    <string name="confirmation_suppression_message_start">"Êtes-vous certain de vouloir supprimer "</string>
+    <string name="confirmation_suppression_message_end">" de votre bibliothèque ?"</string>
+    <string name="confirmation_suppression_yes">Supprimer</string>
+    <string name="confirmation_suppression_no">Annuler</string>
+    <!-- Fin strings confirmation de suppression d'un livre -->
 
     <!-- Strings de EPUB3Reader -->
 

@@ -21,6 +21,7 @@ import com.skytree.epub.PageTransition;
 import com.skytree.epub.SkyKeyManager;
 import com.skytree.epub.SkyProvider;
 
+import com.squareup.picasso.Picasso;
 import com.univ.lorraine.cmi.R;
 import com.univ.lorraine.cmi.Utilities;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
@@ -76,12 +77,11 @@ public class ReaderActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // On récupère l'objet bibliothèque lié au livre passé dans l'Intent
-        Bundle b = getIntent().getBundleExtra("bundle");
-        bibliotheque = b.getParcelable("bibliotheque");
+        bibliotheque = getIntent().getBundleExtra("bundle").getParcelable("bibliotheque");
 
         // ProgressDialog non annulable en cliquant sur l'écran
         // mais annulable avec la touche Back + fin de l'activité
-        progress=new ProgressDialog(this);
+        progress = new ProgressDialog(this);
         progress.setMessage("Chargement...");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progress.setIndeterminate(true);
@@ -166,26 +166,26 @@ public class ReaderActivity extends AppCompatActivity {
         rv.setGlobalPagination(true);   // marche pas
         rv.setPagingListener(new PagingDelegate());
 
-        /*
+
         // delay times for proper operations.
         // !! DO NOT SET these values if there's no issue on your epub reader. !!
         // !! if delayTime is decresed, performance will be increase
         // !! if delayTime is set to too low value, a lot of problem can be occurred.
         // bringDelayTime(default 500 ms) is for curlView and mainView transition - if the value is too short, blink may happen.
-        rv.setBringDelayTime(500);
+        //rv.setBringDelayTime(500);
         // reloadDelayTime(default 100) is used for delay before reload (eg. changeFont, loadChapter or etc)
-        rv.setReloadDelayTime(100);
+        //rv.setReloadDelayTime(100);
         // reloadDelayTimeForRotation(default 1000) is used for delay before rotation
-        rv.setReloadDelayTimeForRotation(1000);
+        //rv.setReloadDelayTimeForRotation(1000);
         // retotaionDelayTime(default 1500) is used for delay after rotation.
-        rv.setRotationDelayTime(1500);
+        //rv.setRotationDelayTime(1500);
         // finalDelayTime(default 500) is used for the delay after loading chapter.
-        rv.setFinalDelayTime(500);
+        //rv.setFinalDelayTime(500);
         // rotationFactor affects the delayTime before Rotation. default value 1.0f
-        rv.setRotationFactor(1.0f);
+        //rv.setRotationFactor(1.0f);
         // If recalcDelayTime is too short, setContentBackground function failed to work properly.
-        rv.setRecalcDelayTime(2500);
-        */
+        //rv.setRecalcDelayTime(2500);
+
 
         // Read PagesStack and save it to Bitmap.
         Bitmap pagesStack = BitmapFactory.decodeResource(getResources(), R.drawable.pages_stack);
@@ -204,7 +204,7 @@ public class ReaderActivity extends AppCompatActivity {
         rv.setDoublePagedForLandscape(true);
 
         // set default font
-        rv.setFont("TimesRoman", 26);
+        rv.setFont("TimesRoman", 20);
 
         // set default line space.  ( unit is %)
         rv.setLineSpacing(135); // the value is supposed to be percent(%).
@@ -270,7 +270,7 @@ public class ReaderActivity extends AppCompatActivity {
         markButtonParam.width = (int) (70 * density);
         markButtonParam.height = (int) (35 * density);
         markButton.setLayoutParams(markButtonParam);
-        markButton.setId(8083);
+        markButton.setId(markButton.generateViewId());
         //markButton.setOnClickListener(onClickListener);
         markButton.setVisibility(View.VISIBLE);
         ePubView.addView(markButton);
