@@ -49,13 +49,6 @@ public class BookDetailsActivity extends AppCompatActivity {
 
         // Création du texte des détails
         details.setText(processText());
-
-        // Bouon retour dans l'actionBar
-        android.support.v7.app.ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-            ab.setDisplayHomeAsUpEnabled(true);
-        }
-
     }
 
     /**
@@ -79,17 +72,5 @@ public class BookDetailsActivity extends AppCompatActivity {
         if (!livre.getResume().equals("")) sb.append("Résumé : " + livre.getResume() + '\n');
 
         return sb.toString();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Bouton retour dans l'actionBar
-            case android.R.id.home:
-                this.finish();
-                return true;
-            default:
-                return false;
-        }
     }
 }
