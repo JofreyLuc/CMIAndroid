@@ -200,9 +200,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View grid_item=inflater.inflate(R.layout.grid_item, parent, false);
-            TextView titre=(TextView)grid_item.findViewById(R.id.titre);
-            TextView auteur=(TextView)grid_item.findViewById(R.id.auteur);
+            View grid_item = inflater.inflate(R.layout.grid_item, parent, false);
+            TextView titre = (TextView)grid_item.findViewById(R.id.titre);
+            TextView auteur = (TextView)grid_item.findViewById(R.id.auteur);
             Bibliotheque bibliotheque = bibliotheques.get(position);
             Livre livre = bibliotheque.getLivre();
             // On bind la bibliotheque à la view
