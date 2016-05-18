@@ -121,7 +121,7 @@ public class Livre implements Parcelable {
 
     @Expose
     @SerializedName(LIEN_COUVERTURE_JSON_NAME)
-    // Pas dans la base de donnée local
+    // Pas dans la base de données locale
     private String lienCouverture;
 
     // Nécéssaire pour ORMlite
