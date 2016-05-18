@@ -38,5 +38,12 @@
     <string name="confirmation_suppression_yes">Supprimer</string>
     <string name="confirmation_suppression_no">Annuler</string>
     <!-- Fin strings confirmation de suppression d'un livre -->
+
+    <!-- Strings AlertDialog connexion internet -->
+    <string name="connection_popup_name">Erreur de connexion</string>
+    <string name="connection_popup_message">Aucune connexion internet n\'a été trouvée</string>
+    <string name="connection_popup_settings">Activez-la !</string>
+    <string name="connection_popup_quit">Quitter</string>
+    <!-- Fin strings AlertDialog connexion internet -->
     
 </resources>
