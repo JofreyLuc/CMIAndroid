@@ -6,7 +6,6 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,13 +35,13 @@ import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.reader.ReaderActivity;
 import com.univ.lorraine.cmi.retrofit.FileDownloadService;
+import com.univ.lorraine.cmi.retrofit.FileDownloadServiceProvider;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -55,7 +54,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
@@ -417,9 +415,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     // EXEMPLE
     void downloadFileAsync() {
-        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://NOT_NEEDED").build();
-        final FileDownloadService downloadService =
-                retrofit.create(FileDownloadService.class);
+        final FileDownloadService downloadService = FileDownloadServiceProvider.getService();
 
         final String fileUrl = "http://www.gutenberg.org/ebooks/5781.epub.images";
 

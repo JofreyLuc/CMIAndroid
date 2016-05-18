@@ -3,9 +3,9 @@ package com.univ.lorraine.cmi.retrofit;
 import retrofit2.http.GET;
 
 /**
- * Interface de l'API REST pour Retrofit
+ * Interface Retrofit pour l'API REST CallMeIshmael.
  */
-public interface CallMeIshmaelAPI {
+public interface CallMeIshmaelService {
     // Exemple
     //@GET("/livre/{id}")
     //Call<Livre> getLivre(@Path("id") String id);
