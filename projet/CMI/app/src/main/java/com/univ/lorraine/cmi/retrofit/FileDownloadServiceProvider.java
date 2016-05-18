@@ -1,5 +1,7 @@
 package com.univ.lorraine.cmi.retrofit;
 
+import com.univ.lorraine.cmi.AdresseLocale;
+
 import retrofit2.Retrofit;
 
 /**
@@ -8,7 +10,7 @@ import retrofit2.Retrofit;
 public class FileDownloadServiceProvider {
 
     // Url inutile pour FileDownloadService
-    private static final String API_URL = "http://NOT-NEEDED";
+    private static final String API_URL = AdresseLocale.adresse;
 
     private static FileDownloadService service;
 

@@ -1,5 +1,7 @@
 package com.univ.lorraine.cmi.retrofit;
 
+import com.univ.lorraine.cmi.AdresseLocale;
+
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -9,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class CallMeIshmaelServiceProvider {
 
     // URL à modifier pour les tests
-    private static final String API_URL = "http://localhost";
+    private static final String API_URL = AdresseLocale.adresse;
 
     private static CallMeIshmaelService service;
 
