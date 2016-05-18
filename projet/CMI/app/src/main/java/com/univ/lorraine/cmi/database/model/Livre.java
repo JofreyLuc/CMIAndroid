@@ -3,6 +3,8 @@ package com.univ.lorraine.cmi.database.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -18,6 +20,30 @@ import nl.siegmann.epublib.domain.Metadata;
 
 @DatabaseTable(tableName = "livre")
 public class Livre implements Parcelable {
+
+    // json Strings
+
+    public static final String ID_SERVEUR_JSON_NAME = "idLivre";
+
+    public static final String TITRE_JSON_NAME = "titre";
+
+    public static final String AUTEUR_JSON_NAME = "auteur";
+
+    public static final String LANGUE_JSON_NAME = "langue";
+
+    public static final String GENRE_JSON_NAME = "genre";
+
+    public static final String DATE_PARUTION_JSON_NAME = "dateParution";
+
+    public static final String RESUME_JSON_NAME = "resume";
+
+    public static final String NOTE_MOYENNE_JSON_NAME = "noteMoyenne";
+
+    public static final String LIEN_DL_EPUB_JSON_NAME = "lienDLEpub";
+
+    public static final String LIEN_COUVERTURE_JSON_NAME = "lienCouverture";
+
+    // Database Strings
 
     public static final String TABLE_NAME = "livre";
 
@@ -41,37 +67,62 @@ public class Livre implements Parcelable {
 
     public static final String LIEN_DL_EPUB_FIELD_NAME = "lienDLEpub";
 
-    // Id local du livre
+    /* Id local du livre
+       Cet id n'est pas passé dans le json
+     */
     @DatabaseField(columnName = ID_FIELD_NAME, generatedId = true)
     private Long idLivre;
 
     // Id serveur (Gutembert) du livre, si non-importé en local
+    @Expose
+    @SerializedName(ID_SERVEUR_JSON_NAME)
     @DatabaseField(columnName = ID_SERVEUR_FIELD_NAME)
     private Long idServeur;
 
+    @Expose
+    @SerializedName(TITRE_JSON_NAME)
     @DatabaseField(columnName = TITRE_FIELD_NAME)
     private String titre;
 
+    @Expose
+    @SerializedName(AUTEUR_JSON_NAME)
     @DatabaseField(columnName = AUTEUR_FIELD_NAME)
     private String auteur;
 
+    @Expose
+    @SerializedName(LANGUE_JSON_NAME)
     @DatabaseField(columnName = LANGUE_FIELD_NAME)
     private String langue;
 
+    @Expose
+    @SerializedName(GENRE_JSON_NAME)
     @DatabaseField(columnName = GENRE_FIELD_NAME)
     private String genre;
 
+    @Expose
+    @SerializedName(DATE_PARUTION_JSON_NAME)
     @DatabaseField(columnName = DATE_PARUTION_FIELD_NAME)
     private String dateParution;
 
+    @Expose
+    @SerializedName(RESUME_JSON_NAME)
     @DatabaseField(columnName = RESUME_FIELD_NAME)
     private String resume;
 
+    @Expose
+    @SerializedName(NOTE_MOYENNE_JSON_NAME)
     @DatabaseField(columnName = NOTE_MOYENNE_FIELD_NAME)
     private float noteMoyenne;
 
+    @Expose
+    @SerializedName(LIEN_DL_EPUB_JSON_NAME)
     @DatabaseField(columnName = LIEN_DL_EPUB_FIELD_NAME)
     private String lienDLEpub;
+
+    @Expose
+    @SerializedName(LIEN_COUVERTURE_JSON_NAME)
+    // Pas dans la base de donnée local
+    private String lienCouverture;
 
     // Nécéssaire pour ORMlite
     Livre() {}
@@ -169,45 +220,97 @@ public class Livre implements Parcelable {
         return idServeur == null || idServeur == 0;
     }
 
+    // GETTERS AND SETTERS
+
     public Long getIdLivre() {
         return idLivre;
+    }
+
+    public void setIdLivre(Long idLivre) {
+        this.idLivre = idLivre;
     }
 
     public Long getIdServeur() {
         return idServeur;
     }
 
+    public void setIdServeur(Long idServeur) {
+        this.idServeur = idServeur;
+    }
+
+    public String getTitre() {
+        return titre;
+    }
+
+    public void setTitre(String titre) {
+        this.titre = titre;
+    }
+
+    public String getAuteur() {
+        return auteur;
+    }
+
+    public void setAuteur(String auteur) {
+        this.auteur = auteur;
+    }
+
     public String getLangue() {
         return langue;
+    }
+
+    public void setLangue(String langue) {
+        this.langue = langue;
     }
 
     public String getGenre() {
         return genre;
     }
 
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
     public String getDateParution() {
         return dateParution;
+    }
+
+    public void setDateParution(String dateParution) {
+        this.dateParution = dateParution;
     }
 
     public String getResume() {
         return resume;
     }
 
+    public void setResume(String resume) {
+        this.resume = resume;
+    }
+
     public float getNoteMoyenne() {
         return noteMoyenne;
+    }
+
+    public void setNoteMoyenne(float noteMoyenne) {
+        this.noteMoyenne = noteMoyenne;
     }
 
     public String getLienDLEpub() {
         return lienDLEpub;
     }
 
-    public String getTitre(){
-        return titre;
+    public void setLienDLEpub(String lienDLEpub) {
+        this.lienDLEpub = lienDLEpub;
     }
 
-    public String getAuteur(){
-        return auteur;
+    public String getLienCouverture() {
+        return lienCouverture;
     }
+
+    public void setLienCouverture(String lienCouverture) {
+        this.lienCouverture = lienCouverture;
+    }
+
+    // FIN GETTERS AND SETTERS
 
     @Override
     public String toString() {

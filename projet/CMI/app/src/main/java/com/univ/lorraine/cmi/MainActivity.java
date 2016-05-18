@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 //Toast.makeText(getApplicationContext(), "overflow1", Toast.LENGTH_LONG).show();
                 return true;
             case R.id.overflow2:
+                downloadFileAsync();
                 // DO SOMETHING
                 Toast.makeText(getApplicationContext(), "overflow2", Toast.LENGTH_LONG).show();
                 return true;
@@ -417,7 +418,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     void downloadFileAsync() {
         final FileDownloadService downloadService = FileDownloadServiceProvider.getService();
 
-        final String fileUrl = "http://www.gutenberg.org/ebooks/5781.epub.images";
+        final String fileUrl = "http://www.gutenberg.org/ebooks/42.epub.images";
 
         Call<ResponseBody> call = downloadService.downloadFileWithDynamicUrl(fileUrl);
         call.enqueue(new Callback<ResponseBody>() {

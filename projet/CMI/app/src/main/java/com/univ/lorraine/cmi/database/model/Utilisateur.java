@@ -17,6 +17,8 @@ public class Utilisateur {
 
     private String password;
 
+    private String pseudo;
+
     private String nom;
 
     private String prenom;

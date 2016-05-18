@@ -10,4 +10,5 @@ public interface CallMeIshmaelService {
     //@GET("/livre/{id}")
     //Call<Livre> getLivre(@Path("id") String id);
     // @Path("id") String id signifie que {id} dans l'url sera remplacé par l'id dans la méthode
+
 }
