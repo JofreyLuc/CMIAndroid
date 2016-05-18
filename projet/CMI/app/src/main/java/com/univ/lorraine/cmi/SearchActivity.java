@@ -2,6 +2,11 @@ package com.univ.lorraine.cmi;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
@@ -31,6 +36,9 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_rechercher, menu);
 
+        if (!isNetworkAvailable())
+            launchingConnection();
+
         ListView listResult = (ListView) findViewById(R.id.list_result);
         if (listResult != null) {
             listResult.setAdapter(new ListAdapter(this, list, images));
@@ -44,6 +52,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
         return true;
     }
+
 
     private void setupSearchView() {
 
@@ -66,6 +75,42 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
     protected boolean isAlwaysExpanded() {
         return false;
+    }
+
+    // verifie si une connection internet est possible
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        return networkInfo != null && networkInfo.isConnected();
+    }
+
+
+    // Alert Popup si pas de connexion internet
+    public void launchingConnection() {
+        // Alert dialog si pas de connexion internet
+        // Choix 1 : rien
+        // Choix 2 : Ouverture de la page des parametres pour activer internet
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        alertDialogBuilder
+                .setMessage(getString(R.string.connection_popup_message))
+                .setCancelable(false)
+                .setTitle(getString(R.string.connection_popup_name));
+
+        // Choix 2
+        alertDialogBuilder.setPositiveButton(getString(R.string.connection_popup_settings), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+            }
+        });
+
+        // Choix 1
+        alertDialogBuilder.setNegativeButton(getString(R.string.connection_popup_quit), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        alertDialogBuilder.show();
     }
 }
 
