@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,6 +28,8 @@ public class BookDetailsActivity extends AppCompatActivity {
     private ImageView cover;
     // Vue des détails du live
     private TextView details;
+    // Bouton ajout bibliothèque
+    private Button boutonAjout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,7 @@ public class BookDetailsActivity extends AppCompatActivity {
         // Initialisation des vues
         cover = (ImageView) findViewById(R.id.details_cover);
         details = (TextView) findViewById(R.id.details_tags);
+        boutonAjout = (Button) findViewById(R.id.button_add);
 
         // Chargement de l'image de couverture
         if (Utilities.hasACover(getApplicationContext(), livre)) {
@@ -52,6 +56,10 @@ public class BookDetailsActivity extends AppCompatActivity {
 
         // Création du texte des détails
         details.setText(processText());
+
+        if (livre.getIdServeur() != null){
+            //boutonAjout.setVisibility();
+        }
     }
 
     /**

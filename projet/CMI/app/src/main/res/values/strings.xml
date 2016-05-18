@@ -25,6 +25,10 @@
     <string name="menu_search">Search</string>
     <!-- Fin strings de SearchActivity -->
 
+    <!-- Strings de BookDetailsActivity -->
+    <string name="button_add">Ajouter à la bibliothèque</string>
+    <!-- Fin strings de BookDetailsActivity -->
+
     <!-- Strings du popmenu des livres dans la bibliothèque -->
     <string name="book_details">Voir les détails</string>
     <string name="book_evaluate">Évaluer</string>
