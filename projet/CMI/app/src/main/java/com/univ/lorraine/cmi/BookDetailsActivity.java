@@ -57,8 +57,10 @@ public class BookDetailsActivity extends AppCompatActivity {
         // Création du texte des détails
         details.setText(processText());
 
+        boutonAjout.setVisibility(Button.VISIBLE);
+
         if (livre.getIdServeur() != null){
-            //boutonAjout.setVisibility();
+            boutonAjout.setVisibility(Button.VISIBLE);
         }
     }
 

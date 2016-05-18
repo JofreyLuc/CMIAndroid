@@ -1,5 +1,5 @@
 #
-# generated on 2016/05/14 03:00:45
+# generated on 2016/05/18 04:19:17
 #
 # --table-start--
 dataClass=com.univ.lorraine.cmi.database.model.Livre
@@ -7,34 +7,44 @@ tableName=livre
 # --table-fields-start--
 # --field-start--
 fieldName=idLivre
+columnName=idLivre
 generatedId=true
 # --field-end--
 # --field-start--
 fieldName=idServeur
+columnName=idServeur
 # --field-end--
 # --field-start--
 fieldName=titre
+columnName=titre
 # --field-end--
 # --field-start--
 fieldName=auteur
+columnName=auteur
 # --field-end--
 # --field-start--
 fieldName=langue
+columnName=langue
 # --field-end--
 # --field-start--
 fieldName=genre
+columnName=genre
 # --field-end--
 # --field-start--
 fieldName=dateParution
+columnName=dateParution
 # --field-end--
 # --field-start--
 fieldName=resume
+columnName=resume
 # --field-end--
 # --field-start--
 fieldName=noteMoyenne
+columnName=noteMoyenne
 # --field-end--
 # --field-start--
 fieldName=lienDLEpub
+columnName=lienDLEpub
 # --field-end--
 # --table-fields-end--
 # --table-end--
@@ -45,10 +55,12 @@ tableName=annotation
 # --table-fields-start--
 # --field-start--
 fieldName=idAnnotation
+columnName=idAnnotation
 generatedId=true
 # --field-end--
 # --field-start--
 fieldName=idServeur
+columnName=idServeur
 # --field-end--
 # --field-start--
 fieldName=bibliotheque
@@ -56,16 +68,16 @@ columnName=idBibliotheque
 foreign=true
 # --field-end--
 # --field-start--
-fieldName=numeroPage
-# --field-end--
-# --field-start--
-fieldName=numero
+fieldName=position
+columnName=position
 # --field-end--
 # --field-start--
 fieldName=texte
+columnName=texte
 # --field-end--
 # --field-start--
 fieldName=dateModification
+columnName=dateModification
 # --field-end--
 # --table-fields-end--
 # --table-end--
@@ -76,10 +88,12 @@ tableName=bibliotheque
 # --table-fields-start--
 # --field-start--
 fieldName=idBibliotheque
+columnName=idBibliotheque
 generatedId=true
 # --field-end--
 # --field-start--
 fieldName=idServeur
+columnName=idServeur
 # --field-end--
 # --field-start--
 fieldName=livre
@@ -89,9 +103,11 @@ foreignAutoRefresh=true
 # --field-end--
 # --field-start--
 fieldName=positionLecture
+columnName=positionLecture
 # --field-end--
 # --field-start--
 fieldName=dateModification
+columnName=dateModification
 # --field-end--
 # --table-fields-end--
 # --table-end--
