@@ -52,7 +52,6 @@
         android:textSize="15sp"
         android:textColorHighlight="#656565"
         android:maxLines="4"
-        android:minLines="4"
         android:ellipsize="end"
         android:gravity="center_horizontal"/>
     <TextView
@@ -61,7 +60,6 @@
         android:layout_height="match_parent"
         android:textSize="12sp"
         android:textColorHighlight="#656565"
-        android:maxLines="2"
         android:minLines="2"
         android:ellipsize="end"
         android:gravity="center_horizontal"/>

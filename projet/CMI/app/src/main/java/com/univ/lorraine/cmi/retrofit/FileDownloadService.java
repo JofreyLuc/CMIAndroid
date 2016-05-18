@@ -9,7 +9,6 @@ import retrofit2.http.Url;
  * Interface retrofit permettant de télécharger un fichier depuis n'importe quelle URL.
  */
 public interface FileDownloadService {
-
     @GET
     Call<ResponseBody> downloadFileWithDynamicUrl(@Url String fileUrl);
 }
