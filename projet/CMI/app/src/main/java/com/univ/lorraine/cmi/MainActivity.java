@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -24,6 +26,9 @@ import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.nononsenseapps.filepicker.FilePickerActivity;
@@ -54,6 +59,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
@@ -73,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
         bibliotheques = new ArrayList<>();
         setBibliotheques();
-        downloadFileAsync();
+        //downloadFileAsync();
         gridView = (GridView) findViewById(R.id.grid);
         gridView.setAdapter(new ImageAdapter(this));
         gridView.setOnItemClickListener(this);
@@ -200,14 +206,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View grid_item = inflater.inflate(R.layout.grid_item, parent, false);
-            TextView titre = (TextView)grid_item.findViewById(R.id.titre);
-            TextView auteur = (TextView)grid_item.findViewById(R.id.auteur);
+            final TextView titre = (TextView)grid_item.findViewById(R.id.titre);
+            final TextView auteur = (TextView)grid_item.findViewById(R.id.auteur);
             Bibliotheque bibliotheque = bibliotheques.get(position);
             Livre livre = bibliotheque.getLivre();
             // On bind la bibliotheque à la view
             grid_item.setTag(bibliotheque);
             // Récupération du titre
             titre.setText(livre.getTitre());
+
+            // Ajustement des lignes
+            titre.post(new Runnable() {
+                @Override
+                public void run() {
+                    titre.setMaxLines(titre.getLineCount());
+                    auteur.setMaxLines(2 + (4 - titre.getMaxLines()));
+                    auteur.setMinLines(2 + (4 - titre.getMaxLines()));
+                }
+            });
+
             // Récupération de l'auteur
             auteur.setText(livre.getAuteur());
             // Récupération de la couverture
