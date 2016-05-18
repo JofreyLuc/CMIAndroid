@@ -1,2 +1,2 @@
 /build
-src/main/java/com/univ/lorraine/cmi/AdresseLocale.java
+src/main/java/com/univ/lorraine/cmi/retrofit/AdresseLocale.java

@@ -1,7 +1,5 @@
 package com.univ.lorraine.cmi.retrofit;
 
-import com.univ.lorraine.cmi.AdresseLocale;
-
 import retrofit2.Retrofit;
 
 /**
