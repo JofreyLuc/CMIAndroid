@@ -76,6 +76,11 @@ public class ReaderActivity extends AppCompatActivity {
      */
     private Bibliotheque bibliotheque;
 
+    /**
+     * Gére les changements de page.
+     */
+    private PageMovedDelegate pageMovedDelegate;
+
     private CmidbaOpenDatabaseHelper dbhelper = null;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -100,6 +105,7 @@ public class ReaderActivity extends AppCompatActivity {
         });
 
         this.keyManager = new SkyKeyManager("", "");
+        pageMovedDelegate = new PageMovedDelegate(this);
         this.makeLayout();
     }
 
@@ -113,6 +119,13 @@ public class ReaderActivity extends AppCompatActivity {
             OpenHelperManager.releaseHelper();
             dbhelper = null;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        pageMovedDelegate.resetAfterLastPageAlreadyCalled();
+        pageMovedDelegate.resetBeforeFirstPageAlreadyCalled();
     }
 
     /**
@@ -237,7 +250,7 @@ public class ReaderActivity extends AppCompatActivity {
         rv.setHighlightListener(new HighlightDelegate(highlights));
 
         // set the Listener for Page Moving.
-        rv.setPageMovedListener(new PageMovedDelegate(this));
+        rv.setPageMovedListener(pageMovedDelegate);
 
         // set the Listener for text processing
         rv.setSelectionListener(new SelectionDelegate());

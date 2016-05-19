@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import android.support.v7.app.AlertDialog;
+import android.view.WindowManager;
 
 
 import com.skytree.epub.IOUtils;
@@ -313,5 +314,37 @@ public final class Utilities {
             }
         });
         alertDialogBuilder.show();
+    }
+
+    /**
+     * Active ou désactive les interactions (touch, swipe, etc.) avec l'utilisateur dans une activité
+     *
+     * @param activity L'activité concernée.
+     * @param value true : activée, false : désactivée.
+     */
+    public static void enableUserInput(Activity activity, boolean value) {
+        if (value)
+            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        else
+            activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+    }
+
+    /**
+     * Méthode surchargée.
+     *
+     * @param activity L'activité concernée.
+     */
+    public static void enableUserInput(Activity activity) {
+        enableUserInput(activity, true);
+    }
+
+    /**
+     * Méthode "surchargée".
+     *
+     * @param activity L'activité concernée.
+     */
+    public static void disableUserInput(Activity activity) {
+        enableUserInput(activity, false);
     }
 }

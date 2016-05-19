@@ -1,12 +1,14 @@
 package com.univ.lorraine.cmi.reader.listener;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.j256.ormlite.dao.Dao;
 import com.skytree.epub.Highlight;
 import com.skytree.epub.PageInformation;
 import com.skytree.epub.PageMovedListener;
+import com.univ.lorraine.cmi.EndOfBookActivity;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.reader.ReaderActivity;
 
@@ -23,9 +25,29 @@ public class PageMovedDelegate implements PageMovedListener {
 
     PageInformation currentPage;
 
+    /**
+     * Booléen permettant d'éviter plusieurs appels à afterLastPage.
+     */
+    boolean afterLastPageAlreadyCalled;
+
+    /**
+     * Booléen permettant d'éviter plusieurs appels à beforeFirstPage.
+     */
+    boolean beforeFirstPageAlreadyCalled;
+
     public PageMovedDelegate(ReaderActivity r) {
         reader = r;
         currentPage = new PageInformation();
+        afterLastPageAlreadyCalled = false;
+        beforeFirstPageAlreadyCalled = false;
+    }
+
+    public void resetAfterLastPageAlreadyCalled() {
+        afterLastPageAlreadyCalled = false;
+    }
+
+    public void resetBeforeFirstPageAlreadyCalled() {
+        beforeFirstPageAlreadyCalled = false;
     }
 
     /**
@@ -96,22 +118,38 @@ public class PageMovedDelegate implements PageMovedListener {
     public void onFailedToMove(boolean marchePas) {
         Log.d("TEST", "failed move");
         if (isAtLastPage())
-            onLastPage();
+            afterLastPage();
         else
-            onFirstPage();
+            beforeFirstPage();
     }
 
-    private void onFirstPage() {
-
+    /**
+     * Appelé lors d'une tentative de changement de page avant la 1ère page.
+     */
+    private void beforeFirstPage() {
+        // Permet d'éviter un double appel lors d'un swipe
+        if (!beforeFirstPageAlreadyCalled) {
+            beforeFirstPageAlreadyCalled = true;
+        }
     }
 
-    private void onLastPage() {
-        // ajouter un intent vers une nouvelle activité éventuellement
-        Log.d("TEST", "apres last page");
+    /**
+     * Appelé lors d'une tentative de changement de page après la dernière page.
+     */
+    private void afterLastPage() {
+        // Permet d'éviter un double appel lors d'un swipe
+        if (!afterLastPageAlreadyCalled) {
+            afterLastPageAlreadyCalled = true;
+            Log.d("TEST", "apres last page");
+            Bundle b = new Bundle();
+            b.putParcelable("bibliotheque", reader.getBibliotheque());
+            Intent i = new Intent(reader, EndOfBookActivity.class);
+            i.putExtra("bundle", b);
+            reader.startActivity(i);
+        }
     }
 
     private boolean isAtLastPage() {
-        // Si on est à la dernière page
         boolean lastPage = false;
         // Pagination globale
         if (reader.getReflowableControl().isGlobalPagination())

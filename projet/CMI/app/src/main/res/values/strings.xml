@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">CMI</string>
+    <string name="main_activity_label">CMI</string>
+    <string name="main_activity_label_alt">Bibliothèque</string>
+    <string name="details_activity_label">Détails</string>
+    <string name="login_activity_label">Connexion</string>
+    <string name="signup_activity_label">Inscription</string>
+
     <!-- Strings de la librairie FilePicker -->
     <!-- Strings originales de la librairie
     <string name="nnf_create_folder_error">Failed to create folder</string>
@@ -57,11 +63,9 @@
     <string name="connection_popup_message">Aucune connexion internet n\'a été trouvée.</string>
     <string name="connection_popup_settings">Activez-la !</string>
     <string name="connection_popup_quit">Non merci</string>
-    <string name="main_activity_label">CMI</string>
-    <string name="main_activity_label_alt">Bibliothèque</string>
-    <string name="details_activity_label">Détails</string>
-    <string name="login_activity_label">Connexion</string>
-    <string name="signup_activity_label">Inscription</string>
+    <!-- Fin strings AlertDialog connexion internet -->
+
+    <!-- Strings activité de connexion et d'inscription-->
     <string name="login_progress_dialog">Connexion...</string>
     <string name="email_non_valide">Email non valide</string>
     <string name="password_court">Mot de passe trop court (4 caractères minimum)</string>
@@ -71,13 +75,21 @@
     <string name="email">Email</string>
     <string name="password">Mot de passe</string>
     <string name="login">Se connecter</string>
-    <string name="non_inscrit">Pas encore inscrit ?</string>
+    <string name="non_inscrit"><u>Pas encore inscrit ?</u></string>
     <string name="pseudo">Pseudo</string>
     <string name="verif_password">Vérification mot de passe</string>
     <string name="signup">S\'inscrire</string>
-    <string name="deja_inscrit">Déjà inscrit ? Se connecter</string>
-    <!-- Fin strings AlertDialog connexion internet -->
-    
+    <string name="deja_inscrit"><u>Déjà inscrit ? Se connecter</u></string>
+    <!-- Fin strings activité de connexion et d'inscription -->
+
+    <!-- String activité fin de livre -->
+    <string name="end_book_evaluate"><u>Évaluer le livre</u></string>
+    <string name="end_book_see_evaluate"><u>Voir les évaluations</u></string>
+    <string name="end_book_delete"><u>Supprimer le livre</u></string>
+    <string name="end_book_book_beginning"><u>Retourner au début du livre</u></string>
+    <string name="end_book_back_biblio"><u>Retourner à la bibliothèque</u></string>
+    <!-- Fin string activité fin de livre -->
+
     <string-array name="langues">
         <item>Choisir la langue...</item>
         <item>Anglais</item>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/main_layout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal|top">
+
+        <TextView
+            android:id="@+id/texte_fin_lecture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Vous avez terminé la lecture du livre"
+            android:textStyle="bold"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"/>
+        <ImageView
+            android:id="@+id/cover"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:gravity="center_horizontal"/>
+        <TextView
+            android:id="@+id/titre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:gravity="center_horizontal"/>
+        <TextView
+            android:id="@+id/auteur"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="20dp"/>
+        <!--
+        Evaluer le livre
+        Voir les évaluations
+        Supprimer le livre
+        Retourner au début du livre
+        Retourner à la bibliothèque
+        -->
+        <TextView
+            android:id="@+id/evaluer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/end_book_evaluate"
+            android:padding="15dp"
+            />
+        <TextView
+            android:id="@+id/voir_evaluations"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/end_book_see_evaluate"
+            android:padding="15dp"
+            />
+        <TextView
+            android:id="@+id/supprimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/end_book_delete"
+            android:padding="15dp"
+            />
+        <TextView
+            android:id="@+id/debut_livre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/end_book_book_beginning"
+            android:padding="15dp"
+            />
+        <TextView
+            android:id="@+id/retour_biblio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/end_book_back_biblio"
+            android:padding="15dp"
+            />
+    </LinearLayout>
+</ScrollView>

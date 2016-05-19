@@ -100,40 +100,5 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         return false;
     }
 
-    // verifie si une connection internet est possible
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-
-        return networkInfo != null && networkInfo.isConnected();
-    }
-
-
-    // Alert Popup si pas de connexion internet
-    public void launchingConnection() {
-        // Alert dialog si pas de connexion internet
-        // Choix 1 : rien
-        // Choix 2 : Ouverture de la page des parametres pour activer internet
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-
-        alertDialogBuilder
-                .setMessage(getString(R.string.connection_popup_message))
-                .setCancelable(false)
-                .setTitle(getString(R.string.connection_popup_name));
-
-        // Choix 2
-        alertDialogBuilder.setPositiveButton(getString(R.string.connection_popup_settings), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
-            }
-        });
-
-        // Choix 1
-        alertDialogBuilder.setNegativeButton(getString(R.string.connection_popup_quit), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
-        alertDialogBuilder.show();
-    }
 }
 

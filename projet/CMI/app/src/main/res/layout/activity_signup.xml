@@ -88,7 +88,8 @@
             android:layout_marginBottom="24dp"
             android:text="@string/deja_inscrit"
             android:gravity="center"
-            android:textSize="16dip"/>
+            android:textSize="16dip"
+            />
 
     </LinearLayout>
 </ScrollView>

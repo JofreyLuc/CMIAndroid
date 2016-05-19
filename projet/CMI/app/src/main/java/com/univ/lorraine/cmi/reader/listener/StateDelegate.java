@@ -4,6 +4,7 @@ import android.widget.Toast;
 
 import com.skytree.epub.State;
 import com.skytree.epub.StateListener;
+import com.univ.lorraine.cmi.Utilities;
 import com.univ.lorraine.cmi.reader.ReaderActivity;
 
 /**
@@ -22,16 +23,19 @@ public class StateDelegate implements StateListener {
         switch (state) {
             case NORMAL:
                 reader.getProgressDialog().hide();
-                reader.getReflowableControl().setClickable(true);
+                Utilities.enableUserInput(reader);
                 break;
             case BUSY:
+                Utilities.disableUserInput(reader);
+                reader.getProgressDialog().show();
                 Toast.makeText(reader.getApplicationContext(), "BUSYYYYYY", Toast.LENGTH_SHORT).show();
                 break;
             case LOADING:
+                Utilities.disableUserInput(reader);
                 reader.getProgressDialog().show();
                 break;
             case ROTATING:
-                reader.getReflowableControl().setClickable(false);
+                Utilities.disableUserInput(reader);
                 reader.getProgressDialog().show();
                 break;
         }
