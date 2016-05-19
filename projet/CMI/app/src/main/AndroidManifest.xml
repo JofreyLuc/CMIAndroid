@@ -9,13 +9,14 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="@string/main_activity_activity_label"
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -25,6 +26,7 @@
             android:theme="@style/FilePickerTheme">
             <intent-filter>
                 <action android:name="android.intent.action.GET_CONTENT" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -33,21 +35,37 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".BookDetailsActivity"
-            android:label="Détails">
+            android:label="@string/details_activity_label">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.univ.lorraine.cmi.MainActivity" />
         </activity>
         <activity
             android:name=".SearchActivity"
-            android:label="@string/book_search">
+            android:label="@string/book_search_activity_label">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.univ.lorraine.cmi.MainActivity"/>
+                android:value="com.univ.lorraine.cmi.MainActivity" />
+        </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/login_activity_label">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.univ.lorraine.cmi.MainActivity" />
+        </activity>
+        <activity
+            android:name=".SignupActivity"
+            android:label="@string/signup_activity_label">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.univ.lorraine.cmi.MainActivity" />
         </activity>
     </application>
 
