@@ -1,7 +1,13 @@
 package com.univ.lorraine.cmi;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Environment;
+import android.support.v7.app.AlertDialog;
 
 import com.univ.lorraine.cmi.database.model.Livre;
 
@@ -192,5 +198,65 @@ public final class Utilities {
             for (File child : fileOrDirectory.listFiles())
                 deleteRecursive(child);
         fileOrDirectory.delete();
+    }
+
+    /**
+     * Vérifie si l'appareil dispose d'une connexion internet
+     * et affiche une popup de dialogue.
+     *
+     * @param activity L'activité appelante.
+     */
+    public static boolean checkNetworkAvailable(Activity activity) {
+        boolean networkAvailable;
+        networkAvailable = isNetworkAvailable(activity);
+        if (! networkAvailable)
+            launchingConnection(activity);
+        return networkAvailable;
+    }
+
+    /**
+     * Vérifie si l'appareil dispose d'une connexion internet.
+     *
+     * @param activity L'activité appelante.
+     *
+     * @return Un booléen indiquant si la connexion internet est disponible.
+     */
+    private static boolean isNetworkAvailable(Activity activity) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        return networkInfo != null && networkInfo.isConnected();
+    }
+
+
+    /**
+     * Popud de dialogue pour activer internet.
+     *
+     * @param activity L'activité appelante.
+     */
+    private static void launchingConnection(final Activity activity) {
+        // Alert dialog si pas de connexion internet
+        // Choix 1 : rien
+        // Choix 2 : Ouverture de la page des parametres pour activer internet
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(activity);
+
+        alertDialogBuilder
+                .setMessage(activity.getString(R.string.connection_popup_message))
+                .setCancelable(false)
+                .setTitle(activity.getString(R.string.connection_popup_name));
+
+        // Choix 2
+        alertDialogBuilder.setPositiveButton(activity.getString(R.string.connection_popup_settings), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                activity.startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+            }
+        });
+
+        // Choix 1
+        alertDialogBuilder.setNegativeButton(activity.getString(R.string.connection_popup_quit), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        alertDialogBuilder.show();
     }
 }
