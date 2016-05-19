@@ -76,10 +76,7 @@
     <string name="signup">S\'inscrire</string>
     <string name="deja_inscrit">Déjà inscrit ? Se connecter</string>
     <!-- Fin strings AlertDialog connexion internet -->
-
-<<<<<<< HEAD
-
-
+    
     <string-array name="langues">
         <item>Choisir la langue...</item>
         <item>Anglais</item>
@@ -88,7 +85,5 @@
         <item>Allemand</item>
         <item>Espagnol</item>
     </string-array>
-    
-=======
->>>>>>> origin/master
+
 </resources>
