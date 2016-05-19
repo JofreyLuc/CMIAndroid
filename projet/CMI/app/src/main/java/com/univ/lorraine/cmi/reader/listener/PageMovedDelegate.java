@@ -1,6 +1,7 @@
 package com.univ.lorraine.cmi.reader.listener;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.j256.ormlite.dao.Dao;
 import com.skytree.epub.Highlight;
@@ -10,7 +11,6 @@ import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.reader.ReaderActivity;
 
 import java.sql.SQLException;
-import java.util.Locale;
 
 /**
  * Listener appelé lors d'un changement de page.
@@ -21,8 +21,11 @@ public class PageMovedDelegate implements PageMovedListener {
 
     Dao<Bibliotheque, Long> daobibliotheque;
 
+    PageInformation currentPage;
+
     public PageMovedDelegate(ReaderActivity r) {
         reader = r;
+        currentPage = new PageInformation();
     }
 
     /**
@@ -31,30 +34,40 @@ public class PageMovedDelegate implements PageMovedListener {
      * @param pi Informations sur la page et le livre.
      */
     public void onPageMoved(PageInformation pi) {
-        String msg = "chapterIndex: "+pi.chapterIndex
-                +"\nnumberOfChaptersInBook: "+pi.numberOfChaptersInBook
-                +"\nnumberOfPagesInBook: "+pi.numberOfPagesInBook
-                +"\npageIndex: "+pi.pageIndex
-                +"\nnumberOfPagesInChapter: "+pi.numberOfPagesInChapter
-                +"\nchapterTitle: "+pi.chapterTitle
-                +"\npagePositionInChapter: "+pi.pagePositionInChapter
-                +"\npagePositionInBook: "+pi.pagePositionInBook
-                +"\npageDescription: "+pi.pageDescription
-                +"\nstartIndex: "+pi.startIndex
-                +"\nendIndex: "+pi.endIndex
-                +"\nstartOffset: "+pi.startOffset
-                +"\nendOffset: "+pi.endOffset;
+        currentPage = pi;
 
-        if (pi.highlightsInPage != null)
-            for (int i=0; i<pi.highlightsInPage.getSize(); i++) {
-                Highlight th = pi.highlightsInPage.getHighlight(i);
+        String msg = "chapterIndex: "+currentPage.chapterIndex
+                +"\nnumberOfChaptersInBook: "+currentPage.numberOfChaptersInBook
+                +"\nnumberOfPagesInBook: "+currentPage.numberOfPagesInBook
+                +"\npageIndex: "+currentPage.pageIndex
+                +"\npageIndexInBook: "+currentPage.pageIndexInBook
+                +"\nnumberOfPagesInChapter: "+currentPage.numberOfPagesInChapter
+                +"\nchapterTitle: "+currentPage.chapterTitle
+                +"\npagePositionInChapter: "+currentPage.pagePositionInChapter
+                +"\npagePositionInBook: "+currentPage.pagePositionInBook
+                +"\npageDescription: "+currentPage.pageDescription
+                +"\nstartIndex: "+currentPage.startIndex
+                +"\nendIndex: "+currentPage.endIndex
+                +"\nstartOffset: "+currentPage.startOffset
+                +"\nendOffset: "+currentPage.endOffset;
+
+        if (currentPage.highlightsInPage != null)
+            for (int i=0; i<currentPage.highlightsInPage.getSize(); i++) {
+                Highlight th = currentPage.highlightsInPage.getHighlight(i);
                 msg+=String.format(" highlight si:%d so:%d ei:%d eo:%d",th.startIndex,th.startOffset,th.endIndex,th.endOffset);
             }
         Log.e("SKY", msg);
 
-        // TEST
+        // On enregistre la position de ce livre avec l'objet bibliothèque
+
+        double positionLecture;
+        if (isAtLastPage())
+            positionLecture = 1.;
+        else
+            positionLecture = currentPage.pagePositionInBook;
+
         Bibliotheque bibliotheque = reader.getBibliotheque();
-        bibliotheque.setPositionLecture(pi.pagePositionInBook);
+        bibliotheque.setPositionLecture(positionLecture);
 
         try {
             Dao<Bibliotheque, Long> daobibliotheque = reader.getHelper().getBibliothequeDao();
@@ -67,21 +80,46 @@ public class PageMovedDelegate implements PageMovedListener {
     /**
      * Changement de chapitre.
      *
-     * @param i Numéro du chapitre.
+     * @param chapterIndex Numéro du chapitre.
      */
     @Override
-    public void onChapterLoaded(int i) {
+    public void onChapterLoaded(int chapterIndex) {
 
     }
 
     /**
      * Tentative de changement de page au début ou à la fin d'un livre.
      *
-     * @param b
+     * @param marchePas Ne marche pas. Sert à rien.
      */
     @Override
-    public void onFailedToMove(boolean b) {
+    public void onFailedToMove(boolean marchePas) {
+        Log.d("TEST", "failed move");
+        if (isAtLastPage())
+            onLastPage();
+        else
+            onFirstPage();
+    }
+
+    private void onFirstPage() {
 
     }
 
+    private void onLastPage() {
+        // ajouter un intent vers une nouvelle activité éventuellement
+        Log.d("TEST", "apres last page");
+    }
+
+    private boolean isAtLastPage() {
+        // Si on est à la dernière page
+        boolean lastPage = false;
+        // Pagination globale
+        if (reader.getReflowableControl().isGlobalPagination())
+            lastPage = currentPage.numberOfPagesInBook == currentPage.pageIndexInBook + 1;
+            // Pagination par chapitre
+        else
+            lastPage = currentPage.numberOfChaptersInBook == currentPage.chapterIndex + 1
+                    && currentPage.numberOfPagesInChapter == currentPage.pageIndex + 1;
+        return lastPage;
+    }
 }
