@@ -2,8 +2,12 @@ package com.univ.lorraine.cmi;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 
+import com.skytree.epub.IOUtils;
 import com.univ.lorraine.cmi.database.model.Livre;
+import com.univ.lorraine.cmi.retrofit.FileDownloadService;
+import com.univ.lorraine.cmi.retrofit.FileDownloadServiceProvider;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,7 +17,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import nl.siegmann.epublib.domain.Book;
+import nl.siegmann.epublib.domain.Resource;
+import nl.siegmann.epublib.epub.EpubReader;
 import nl.siegmann.epublib.util.IOUtil;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Classe contenant uniquement des méthodes statiques utilitaires.
@@ -192,5 +203,45 @@ public final class Utilities {
             for (File child : fileOrDirectory.listFiles())
                 deleteRecursive(child);
         fileOrDirectory.delete();
+    }
+
+    public static void downloadFileAsync(String urlSource, final String pathDest) {
+        final FileDownloadService downloadService = FileDownloadServiceProvider.getService();
+
+        Call<ResponseBody> call = downloadService.downloadFileWithDynamicUrl(urlSource);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    File file = new File(pathDest);
+                    file.mkdirs();
+                    FileOutputStream fileOutputStream = new FileOutputStream(file);
+                    IOUtils.write(response.body().bytes(), fileOutputStream);
+                } catch (IOException e) {
+                    Log.e("TEST", "Error while writing file!");
+                    Log.e("TEST", e.toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.out.println(t.toString());
+            }
+        });
+    }
+
+    public static void extractCover(String epubPath){
+        try {
+            String coverPath = epubPath + "/../cover";
+            Book book = new EpubReader().readEpub(new FileInputStream(epubPath));
+            Resource cover = book.getCoverImage();
+            if (cover != null) {
+                InputStream coverIS = book.getCoverImage().getInputStream();
+                Utilities.copyFile(coverIS, new File(coverPath));
+                coverIS.close();
+            }
+        } catch (IOException e) {
+            Log.e("EXC", e.getMessage());
+        }
     }
 }

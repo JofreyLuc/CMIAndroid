@@ -27,6 +27,9 @@
 
     <!-- Strings de BookDetailsActivity -->
     <string name="button_add">Ajouter à la bibliothèque</string>
+    <string name="button_readNow">Télécharger et lancer la lecture</string>
+    <string name="button_add_inactive">Déjà dans la bibliothèque</string>
+    <string name="button_readNow_alt">Lecture</string>
     <!-- Fin strings de BookDetailsActivity -->
 
     <!-- Strings du popmenu des livres dans la bibliothèque -->

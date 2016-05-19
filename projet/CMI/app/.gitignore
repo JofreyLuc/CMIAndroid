@@ -1,2 +1,3 @@
 /build
 src/main/java/com/univ/lorraine/cmi/retrofit/AdresseLocale.java
+src/main/res/raw/ormlite_config.txt
