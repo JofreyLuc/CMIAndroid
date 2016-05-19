@@ -18,7 +18,7 @@
     <!-- Strings de MainActivity -->
     <string name="action_import">action import</string>
     <string name="action_overflow">action overflow</string>
-    <string name="book_search">Rechercher un livre</string>
+    <string name="book_search_activity_label">Rechercher un livre</string>
     <!-- Fin strings de MainActivity -->
 
     <!-- Strings de SearchActivity -->
@@ -48,9 +48,27 @@
 
     <!-- Strings AlertDialog connexion internet -->
     <string name="connection_popup_name">Erreur de connexion</string>
-    <string name="connection_popup_message">Aucune connexion internet n\'a été trouvée</string>
+    <string name="connection_popup_message">Aucune connexion internet n\'a été trouvée.</string>
     <string name="connection_popup_settings">Activez-la !</string>
-    <string name="connection_popup_quit">Quitter</string>
+    <string name="connection_popup_quit">Non merci</string>
+    <string name="main_activity_activity_label">Bibliothèque</string>
+    <string name="details_activity_label">Détails</string>
+    <string name="login_activity_label">Connexion</string>
+    <string name="signup_activity_label">Inscription</string>
+    <string name="login_progress_dialog">Connexion...</string>
+    <string name="email_non_valide">Email non valide</string>
+    <string name="password_court">Mot de passe trop court (4 caractères minimum)</string>
+    <string name="verif_password_incorrecte">Vérification mot de passe incorrecte</string>
+    <string name="pseudo_court">Pseudo trop court (3 caractères minimum)</string>
+    <string name="signup_progress_dialog">Inscription...</string>
+    <string name="email">Email</string>
+    <string name="password">Mot de passe</string>
+    <string name="login">Se connecter</string>
+    <string name="non_inscrit">Pas encore inscrit ?</string>
+    <string name="pseudo">Pseudo</string>
+    <string name="verif_password">Vérification mot de passe</string>
+    <string name="signup">S\'inscrire</string>
+    <string name="deja_inscrit">Déjà inscrit ? Se connecter</string>
     <!-- Fin strings AlertDialog connexion internet -->
-    
+
 </resources>

@@ -36,8 +36,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_rechercher, menu);
 
-        if (!isNetworkAvailable())
-            launchingConnection();
+        Utilities.checkNetworkAvailable(this);
 
         ListView listResult = (ListView) findViewById(R.id.list_result);
         if (listResult != null) {

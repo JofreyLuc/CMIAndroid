@@ -13,13 +13,17 @@
         android:title="@string/action_overflow">
         <menu>
             <item
-                android:id="@+id/overflow1"
+                android:id="@+id/action_search"
                 app:showAsAction="never"
-                android:title="@string/book_search" />
+                android:title="@string/book_search_activity_label" />
             <item
-                android:id="@+id/overflow2"
+                android:id="@+id/action_login"
                 app:showAsAction="never"
-                android:title="@string/action_overflow" />
+                android:title="@string/login_activity_label" />
+            <item
+                android:id="@+id/action_signup"
+                app:showAsAction="never"
+                android:title="@string/signup_activity_label" />
         </menu>
     </item>
 </menu>

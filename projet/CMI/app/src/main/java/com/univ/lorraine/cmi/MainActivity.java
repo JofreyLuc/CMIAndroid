@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,7 +16,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -27,8 +25,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.nononsenseapps.filepicker.FilePickerActivity;
@@ -39,8 +35,6 @@ import com.univ.lorraine.cmi.database.model.Annotation;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.reader.ReaderActivity;
-import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
-import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
 import com.univ.lorraine.cmi.retrofit.FileDownloadService;
 import com.univ.lorraine.cmi.retrofit.FileDownloadServiceProvider;
 
@@ -61,7 +55,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
@@ -127,19 +120,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     // fonction qui gere les actions des items des menus de lActionBar
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent i;
         switch (item.getItemId()) {
             case R.id.action_new:
                 pickEpubFiles();   // On demande à l'utilisateur de choisir les fichiers epub à importer.
                 return true;
-            case R.id.overflow1:
+            case R.id.action_search:
                 // DO SOMETHING
-                Intent i = new Intent(getApplicationContext(), SearchActivity.class);
+                i = new Intent(getApplicationContext(), SearchActivity.class);
                 startActivity(i);
                 //Toast.makeText(getApplicationContext(), "overflow1", Toast.LENGTH_LONG).show();
                 return true;
-            case R.id.overflow2:
-                // DO SOMETHING
-                Toast.makeText(getApplicationContext(), "overflow2", Toast.LENGTH_LONG).show();
+            case R.id.action_login:
+                i = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(i);
+                return true;
+            case R.id.action_signup:
+                i = new Intent(getApplicationContext(), SignupActivity.class);
+                startActivity(i);
                 return true;
             default:
                 return false;
@@ -434,7 +432,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     void testRetrofitUser(){
-        final CallMeIshmaelService cmiservice = CallMeIshmaelServiceProvider.getService();
+        /*final CallMeIshmaelService cmiservice = CallMeIshmaelServiceProvider.getService();
 
         Call<Livre> call = cmiservice.getLivre(Long.valueOf(1));
         call.enqueue(new Callback<Livre>() {
@@ -453,7 +451,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             public void onFailure(Call<Livre> call, Throwable t) {
                 System.out.println(t.toString());
             }
-        });
+        });*/
     }
 }
 
