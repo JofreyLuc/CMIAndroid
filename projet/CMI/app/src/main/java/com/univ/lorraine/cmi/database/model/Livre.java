@@ -21,6 +21,8 @@ import nl.siegmann.epublib.domain.Metadata;
 @DatabaseTable(tableName = "livre")
 public class Livre implements Parcelable {
 
+    public static final Long IDSERVEUR_NONE = Long.valueOf(-1);
+
     // json Strings
 
     public static final String ID_SERVEUR_JSON_NAME = "idLivre";
@@ -210,14 +212,14 @@ public class Livre implements Parcelable {
         else this.langue = meta.getLanguage();
 
         //TEMPORAIRE
-        this.idServeur = Long.valueOf(0);
+        this.idServeur = IDSERVEUR_NONE;
         this.lienDLEpub = "";
         this.noteMoyenne = 2;
         //TEMPORAIRE
     }
 
     public boolean estImporteLocalement() {
-        return idServeur == null || idServeur == 0;
+        return idServeur == IDSERVEUR_NONE;
     }
 
     // GETTERS AND SETTERS

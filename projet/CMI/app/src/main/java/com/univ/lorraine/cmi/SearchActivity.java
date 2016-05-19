@@ -12,11 +12,16 @@ import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
 
 public class SearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
-    
+
     private SearchView mSearchView;
     private TextView mStatusView;
 
@@ -28,7 +33,26 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         mStatusView = (TextView) findViewById(R.id.status_text);
+
+        Spinner spinnerLangue = (Spinner) findViewById(R.id.spinnerLangue);
+
+        if (spinnerLangue != null) {
+            spinnerLangue.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    String selectedItemText = (String) parent.getItemAtPosition(position);
+                    if(position > 0){
+                        Toast.makeText(getApplicationContext(), "Selection : " + selectedItemText, Toast.LENGTH_SHORT).show();
+                    }
+                }
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+        }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -62,13 +86,13 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        mStatusView.setText(newText);
+        //mStatusView.setText(newText);
         return false;
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        mStatusView.setText("Résultat(s) pour : " + query);
+        mStatusView.setText(String.format("%s%s", getResources().getString(R.string.result_recherche), query));
         return false;
     }
 

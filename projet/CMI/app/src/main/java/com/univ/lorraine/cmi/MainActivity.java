@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private static final int FILEPICKER_CODE = 0;
 
-    private static final int READER_CODE = 1;
+    public static final int READER_CODE = 1;
 
     private List<Bibliotheque> bibliotheques;
 
@@ -74,8 +74,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
         bibliotheques = new ArrayList<>();
         setBibliotheques();
-        //downloadFileAsync();
-        testRetrofitUser();
+        //testRetrofitUser();
         gridView = (GridView) findViewById(R.id.grid);
         gridView.setAdapter(new ImageAdapter(this));
         gridView.setOnItemClickListener(this);
@@ -432,33 +431,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         gridView.setAdapter(new ImageAdapter(this));    // Màj des vues
     }
 
-    // EXEMPLE
-    void downloadFileAsync() {
-        FileDownloadService downloadService = FileDownloadServiceProvider.getService();
-
-        final String fileUrl = "http://www.gutenberg.org/ebooks/42.epub.images";
-
-        Call<ResponseBody> call = downloadService.downloadFileWithDynamicUrl(fileUrl);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    File file = new File(Utilities.getAppStoragePath(getApplicationContext()), "test.epub");
-                    FileOutputStream fileOutputStream = new FileOutputStream(file);
-                    IOUtils.write(response.body().bytes(), fileOutputStream);
-                } catch (IOException e) {
-                    Log.e("TEST", "Error while writing file!");
-                    Log.e("TEST", e.toString());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                System.out.println(t.toString());
-            }
-        });
-    }
-
     void testRetrofitUser(){
         /*final CallMeIshmaelService cmiservice = CallMeIshmaelServiceProvider.getService();
 
@@ -466,7 +438,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         call.enqueue(new Callback<Livre>() {
             @Override
             public void onResponse(Call<Livre> call, Response<Livre> response) {
-                Log.e("BOOK", response.body().getTitre());
+                Log.e("STA", "" + response.code());
+                try {
+                    Log.e("ERR", response.errorBody().string());
+                    //Log.e("BOOK", response.body().getTitre());
+                } catch (IOException e){
+                    Log.e("EXC", e.getMessage());
+                }
             }
 
             @Override

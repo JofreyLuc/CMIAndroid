@@ -27,7 +27,16 @@
 
     <!-- Strings de BookDetailsActivity -->
     <string name="button_add">Ajouter à la bibliothèque</string>
+    <string name="button_readNow">Télécharger et lancer la lecture</string>
+    <string name="button_add_inactive">Déjà dans la bibliothèque</string>
+    <string name="button_readNow_alt">Lecture</string>
     <!-- Fin strings de BookDetailsActivity -->
+
+    <!-- Strings de SearchActivity -->
+    <string name="lire">Lire</string>
+    <string name="result_recherche">"Résultat(s) pour : "</string>
+    <string name="detail_book">Détails</string>
+    <!-- Fin strings de SearchActivity -->
 
     <!-- Strings du popmenu des livres dans la bibliothèque -->
     <string name="book_details">Voir les détails</string>
@@ -67,5 +76,14 @@
     <string name="signup">S\'inscrire</string>
     <string name="deja_inscrit">Déjà inscrit ? Se connecter</string>
     <!-- Fin strings AlertDialog connexion internet -->
+    
+    <string-array name="langues">
+        <item>Choisir la langue...</item>
+        <item>Anglais</item>
+        <item>Français</item>
+        <item>Italien</item>
+        <item>Allemand</item>
+        <item>Espagnol</item>
+    </string-array>
 
 </resources>
