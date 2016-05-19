@@ -29,6 +29,12 @@
     <string name="button_add">Ajouter à la bibliothèque</string>
     <!-- Fin strings de BookDetailsActivity -->
 
+    <!-- Strings de SearchActivity -->
+    <string name="lire">Lire</string>
+    <string name="result_recherche">"Résultat(s) pour : "</string>
+    <string name="detail_book">Détails</string>
+    <!-- Fin strings de SearchActivity -->
+
     <!-- Strings du popmenu des livres dans la bibliothèque -->
     <string name="book_details">Voir les détails</string>
     <string name="book_evaluate">Évaluer</string>
@@ -49,5 +55,16 @@
     <string name="connection_popup_settings">Activez-la !</string>
     <string name="connection_popup_quit">Quitter</string>
     <!-- Fin strings AlertDialog connexion internet -->
+
+
+
+    <string-array name="langues">
+        <item>Choisir la langue...</item>
+        <item>Anglais</item>
+        <item>Français</item>
+        <item>Italien</item>
+        <item>Allemand</item>
+        <item>Espagnol</item>
+    </string-array>
     
 </resources>

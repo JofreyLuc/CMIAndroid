@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,9 +57,45 @@ public class ListAdapter extends BaseAdapter {
         rowView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "You Clicked "+result[position], Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Selection "+result[position], Toast.LENGTH_LONG).show();
             }
         });
+
+
+
+        ImageButton add = (ImageButton) rowView.findViewById(R.id.imageButtonAdd);
+        Button lire = (Button) rowView.findViewById(R.id.buttonRead);
+        Button details = (Button) rowView.findViewById(R.id.buttonDetails);
+
+        if (details != null) {
+            details.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //ouvrir les détails du livre
+                    Toast.makeText(context, "voir détails "+result[position], Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        if (lire != null) {
+            lire.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //ouvrir le reader
+                    Toast.makeText(context, "Lire "+result[position], Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        if (add != null) {
+            add.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //ajouter le livre à la bibliothèque
+                    Toast.makeText(context, "Ajouter "+result[position], Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
         return rowView;
     }
 
