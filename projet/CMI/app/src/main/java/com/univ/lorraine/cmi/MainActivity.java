@@ -39,6 +39,8 @@ import com.univ.lorraine.cmi.database.model.Annotation;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.reader.ReaderActivity;
+import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
+import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
 import com.univ.lorraine.cmi.retrofit.FileDownloadService;
 import com.univ.lorraine.cmi.retrofit.FileDownloadServiceProvider;
 
@@ -434,7 +436,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     // EXEMPLE
     void downloadFileAsync() {
-        final FileDownloadService downloadService = FileDownloadServiceProvider.getService();
+        FileDownloadService downloadService = FileDownloadServiceProvider.getService();
 
         final String fileUrl = "http://www.gutenberg.org/ebooks/42.epub.images";
 
