@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -19,6 +21,7 @@ import com.skytree.epub.Book;
 import com.skytree.epub.Highlights;
 import com.skytree.epub.KeyListener;
 import com.skytree.epub.PageTransition;
+import com.skytree.epub.ReflowableControl;
 import com.skytree.epub.SkyKeyManager;
 import com.skytree.epub.SkyProvider;
 
@@ -131,7 +134,7 @@ public class ReaderActivity extends AppCompatActivity {
         return progress;
     }
 
-    public ViewGroup getView() {
+    public ReflowableControl getReflowableControl() {
         return rv;
     }
 
@@ -187,13 +190,11 @@ public class ReaderActivity extends AppCompatActivity {
         // If recalcDelayTime is too short, setContentBackground function failed to work properly.
         //rv.setRecalcDelayTime(2500);
 
-
         // Read PagesStack and save it to Bitmap.
         Bitmap pagesStack = BitmapFactory.decodeResource(getResources(), R.drawable.pages_stack);
 
         // Read PagesCenter and save it to Bitmap.
         Bitmap pagesCenter = BitmapFactory.decodeResource(getResources(), R.drawable.pages_center);
-
 
         // Register pagesStack to ReflowableControl.
         rv.setPagesStackImage(pagesStack);
@@ -201,8 +202,25 @@ public class ReaderActivity extends AppCompatActivity {
         // Register pagesCenter to ReflowableControl.
         rv.setPagesCenterImage(pagesCenter);
 
+        rv.setMaxSizeForBackground(1024);
+
         // set two pages mode(double paged mode) when landscape view.
-        rv.setDoublePagedForLandscape(true);
+        boolean doublePaged = true;
+        rv.setDoublePagedForLandscape(doublePaged);
+
+        Bitmap portraitBackground = BitmapFactory.decodeResource(getResources(), R.drawable.phone_portrait_white);
+
+        Bitmap landscapeBackground;
+        if (doublePaged)
+            landscapeBackground = BitmapFactory.decodeResource(getResources(),R.drawable.phone_landscape_double_white);
+        else
+            landscapeBackground = BitmapFactory.decodeResource(getResources(), R.drawable.phone_landscape_white);
+
+        rv.setForegroundColor(Color.BLACK);
+
+        rv.setBackgroundForPortrait(portraitBackground, new Rect(0, 0, 2004, 1506), new Rect(32, 0, 2004 - 32, 1506));            // Android Rect - left,top,right,bottom
+
+        rv.setBackgroundForLandscape(landscapeBackground, new Rect(0, 0, 1002, 1506), new Rect(0, 0, 1002 - 32, 1506)); 			// Android Rect - left,top,right,bottom
 
         // set default font
         rv.setFont("TimesRoman", 20);
@@ -211,9 +229,9 @@ public class ReaderActivity extends AppCompatActivity {
         rv.setLineSpacing(135); // the value is supposed to be percent(%).
 
         // set the left and right margins. 15% of screen width.
-        rv.setHorizontalGapRatio(0.15);
+        rv.setHorizontalGapRatio(0.30);
         // set the top and bottom margins. 10% of screen height.
-        rv.setVerticalGapRatio(0.1);
+        rv.setVerticalGapRatio(0.22);
 
         // set the Listener for Highlight processing.
         rv.setHighlightListener(new HighlightDelegate(highlights));
