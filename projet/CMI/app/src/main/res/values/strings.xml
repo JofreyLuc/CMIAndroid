@@ -57,7 +57,8 @@
     <string name="connection_popup_message">Aucune connexion internet n\'a été trouvée.</string>
     <string name="connection_popup_settings">Activez-la !</string>
     <string name="connection_popup_quit">Non merci</string>
-    <string name="main_activity_label">Bibliothèque</string>
+    <string name="main_activity_label">CMI</string>
+    <string name="main_activity_label_alt">Bibliothèque</string>
     <string name="details_activity_label">Détails</string>
     <string name="login_activity_label">Connexion</string>
     <string name="signup_activity_label">Inscription</string>
