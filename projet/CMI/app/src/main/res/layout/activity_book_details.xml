@@ -17,8 +17,7 @@
             android:layout_width="150dp"
             android:layout_height="250dp"
             android:id="@+id/details_cover"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_alignParentTop="true" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -26,10 +25,19 @@
             android:id="@+id/details_tags"
             android:text="Text"
             android:layout_below="@id/details_cover"
-            android:gravity="center"
             android:scrollbars = "vertical"
             android:layout_centerHorizontal="true"
             />
+
+        <Button
+            android:id="@+id/button_add"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:text="@string/button_add"
+            android:textColor="#595959"
+            android:background="@drawable/buttonshape"
+            android:layout_toRightOf="@id/details_cover"
+            android:visibility="invisible"/>
 
     </RelativeLayout>
 </ScrollView>

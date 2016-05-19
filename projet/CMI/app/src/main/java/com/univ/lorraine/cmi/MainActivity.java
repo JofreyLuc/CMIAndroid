@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         bibliotheques = new ArrayList<>();
         setBibliotheques();
         //downloadFileAsync();
+        testRetrofitUser();
         gridView = (GridView) findViewById(R.id.grid);
         gridView.setAdapter(new ImageAdapter(this));
         gridView.setOnItemClickListener(this);
@@ -456,6 +457,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.out.println(t.toString());
+            }
+        });
+    }
+
+    void testRetrofitUser(){
+        final CallMeIshmaelService cmiservice = CallMeIshmaelServiceProvider.getService();
+
+        Call<Livre> call = cmiservice.getLivre(Long.valueOf(1));
+        call.enqueue(new Callback<Livre>() {
+            @Override
+            public void onResponse(Call<Livre> call, Response<Livre> response) {
+                Log.e("BOOK", response.body().getTitre());
+            }
+
+            @Override
+            public void onFailure(Call<Livre> call, Throwable t) {
                 System.out.println(t.toString());
             }
         });
