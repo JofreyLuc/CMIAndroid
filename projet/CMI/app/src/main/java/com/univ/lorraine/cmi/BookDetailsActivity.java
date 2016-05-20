@@ -1,24 +1,24 @@
 package com.univ.lorraine.cmi;
 
-import android.app.ActionBar;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.media.Image;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.squareup.picasso.Picasso;
-import com.univ.lorraine.cmi.R;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.database.model.Livre;
@@ -44,6 +44,17 @@ public class BookDetailsActivity extends AppCompatActivity {
     private Button boutonAjout;
     // Bouton lecture
     private Button boutonLecture;
+    // PopUp pour enter un commentaire
+    private Dialog rateDialog;
+    // Bouton pour ouvrir la PopUp commentaire
+    private FloatingActionButton writeComment;
+    // Rating Bar
+    private RatingBar ratingBar;
+    // TextView cliquable pour envoyer le commentaire
+    private TextView envoyer;
+// Commentaire
+    private EditText comment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +72,7 @@ public class BookDetailsActivity extends AppCompatActivity {
         details = (TextView) findViewById(R.id.details_tags);
         boutonAjout = (Button) findViewById(R.id.button_add);
         boutonLecture = (Button) findViewById(R.id.button_readNow);
+
 
         // Chargement de l'image de couverture
         if (Utilities.hasACover(getApplicationContext(), livre)) {
@@ -97,6 +109,32 @@ public class BookDetailsActivity extends AppCompatActivity {
                 else downloadAndRead(livre);
             }
         });
+
+
+        writeComment = (FloatingActionButton) findViewById(R.id.fab);
+        if (writeComment != null) {
+            writeComment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    rateDialog = new Dialog(BookDetailsActivity.this);
+                    rateDialog.setContentView(R.layout.rate_layout);
+                    rateDialog.setCancelable(true);
+                    ratingBar = (RatingBar) rateDialog.findViewById(R.id.dialog_ratingbar);
+                    TextView dialogTitle = (TextView) rateDialog.findViewById(R.id.rate_dialog_title);
+                    dialogTitle.setText(livre.getTitre());
+
+                    envoyer = (TextView) rateDialog.findViewById(R.id.rate_dialog_submit);
+                    comment = (EditText) rateDialog.findViewById(R.id.edit_commentaire);
+                    envoyer.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(BookDetailsActivity.this,ratingBar.getRating() + " " + comment.getText(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    rateDialog.show();
+                }
+            });
+        }
     }
 
     /**

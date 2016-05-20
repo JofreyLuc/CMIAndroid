@@ -36,6 +36,8 @@
     <string name="button_readNow">Télécharger et lancer la lecture</string>
     <string name="button_add_inactive">Déjà dans la bibliothèque</string>
     <string name="button_readNow_alt">Lecture</string>
+    <string name="commentaire">Commentaire</string>
+    <string name="submit_comment">Envoyer</string>
     <!-- Fin strings de BookDetailsActivity -->
 
     <!-- Strings de SearchActivity -->
