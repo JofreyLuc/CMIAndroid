@@ -144,7 +144,14 @@ public class ReaderActivity extends AppCompatActivity {
                         if (result.equals("end_of_book"))
                             // On revient à l'activité avant le reader
                             finish();
-                        //Log.d("TEST", "retour reader result canceled");
+                    }
+                }
+                // Lien retour début du livre depuis end of book activity
+                else if (resultCode == Activity.RESULT_OK) {
+                    if (data != null) {
+                        String result = data.getStringExtra("result");
+                        if (result.equals("retour_debut"))
+                            backToFirstPage();
                     }
                 }
                 break;
@@ -345,6 +352,10 @@ public class ReaderActivity extends AppCompatActivity {
         public Book getBook() {
             return rv.getBook();
         }
+    }
+
+    public void backToFirstPage () {
+        rv.gotoPageByPagePositionInBook(0);
     }
 
     public void goToEndOfBookPage() {

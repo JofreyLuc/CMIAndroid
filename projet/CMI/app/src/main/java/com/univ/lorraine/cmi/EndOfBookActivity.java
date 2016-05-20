@@ -98,19 +98,10 @@ public class EndOfBookActivity extends AppCompatActivity {
         retour_debut_livre.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bibliotheque.setPositionLecture(0.);
-                try {
-                    Dao<Bibliotheque, Long> daobibliotheque = getHelper().getBibliothequeDao();
-                    daobibliotheque.update(bibliotheque);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-
-                Bundle b = new Bundle();
-                b.putParcelable("bibliotheque", bibliotheque);
-                Intent i = new Intent(getApplicationContext(), ReaderActivity.class);
-                i.putExtra("bundle", b);
-                startActivity(i);
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("result", "retour_debut");
+                setResult(EndOfBookActivity.RESULT_OK, resultIntent);
+                finish();
             }
         });
 
