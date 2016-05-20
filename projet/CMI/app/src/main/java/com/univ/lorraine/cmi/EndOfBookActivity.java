@@ -128,18 +128,22 @@ public class EndOfBookActivity extends AppCompatActivity {
         view.setOnTouchListener(new OnSwipeTouchListener(this) {
             public void onSwipeRight() {
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
 
             public void onTouchLeft() {
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
     }
 
     @Override
-    public void finish() {
-        super.finish();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    public void onBackPressed() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("result", "end_of_book");
+        setResult(EndOfBookActivity.RESULT_CANCELED, resultIntent);
+        super.onBackPressed();
     }
 
     /**

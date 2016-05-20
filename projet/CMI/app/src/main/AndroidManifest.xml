@@ -15,7 +15,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:label="@string/main_activity_label">
+            android:label="@string/main_activity_label"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -71,7 +72,8 @@
         </activity>
         <activity
             android:name=".EndOfBookActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:noHistory="true">
         </activity>
     </application>
 

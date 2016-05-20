@@ -45,6 +45,7 @@ public class SignupActivity extends AppCompatActivity {
                 // Start the Signup activity
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivityForResult(intent, REQUEST_LOGIN);
+                finish();
             }
         });
     }

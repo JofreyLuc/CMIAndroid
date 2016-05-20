@@ -1,7 +1,9 @@
 package com.univ.lorraine.cmi.reader;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,6 +28,7 @@ import com.skytree.epub.SkyKeyManager;
 import com.skytree.epub.SkyProvider;
 
 import com.squareup.picasso.Picasso;
+import com.univ.lorraine.cmi.EndOfBookActivity;
 import com.univ.lorraine.cmi.R;
 import com.univ.lorraine.cmi.Utilities;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
@@ -83,6 +86,8 @@ public class ReaderActivity extends AppCompatActivity {
 
     private CmidbaOpenDatabaseHelper dbhelper = null;
 
+    private static final int END_OF_BOOK_CODE = 0;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // On récupère l'objet bibliothèque lié au livre passé dans l'Intent
@@ -126,6 +131,24 @@ public class ReaderActivity extends AppCompatActivity {
         super.onResume();
         pageMovedDelegate.resetAfterLastPageAlreadyCalled();
         pageMovedDelegate.resetBeforeFirstPageAlreadyCalled();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case END_OF_BOOK_CODE :
+                // Bouton back depuis end of book activity
+                if (resultCode == Activity.RESULT_CANCELED) {
+                    if (data != null) {
+                        String result = data.getStringExtra("result");
+                        if (result.equals("end_of_book"))
+                            // On revient à l'activité avant le reader
+                            finish();
+                        //Log.d("TEST", "retour reader result canceled");
+                    }
+                }
+                break;
+        }
     }
 
     /**
@@ -322,5 +345,13 @@ public class ReaderActivity extends AppCompatActivity {
         public Book getBook() {
             return rv.getBook();
         }
+    }
+
+    public void goToEndOfBookPage() {
+        Bundle b = new Bundle();
+        b.putParcelable("bibliotheque", bibliotheque);
+        Intent i = new Intent(ReaderActivity.this, EndOfBookActivity.class);
+        i.putExtra("bundle", b);
+        startActivityForResult(i, END_OF_BOOK_CODE);
     }
 }

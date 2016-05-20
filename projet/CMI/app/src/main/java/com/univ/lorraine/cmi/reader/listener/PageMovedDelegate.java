@@ -141,11 +141,7 @@ public class PageMovedDelegate implements PageMovedListener {
         if (!afterLastPageAlreadyCalled) {
             afterLastPageAlreadyCalled = true;
             Log.d("TEST", "apres last page");
-            Bundle b = new Bundle();
-            b.putParcelable("bibliotheque", reader.getBibliotheque());
-            Intent i = new Intent(reader, EndOfBookActivity.class);
-            i.putExtra("bundle", b);
-            reader.startActivity(i);
+            reader.goToEndOfBookPage();
         }
     }
 
