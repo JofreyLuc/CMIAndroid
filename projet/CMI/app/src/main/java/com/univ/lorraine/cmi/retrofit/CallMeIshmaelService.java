@@ -9,7 +9,9 @@ import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -52,6 +54,9 @@ public interface CallMeIshmaelService {
     @PUT("users/{idUser}/library")
     Call<ResponseBody> updateBibliotheque(@Path("idUser") Long idUtilisateur, @Body Bibliotheque bibliotheque);
 
+    @DELETE("users/{idUser}/library/{idLibrary}")
+    Call<ResponseBody> deleteBibliotheque(@Path("idUser") Long idUtilisateur, @Path("idLibrary") Long idBibliotheque);
+
     // Notes
     @GET("users/{idUser}/library/{idLibrary}/notes")
     Call<List<Annotation>> getAnnotations(@Path("idUser") Long idUtilisateur, @Path("idLibrary") Long idBibliotheque);
@@ -64,5 +69,8 @@ public interface CallMeIshmaelService {
 
     @PUT("users/{idUser}/library/{idLibrary}/notes")
     Call<ResponseBody> updateAnnotation(@Path("idUser") Long idUtilisateur, @Path("idLibrary") Long idBibliotheque, @Body Annotation annotation);
+
+    @DELETE("users/{idUser}/library/{idLibrary}/notes/{idNote}")
+    Call<ResponseBody> deleteAnnotation(@Path("idUser") Long idUtilisateur, @Path("idLibrary") Long idBibliotheque, @Path("idNote") Long idAnnotation);
 
 }

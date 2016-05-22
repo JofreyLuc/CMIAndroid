@@ -247,6 +247,8 @@ public class ReaderActivity extends AppCompatActivity {
 
         rv.setMaxSizeForBackground(1024);
 
+        rv.setExtractText(true);
+
         // set two pages mode(double paged mode) when landscape view.
         boolean doublePaged = true;
         rv.setDoublePagedForLandscape(doublePaged);

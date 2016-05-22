@@ -58,20 +58,10 @@ public class PageMovedDelegate implements PageMovedListener {
     public void onPageMoved(PageInformation pi) {
         currentPage = pi;
 
-        String msg = "chapterIndex: "+currentPage.chapterIndex
-                +"\nnumberOfChaptersInBook: "+currentPage.numberOfChaptersInBook
-                +"\nnumberOfPagesInBook: "+currentPage.numberOfPagesInBook
-                +"\npageIndex: "+currentPage.pageIndex
-                +"\npageIndexInBook: "+currentPage.pageIndexInBook
-                +"\nnumberOfPagesInChapter: "+currentPage.numberOfPagesInChapter
-                +"\nchapterTitle: "+currentPage.chapterTitle
-                +"\npagePositionInChapter: "+currentPage.pagePositionInChapter
-                +"\npagePositionInBook: "+currentPage.pagePositionInBook
-                +"\npageDescription: "+currentPage.pageDescription
-                +"\nstartIndex: "+currentPage.startIndex
-                +"\nendIndex: "+currentPage.endIndex
-                +"\nstartOffset: "+currentPage.startOffset
-                +"\nendOffset: "+currentPage.endOffset;
+        String msg =
+                "firstCharacterOffsetInPage: "+currentPage.firstCharacterOffsetInPage
+                +"\ntextLengthInPage: "+currentPage.textLengthInPage
+                +"\nlastCharacterOffsetInPage: "+(currentPage.textLengthInPage + currentPage.firstCharacterOffsetInPage);
 
         if (currentPage.highlightsInPage != null)
             for (int i=0; i<currentPage.highlightsInPage.getSize(); i++) {

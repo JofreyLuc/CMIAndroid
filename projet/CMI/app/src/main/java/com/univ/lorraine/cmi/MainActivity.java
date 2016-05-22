@@ -25,6 +25,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.nononsenseapps.filepicker.FilePickerActivity;
@@ -35,11 +37,14 @@ import com.univ.lorraine.cmi.database.model.Annotation;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.reader.ReaderActivity;
-import com.univ.lorraine.cmi.retrofit.FileDownloadService;
-import com.univ.lorraine.cmi.retrofit.FileDownloadServiceProvider;
+import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
+import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
+import com.univ.lorraine.cmi.synchronize.callContainer.bibliotheque.BibliothequeUpdateCall;
+import com.univ.lorraine.cmi.synchronize.CallContainerQueue;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -137,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 startActivity(i);
                 return true;
             case R.id.action_signup:
+                exempleMiseEnCacheRequete();
                 i = new Intent(getApplicationContext(), SignupActivity.class);
                 startActivity(i);
                 return true;
@@ -430,6 +436,40 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // On met à jour l'affichage de la bibliothèque
         setBibliotheques();
         gridView.setAdapter(new ImageAdapter(this));    // Màj des vues
+    }
+
+    void exempleMiseEnCacheRequete() {
+        Log.d("TEST", "Test mise en cache");
+        CallMeIshmaelService cmiservice = CallMeIshmaelServiceProvider.getService();
+        final Bibliotheque bibliotheque = bibliotheques.get(0); // Biblio sur laquelle on veut faire un update
+        Call<ResponseBody> call = cmiservice.updateBibliotheque(Long.valueOf(1), bibliotheque);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                // Traitement après réussite
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.out.println(t.toString());
+                // EN CAS DE CONNEXION INTERNET ABSENTE EGALEMENT
+                // Ajout du call raté dans file
+                CallContainerQueue.getInstance().enqueue(
+                        new BibliothequeUpdateCall(call, bibliotheque)
+                );
+            }
+        });
+
+        // A PART, lors d'une connexion retrouvée par exemple
+        //CallContainerQueue.getInstance().execute();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        String json = gson.toJson(call);
+        System.out.println(json);
+        try {
+            IOUtils.write(json, new FileOutputStream(Utilities.getAppStoragePath(getApplicationContext())+"/json"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     void testRetrofitUser(){
