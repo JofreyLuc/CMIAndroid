@@ -12,8 +12,10 @@ public abstract class AbstractBibliothequeCall<R> extends CallContainer<Biblioth
 
     public final static String dataType = "BIBLIOTHEQUE";
 
-    public AbstractBibliothequeCall(Call<R> c, Bibliotheque o) {
-        super(c, o);
+    public AbstractBibliothequeCall() {}
+
+    public AbstractBibliothequeCall(Long idU, Bibliotheque o) {
+        super(idU, o);
     }
 
     public String getDataType() {

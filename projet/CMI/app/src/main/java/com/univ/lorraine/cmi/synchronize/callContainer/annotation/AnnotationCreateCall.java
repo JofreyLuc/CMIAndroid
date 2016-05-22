@@ -1,6 +1,9 @@
 package com.univ.lorraine.cmi.synchronize.callContainer.annotation;
 
 import com.univ.lorraine.cmi.database.model.Annotation;
+import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
+
+import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -12,8 +15,10 @@ public class AnnotationCreateCall extends AbstractAnnotationCall<Annotation> {
 
     public final static String type = dataType + "_CREATE_" + extensionName;
 
-    public AnnotationCreateCall(Call<Annotation> c, Annotation o) {
-        super(c, o);
+    public AnnotationCreateCall(){}
+
+    public AnnotationCreateCall(Long idU, Annotation o) {
+        super(idU, o);
     }
 
     @Override
@@ -22,17 +27,27 @@ public class AnnotationCreateCall extends AbstractAnnotationCall<Annotation> {
     }
 
     @Override
-    public void beforeExecuteCall(Call<Annotation> call) {
+    protected void beforeExecuteCall() {
 
     }
 
     @Override
-    public void afterExecuteCall(Response<Annotation> response) {
-        // Update cette annotation dans la base de donnée pour enregistrer l'id serveur
+    protected Response<Annotation> executeCall(CallMeIshmaelService service) throws IOException, RuntimeException {
+        Annotation annot = (Annotation) getObjectData();
+        return service.createAnnotation(idUser, annot.getBibliotheque().getIdServeur(), annot)
+                .execute();
     }
 
     @Override
-    public void onCallFailed(Call<Annotation> call) {
+    protected void afterExecuteCall(Response<Annotation> response) {
+        // Mise à jour de l'idServeur de l'annotation dans la bdd locale
+        //TODO
+    }
+
+    @Override
+    protected void onCallFailed() {
 
     }
+
+
 }

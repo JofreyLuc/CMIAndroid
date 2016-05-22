@@ -12,8 +12,10 @@ public abstract class AbstractAnnotationCall<R> extends CallContainer<Annotation
 
     public final static String dataType = "ANNOTATION";
 
-    public AbstractAnnotationCall(Call<R> c, Annotation o) {
-        super(c, o);
+    public AbstractAnnotationCall(){ }
+
+    public AbstractAnnotationCall(Long idU, Annotation o) {
+        super(idU, o);
     }
 
     public String getDataType() {

@@ -1,6 +1,9 @@
 package com.univ.lorraine.cmi.synchronize.callContainer.bibliotheque;
 
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
+import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
+
+import java.io.IOException;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -13,8 +16,10 @@ public class BibliothequeUpdateCall extends AbstractBibliothequeCall<ResponseBod
 
     public final static String type = dataType + "_UPDATE_" + extensionName;
 
-    public BibliothequeUpdateCall(Call<ResponseBody> c, Bibliotheque o) {
-        super(c, o);
+    public BibliothequeUpdateCall() {}
+
+    public BibliothequeUpdateCall(Long idU, Bibliotheque o) {
+        super(idU, o);
     }
 
     @Override
@@ -23,17 +28,25 @@ public class BibliothequeUpdateCall extends AbstractBibliothequeCall<ResponseBod
     }
 
     @Override
-    public void beforeExecuteCall(Call<ResponseBody> call) {
+    protected void beforeExecuteCall() {
 
     }
 
     @Override
-    public void afterExecuteCall(Response<ResponseBody> response) {
+    protected Response<ResponseBody> executeCall(CallMeIshmaelService service) throws IOException, RuntimeException {
+        return service.updateBibliotheque(idUser, (Bibliotheque)getObjectData())
+                .execute();
+    }
+
+    @Override
+    protected void afterExecuteCall(Response<ResponseBody> response) {
 
     }
 
     @Override
-    public void onCallFailed(Call<ResponseBody> call) {
+    protected void onCallFailed() {
 
     }
+
+
 }

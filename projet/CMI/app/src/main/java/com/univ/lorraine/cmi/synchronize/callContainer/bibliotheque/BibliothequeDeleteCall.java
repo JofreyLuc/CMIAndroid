@@ -1,6 +1,9 @@
 package com.univ.lorraine.cmi.synchronize.callContainer.bibliotheque;
 
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
+import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
+
+import java.io.IOException;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -13,8 +16,10 @@ public class BibliothequeDeleteCall extends AbstractBibliothequeCall<ResponseBod
 
     public final static String type = dataType + "_DELETE_" + extensionName;
 
-    public BibliothequeDeleteCall(Call<ResponseBody> c, Bibliotheque o) {
-        super(c, o);
+    public BibliothequeDeleteCall(){}
+
+    public BibliothequeDeleteCall(Long idU, Bibliotheque o) {
+        super(idU, o);
     }
 
     @Override
@@ -22,18 +27,27 @@ public class BibliothequeDeleteCall extends AbstractBibliothequeCall<ResponseBod
         return type;
     }
 
+
+
     @Override
-    public void beforeExecuteCall(Call call) {
+    protected void beforeExecuteCall() {
 
     }
 
     @Override
-    public void afterExecuteCall(Response response) {
+    protected Response<ResponseBody> executeCall(CallMeIshmaelService service) throws IOException, RuntimeException {
+        return service.deleteBibliotheque(idUser, ((Bibliotheque)getObjectData()).getIdServeur())
+                .execute();
+    }
+
+    @Override
+    protected void afterExecuteCall(Response<ResponseBody> response) {
 
     }
 
     @Override
-    public void onCallFailed(Call call) {
+    protected void onCallFailed() {
 
     }
+
 }

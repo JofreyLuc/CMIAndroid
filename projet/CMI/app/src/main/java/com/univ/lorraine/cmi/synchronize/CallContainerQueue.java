@@ -1,14 +1,11 @@
 package com.univ.lorraine.cmi.synchronize;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.univ.lorraine.cmi.database.model.Annotation;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
-import com.univ.lorraine.cmi.synchronize.callContainer.annotation.AbstractAnnotationCall;
-import com.univ.lorraine.cmi.synchronize.callContainer.annotation.AnnotationCreateCall;
-import com.univ.lorraine.cmi.synchronize.callContainer.annotation.AnnotationDeleteCall;
-import com.univ.lorraine.cmi.synchronize.callContainer.annotation.AnnotationUpdateCall;
-import com.univ.lorraine.cmi.synchronize.callContainer.bibliotheque.BibliothequeDeleteCall;
-import com.univ.lorraine.cmi.synchronize.callContainer.bibliotheque.BibliothequeUpdateCall;
 import com.univ.lorraine.cmi.synchronize.callContainer.CallContainer;
+import com.univ.lorraine.cmi.synchronize.callContainer.CallContainerClassAdapter;
 
 import java.util.Iterator;
 
@@ -17,6 +14,8 @@ import java.util.Iterator;
  */
 public class CallContainerQueue extends AbstractCallContainerQueue {
 
+    private Gson gson;
+
     private static CallContainerQueue ourInstance = new CallContainerQueue();
 
     public static CallContainerQueue getInstance() {
@@ -24,6 +23,10 @@ public class CallContainerQueue extends AbstractCallContainerQueue {
     }
 
     private CallContainerQueue() {
+        gson = new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .registerTypeAdapter(CallContainer.class, new CallContainerClassAdapter())
+                .create();
     }
 
     /**
@@ -37,7 +40,7 @@ public class CallContainerQueue extends AbstractCallContainerQueue {
         Iterator<CallContainer> it;
         Bibliotheque biblio;
         Annotation annot;
-        switch (callContainer.getType()) {
+        /*switch (callContainer.getType()) {
             // Bibliothèque
             case BibliothequeUpdateCall.type :
                 biblio = (Bibliotheque) callContainer.getObjectData();
@@ -98,7 +101,7 @@ public class CallContainerQueue extends AbstractCallContainerQueue {
                         it.remove();
                 }
                 break;
-        }
+        }*/
     }
 
     /**
@@ -109,5 +112,22 @@ public class CallContainerQueue extends AbstractCallContainerQueue {
     @Override
     protected void afterEnqueue(CallContainer callContainer) {
 
+    }
+
+    public String save() {
+        Gson gson = new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .registerTypeAdapter(CallContainer.class, new CallContainerClassAdapter())
+                .create();
+        return gson.toJson(this);
+    }
+
+    public void load(String json) {
+        Gson gson = new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .registerTypeAdapter(CallContainer.class, new CallContainerClassAdapter())
+                .create();
+
+        ourInstance = gson.fromJson(json, this.getClass());
     }
 }

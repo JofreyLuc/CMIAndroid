@@ -2,7 +2,10 @@ package com.univ.lorraine.cmi.synchronize;
 
 import android.os.AsyncTask;
 
+import com.google.gson.annotations.Expose;
+import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
 import com.univ.lorraine.cmi.synchronize.callContainer.CallContainer;
+import com.univ.lorraine.cmi.synchronize.callContainer.bibliotheque.AbstractBibliothequeCall;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -12,7 +15,20 @@ import java.util.LinkedList;
  */
 public abstract class AbstractCallContainerQueue {
 
+    @Expose
     private LinkedList<CallContainer> queue = new LinkedList<CallContainer>();
+
+    public AbstractCallContainerQueue() {
+
+    }
+
+    public LinkedList<CallContainer> getQueue() {
+        return queue;
+    }
+
+    public void setQueue(LinkedList<CallContainer> queue) {
+        this.queue = queue;
+    }
 
     public final void enqueue(CallContainer item) {
         final CallContainer fitem = item;
@@ -53,7 +69,7 @@ public abstract class AbstractCallContainerQueue {
                 protected Void doInBackground(Void... params) {
                     while (!isEmpty()) {
                         CallContainer callContainer = dequeue();
-                        callContainer.execute();
+                        callContainer.execute(CallMeIshmaelServiceProvider.getService());
                     }
                     return null;
                 }

@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.nononsenseapps.filepicker.FilePickerActivity;
@@ -39,8 +40,12 @@ import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.reader.ReaderActivity;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
-import com.univ.lorraine.cmi.synchronize.callContainer.bibliotheque.BibliothequeUpdateCall;
 import com.univ.lorraine.cmi.synchronize.CallContainerQueue;
+import com.univ.lorraine.cmi.synchronize.callContainer.CallContainer;
+import com.univ.lorraine.cmi.synchronize.callContainer.annotation.AnnotationCreateCall;
+import com.univ.lorraine.cmi.synchronize.callContainer.bibliotheque.AbstractBibliothequeCall;
+import com.univ.lorraine.cmi.synchronize.callContainer.bibliotheque.BibliothequeDeleteCall;
+import com.univ.lorraine.cmi.synchronize.callContainer.bibliotheque.BibliothequeUpdateCall;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,6 +53,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -443,7 +449,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         CallMeIshmaelService cmiservice = CallMeIshmaelServiceProvider.getService();
         final Bibliotheque bibliotheque = bibliotheques.get(0); // Biblio sur laquelle on veut faire un update
         Call<ResponseBody> call = cmiservice.updateBibliotheque(Long.valueOf(1), bibliotheque);
-        call.enqueue(new Callback<ResponseBody>() {
+        /*call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 // Traitement après réussite
@@ -458,13 +464,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         new BibliothequeUpdateCall(call, bibliotheque)
                 );
             }
-        });
+        });*/
 
         // A PART, lors d'une connexion retrouvée par exemple
         //CallContainerQueue.getInstance().execute();
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        String json = gson.toJson(call);
-        System.out.println(json);
+        // Test serialize json
+        CallContainer test = new BibliothequeDeleteCall(Long.valueOf(1), bibliotheque);
+        CallContainerQueue.getInstance().enqueue(test);
+        CallContainerQueue.getInstance().enqueue(new BibliothequeUpdateCall(Long.valueOf(1), bibliotheque));
+
+        String json = CallContainerQueue.getInstance().save();
+        System.out.println("JSON: "+json);
+        CallContainerQueue.getInstance().load(json);
+        CallContainerQueue.getInstance().enqueue(test);
+        String json2 = CallContainerQueue.getInstance().save();
+        System.out.println("JSON2: " + json2);
         try {
             IOUtils.write(json, new FileOutputStream(Utilities.getAppStoragePath(getApplicationContext())+"/json"));
         } catch (FileNotFoundException e) {
