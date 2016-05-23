@@ -194,7 +194,7 @@ public class BookDetailsActivity extends AppCompatActivity {
             // Téléchargement du livre et extraction de la couverture
             String dest = Utilities.getBookStoragePath(this) + '/' + livre.getIdLivre() + "/livre.epub";
             Utilities.downloadFileAsync(l.getLienDLEpub(), dest);
-            Utilities.extractCover(dest);
+            Utilities.extractCover(getApplicationContext(), l);
 
             // Création de la Biblothèque à partir du livre
             Bibliotheque biblio = new Bibliotheque(livre);
