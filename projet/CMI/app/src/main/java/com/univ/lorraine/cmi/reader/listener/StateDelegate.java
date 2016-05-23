@@ -28,7 +28,6 @@ public class StateDelegate implements StateListener {
             case BUSY:
                 Utilities.disableUserInput(reader);
                 reader.getProgressDialog().show();
-                Toast.makeText(reader.getApplicationContext(), "BUSYYYYYY", Toast.LENGTH_SHORT).show();
                 break;
             case LOADING:
                 Utilities.disableUserInput(reader);
