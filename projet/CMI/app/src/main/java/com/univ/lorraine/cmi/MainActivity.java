@@ -11,6 +11,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -81,9 +83,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     // Liste des Bibliothèques des livres de l'utilisateur
     private List<Bibliotheque> bibliotheques;
+    // Liste des Livres du top 10
+    private List<Livre> livresTop;
 
     // GridView permettant d'afficher les livres
     private GridView gridView;
+    // RecyclerView permettant d'afficher le top 10
+    private RecyclerView recyclerView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -103,6 +109,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         gridView = (GridView) findViewById(R.id.grid);
         gridView.setAdapter(new ImageAdapter(this));
         gridView.setOnItemClickListener(this);
+
+        livresTop = new ArrayList<>();
+        setLivresTop();
+
+        recyclerView = (RecyclerView) findViewById(R.id.top_recyclerview);
+        recyclerView.setAdapter(new TopRecyclerAdapter(livresTop, getApplicationContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
@@ -226,8 +239,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         popup.show();
     }
 
-
-
     /**
      * Recharge la liste de bibliothèques actuelle (pour couvertures et titres)
      */
@@ -243,6 +254,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Log.e("EXC", e.getMessage());
         }
     }
+
+    private void setLivresTop() {
+        final CallMeIshmaelService cmiservice = CallMeIshmaelServiceProvider.getService();
+
+        Call<List<Livre>> call = cmiservice.getTop10();
+        call.enqueue(new Callback<List<Livre>>() {
+            @Override
+            public void onResponse(Call<List<Livre>> call, Response<List<Livre>> response) {
+                for (Livre l : response.body()){
+                    livresTop.add(l);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Livre>> call, Throwable t) {
+                Log.e("PBTOP", t.getMessage());
+            }
+        });
+    }
+
 
     /**
      * Lance l'activité du FilePicker et demande à l'utilisateur de sélectionner un/des livre(s) au format epub.
