@@ -148,15 +148,7 @@ public final class Utilities {
      * @return le chemin du fichier epub de ce livre.
      */
     public static String getBookFilePath(Context context, Livre livre) {
-        File dossier = new File(getBookStoragePath(context)
-                + "/" + livre.getIdLivre()
-                + "/livre.epub");
-
-        // Création du dossier s'il n'existe pas déjà
-        if (!dossier.exists())
-            dossier.mkdirs();
-
-        return dossier.getAbsolutePath();
+        return getBookDirPath(context, livre) + "/livre.epub";
     }
 
     /**
@@ -168,15 +160,7 @@ public final class Utilities {
      * @return le chemin de la couverture de ce livre.
      */
     public static String getBookCoverPath(Context context, Livre livre) {
-        File dossier = new File(getBookStoragePath(context)
-                + "/" + livre.getIdLivre()
-                + "/cover");
-
-        // Création du dossier s'il n'existe pas déjà
-        if (!dossier.exists())
-            dossier.mkdirs();
-
-        return dossier.getAbsolutePath();
+        return getBookDirPath(context, livre) + "/cover";
     }
 
     public static void loadCoverInto(Context context, Livre livre, ImageView view){
