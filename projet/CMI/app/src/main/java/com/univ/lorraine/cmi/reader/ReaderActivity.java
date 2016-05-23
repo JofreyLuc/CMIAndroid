@@ -90,6 +90,12 @@ public class ReaderActivity extends AppCompatActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // On cache la status bar (fullscreen)
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
+
         // On récupère l'objet bibliothèque lié au livre passé dans l'Intent
         bibliotheque = getIntent().getBundleExtra("bundle").getParcelable("bibliotheque");
 
@@ -324,7 +330,7 @@ public class ReaderActivity extends AppCompatActivity {
         ePubView.addView(rv);
 
         // Create the button to show up when text selected.
-        RelativeLayout.LayoutParams markButtonParam = new RelativeLayout.LayoutParams(
+        /*RelativeLayout.LayoutParams markButtonParam = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
         markButton = new Button(this);
@@ -337,7 +343,7 @@ public class ReaderActivity extends AppCompatActivity {
         markButton.setId(markButton.generateViewId());
         //markButton.setOnClickListener(onClickListener);
         markButton.setVisibility(View.VISIBLE);
-        ePubView.addView(markButton);
+        ePubView.addView(markButton);*/
 
         //  Specify ePubView including ReflowableView and mark Button as a ContentView of Activity.
         setContentView(ePubView);
