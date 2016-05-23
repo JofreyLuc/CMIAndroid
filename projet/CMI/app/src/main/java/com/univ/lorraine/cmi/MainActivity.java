@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     // Fonction qui gère l'action lors d'un clic sur un livre
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        lancerLecture((Bibliotheque) view.getTag());
+        BookUtilities.lancerLecture(this, (Bibliotheque) view.getTag());
     }
 
     // fonction qui gere les actions des items des menus de lActionBar
@@ -177,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         final Bibliotheque bibliotheque = (Bibliotheque)((View)v.getParent().getParent()).getTag();
         final Livre livre = bibliotheque.getLivre();
         PopupMenu popup = new PopupMenu(this, v);
+        final Context context = this;
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -198,6 +199,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     case R.id.action_supp:
                         // On demande à l'utilisateur si il est certain de vouloir supprimer ce livre
                         demanderConfirmationSuppressionLivre(bibliotheque);
+                        // On met à jour l'affichage de la bibliothèque
+                        setBibliotheques();
+                        gridView.setAdapter(new ImageAdapter(context));    // Màj des vues
+
                         return true;
                     default:
                         return false;
@@ -397,14 +402,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         gridView.setAdapter(new ImageAdapter(this));
     }
 
-    private void lancerLecture(Bibliotheque bibliotheque) {
-        Bundle b = new Bundle();
-        b.putParcelable("bibliotheque", bibliotheque);
-        Intent i = new Intent(getApplicationContext(), ReaderActivity.class);
-        i.putExtra("bundle", b);
-        startActivityForResult(i, READER_CODE);
-    }
-
     private void demanderConfirmationSuppressionLivre(final Bibliotheque bibliotheque) {
         Livre livre = bibliotheque.getLivre();
         new AlertDialog.Builder(this)
@@ -427,7 +424,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             .show();
     }
 
-    // A déplacer plus tard
     private void supprimerLivreBibliotheque(Bibliotheque bibliotheque) {
         Livre livre = bibliotheque.getLivre();
         try {

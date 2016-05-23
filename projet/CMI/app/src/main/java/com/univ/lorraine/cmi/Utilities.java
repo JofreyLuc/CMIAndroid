@@ -122,40 +122,61 @@ public final class Utilities {
 
     /**
      *  Retourne le chemin du dossier de ce livre.
+     *  Crée les dossiers si besoin.
      *
      * @param livre Le livre.
      *
      * @return le chemin du dossier de ce livre.
      */
     public static String getBookDirPath(Context context, Livre livre) {
-        return getBookStoragePath(context)
-                + "/" + livre.getIdLivre();
+        File dossier = new File(getBookStoragePath(context)
+                + "/" + livre.getIdLivre());
+
+        // Création du dossier s'il n'existe pas déjà
+        if (!dossier.exists())
+            dossier.mkdirs();
+
+        return dossier.getAbsolutePath();
     }
 
     /**
      *  Retourne le chemin du fichier epub de ce livre.
+     *  Crée les dossiers si besoin.
      *
      * @param livre Le livre.
      *
      * @return le chemin du fichier epub de ce livre.
      */
     public static String getBookFilePath(Context context, Livre livre) {
-        return getBookStoragePath(context)
+        File dossier = new File(getBookStoragePath(context)
                 + "/" + livre.getIdLivre()
-                + "/livre.epub";
+                + "/livre.epub");
+
+        // Création du dossier s'il n'existe pas déjà
+        if (!dossier.exists())
+            dossier.mkdirs();
+
+        return dossier.getAbsolutePath();
     }
 
     /**
      *  Retourne le chemin de la couverture de ce livre.
+     *  Crée les dossiers si besoin.
      *
      * @param livre Le livre.
      *
      * @return le chemin de la couverture de ce livre.
      */
     public static String getBookCoverPath(Context context, Livre livre) {
-        return getBookStoragePath(context)
+        File dossier = new File(getBookStoragePath(context)
                 + "/" + livre.getIdLivre()
-                + "/cover";
+                + "/cover");
+
+        // Création du dossier s'il n'existe pas déjà
+        if (!dossier.exists())
+            dossier.mkdirs();
+
+        return dossier.getAbsolutePath();
     }
 
     public static void loadCoverInto(Context context, Livre livre, ImageView view){
@@ -239,51 +260,14 @@ public final class Utilities {
     }
 
 
-    public static void downloadFileAsync(String urlSource, final String pathDest) {
+    public static void downloadFileSync(String urlSource, final String pathDest) throws IOException {
         final FileDownloadService downloadService = FileDownloadServiceProvider.getService();
-
         Call<ResponseBody> call = downloadService.downloadFileWithDynamicUrl(urlSource);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    File file = new File(pathDest);
-                    file.mkdirs();
-                    FileOutputStream fileOutputStream = new FileOutputStream(file);
-                    IOUtils.write(response.body().bytes(), fileOutputStream);
-                } catch (IOException e) {
-                    Log.e("TEST", "Error while writing file!");
-                    Log.e("TEST", e.toString());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                System.out.println(t.toString());
-            }
-        });
-    }
-
-    public static void downloadBook(Context context, Livre livre){
-        // Téléchargement
-        Utilities.downloadFileAsync(livre.getLienDLEpub(), Utilities.getBookFilePath(context, livre));
-        // Extraction de la couverture
-        Utilities.extractCover(context, livre);
-    }
-
-    public static void extractCover(Context context, Livre livre) {
-        try {
-            String coverPath = Utilities.getBookDirPath(context, livre) + "/cover";
-            Book book = new EpubReader().readEpub(new FileInputStream(Utilities.getBookFilePath(context, livre)));
-            Resource cover = book.getCoverImage();
-            if (cover != null) {
-                InputStream coverIS = book.getCoverImage().getInputStream();
-                Utilities.copyFile(coverIS, new File(coverPath));
-                coverIS.close();
-            }
-        } catch (IOException e) {
-            Log.e("EXC", e.getMessage());
-        }
+        Response<ResponseBody> response = call.execute();
+        File file = new File(pathDest);
+        file.mkdirs();
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        IOUtils.write(response.body().bytes(), fileOutputStream);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.univ.lorraine.cmi;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -62,7 +63,9 @@ public class BookDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_book_details);
 
         // Récupération du livre via les extras de l'intent
-        livre = getIntent().getBundleExtra("bundle").getParcelable("livre");
+        Bundle bundle = getIntent().getBundleExtra("bundle");
+        livre = bundle.getParcelable("livre");
+        boolean demande_evaluation = bundle.getBoolean("evaluer");
 
         // Titre de l'activité
         if (livre.getTitre() != null) setTitle(livre.getTitre());
@@ -84,7 +87,7 @@ public class BookDetailsActivity extends AppCompatActivity {
         // Création du texte des détails
         details.setText(processText());
 
-        final boolean isInBdd = isInBdd(livre);
+        final boolean isInBdd = BookUtilities.isInBdd(livre, getHelper());
 
         // Si livre déjà téléchargé
         if (isInBdd){
@@ -94,10 +97,12 @@ public class BookDetailsActivity extends AppCompatActivity {
             boutonLecture.setText(R.string.button_readNow_alt);
         }
 
+        final Activity activity = this;
+
         boutonAjout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addToDb(livre);
+                BookUtilities.ajouterLivreBibliotheque(activity, livre, getHelper());
                 finish();
             }
         });
@@ -105,8 +110,8 @@ public class BookDetailsActivity extends AppCompatActivity {
         boutonLecture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isInBdd) launchReading(livre);
-                else downloadAndRead(livre);
+                if (isInBdd) BookUtilities.lancerLecture(activity, livre, getHelper());
+                else BookUtilities.ajouterLivreBibliothequeEtLire(activity, livre, getHelper());
             }
         });
 
@@ -116,25 +121,13 @@ public class BookDetailsActivity extends AppCompatActivity {
             writeComment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    rateDialog = new Dialog(BookDetailsActivity.this);
-                    rateDialog.setContentView(R.layout.rate_layout);
-                    rateDialog.setCancelable(true);
-                    ratingBar = (RatingBar) rateDialog.findViewById(R.id.dialog_ratingbar);
-                    TextView dialogTitle = (TextView) rateDialog.findViewById(R.id.rate_dialog_title);
-                    dialogTitle.setText(livre.getTitre());
-
-                    envoyer = (TextView) rateDialog.findViewById(R.id.rate_dialog_submit);
-                    comment = (EditText) rateDialog.findViewById(R.id.edit_commentaire);
-                    envoyer.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Toast.makeText(BookDetailsActivity.this,ratingBar.getRating() + " " + comment.getText(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    rateDialog.show();
+                    demanderAEvaluer();
                 }
             });
         }
+
+        if (demande_evaluation)
+            demanderAEvaluer();
     }
 
     /**
@@ -160,6 +153,25 @@ public class BookDetailsActivity extends AppCompatActivity {
         return dbhelper;
     }
 
+    private void demanderAEvaluer() {
+        rateDialog = new Dialog(BookDetailsActivity.this);
+        rateDialog.setContentView(R.layout.rate_layout);
+        rateDialog.setCancelable(true);
+        ratingBar = (RatingBar) rateDialog.findViewById(R.id.dialog_ratingbar);
+        TextView dialogTitle = (TextView) rateDialog.findViewById(R.id.rate_dialog_title);
+        dialogTitle.setText(livre.getTitre());
+
+        envoyer = (TextView) rateDialog.findViewById(R.id.rate_dialog_submit);
+        comment = (EditText) rateDialog.findViewById(R.id.edit_commentaire);
+        envoyer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(BookDetailsActivity.this,ratingBar.getRating() + " " + comment.getText(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        rateDialog.show();
+    }
+
     /**
      * Transforme les données du livre en texte de détails.
      * @return Détails en String.
@@ -183,80 +195,5 @@ public class BookDetailsActivity extends AppCompatActivity {
         return sb.toString();
     }
 
-    /**
-     * Télécharge un livre, le stocke dans la base de données et lance la lecture de ce livre.
-     * @param l Livre à télécharger.
-     */
-    private void downloadAndRead(Livre l){
-        try {
-            // Sauvegarde BDD du livre
-            addToDb(l);
-            // Téléchargement du livre et extraction de la couverture
-            String dest = Utilities.getBookStoragePath(this) + '/' + livre.getIdLivre() + "/livre.epub";
-            Utilities.downloadFileAsync(l.getLienDLEpub(), dest);
-            Utilities.extractCover(getApplicationContext(), l);
 
-            // Création de la Biblothèque à partir du livre
-            Bibliotheque biblio = new Bibliotheque(livre);
-            // Sauvegarde de l'objet Bibliothèque correspondant à ce livre
-            Dao<Bibliotheque, Long> daobiblio = getHelper().getBibliothequeDao();
-            daobiblio.create(biblio);
-
-            launchReading(l);
-        } catch (SQLException e){
-            Log.e("EXC", e.getMessage());
-        }
-    }
-
-    /**
-     * Lance la lecture d'un livre (retourne à l'activité précédente une fois la lecture quitée).
-     * @param l Livre à lire.
-     */
-    private void launchReading(Livre l){
-        try {
-            // Récupération de la Bibliothèque de ce livre
-            Dao<Bibliotheque, Long> daoBiblio= getHelper().getBibliothequeDao();
-            //TEMPORAIRE ?
-            Bibliotheque bibliotheque = daoBiblio.queryForEq("idLivre", l).get(0);
-            //TEMPORAIRE ?
-
-            // Lancement reader
-            Bundle b = new Bundle();
-            b.putParcelable("bibliotheque", bibliotheque);
-            Intent i = new Intent(getApplicationContext(), ReaderActivity.class);
-            i.putExtra("bundle", b);
-            startActivityForResult(i, MainActivity.READER_CODE);
-
-            finish();
-        } catch (SQLException e) {
-            Log.e("EXC", e.getMessage());
-        }
-    }
-
-    /**
-     * Ajoute un livre à la BDD.
-     * @param l Livre à ajouter.
-     */
-    private void addToDb(Livre l){
-        try {
-            Dao<Livre, Long> daoLivre = getHelper().getLivreDao();
-            daoLivre.create(l);
-        } catch (SQLException e) {
-            Log.e("EXC", e.getMessage());
-        }
-    }
-
-    /**
-     * Retourne vrai si le livre l existe dans la BDD.
-     * @param l Livre.
-     */
-    private boolean isInBdd(Livre l){
-        try {
-            Dao<Livre, Long> daoLivre = getHelper().getLivreDao();
-            return (daoLivre.queryForId(l.getIdLivre()) != null);
-        } catch (SQLException e) {
-            Log.e("EXC", e.getMessage());
-            return false;
-        }
-    }
 }
