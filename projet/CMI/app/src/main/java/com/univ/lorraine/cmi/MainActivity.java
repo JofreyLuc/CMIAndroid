@@ -6,6 +6,8 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -84,6 +86,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle(R.string.main_activity_label_alt);
+        //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.rgb(46, 170, 221)));
+        //getWindow().setStatusBarColor(Color.rgb(60,180,221));
         bibliotheques = new ArrayList<>();
         setBibliotheques();
         //testRetrofitUser();
@@ -487,7 +491,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     void testRetrofitUser(){
-        /*final CallMeIshmaelService cmiservice = CallMeIshmaelServiceProvider.getService();
+        final CallMeIshmaelService cmiservice = CallMeIshmaelServiceProvider.getService();
 
         Call<Livre> call = cmiservice.getLivre(Long.valueOf(1));
         call.enqueue(new Callback<Livre>() {
@@ -506,7 +510,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             public void onFailure(Call<Livre> call, Throwable t) {
                 System.out.println(t.toString());
             }
-        });*/
+        });
     }
 }
 

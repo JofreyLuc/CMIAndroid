@@ -24,7 +24,6 @@ public class CallMeIshmaelServiceProvider {
                     .baseUrl(API_URL)
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
-
             service = retrofit.create(CallMeIshmaelService.class);
         }
         return service;
