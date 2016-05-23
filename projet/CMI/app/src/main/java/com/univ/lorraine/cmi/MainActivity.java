@@ -82,6 +82,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Charge la file de requêtes en avance
+        CallContainerQueue.getInstance().load(getSharedPreferences(getPackageName(), Context.MODE_PRIVATE));
+        Log.d("TEST", CallContainerQueue.getInstance().toString());
         setContentView(R.layout.activity_main);
         setTitle(R.string.main_activity_label_alt);
         bibliotheques = new ArrayList<>();
@@ -90,6 +93,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         gridView = (GridView) findViewById(R.id.grid);
         gridView.setAdapter(new ImageAdapter(this));
         gridView.setOnItemClickListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Sauvegarde la file de requêtes en attente
+        CallContainerQueue.getInstance().save(getSharedPreferences(getPackageName(), Context.MODE_PRIVATE));
     }
 
     /**
@@ -469,21 +479,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // A PART, lors d'une connexion retrouvée par exemple
         //CallContainerQueue.getInstance().execute();
         // Test serialize json
-        CallContainer test = new BibliothequeDeleteCall(Long.valueOf(1), bibliotheque);
+        CallContainer test = new BibliothequeUpdateCall(Long.valueOf(1), bibliotheque);
         CallContainerQueue.getInstance().enqueue(test);
         CallContainerQueue.getInstance().enqueue(new BibliothequeUpdateCall(Long.valueOf(1), bibliotheque));
-
-        String json = CallContainerQueue.getInstance().save();
-        System.out.println("JSON: "+json);
-        CallContainerQueue.getInstance().load(json);
-        CallContainerQueue.getInstance().enqueue(test);
-        String json2 = CallContainerQueue.getInstance().save();
-        System.out.println("JSON2: " + json2);
-        try {
-            IOUtils.write(json, new FileOutputStream(Utilities.getAppStoragePath(getApplicationContext())+"/json"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 
     void testRetrofitUser(){

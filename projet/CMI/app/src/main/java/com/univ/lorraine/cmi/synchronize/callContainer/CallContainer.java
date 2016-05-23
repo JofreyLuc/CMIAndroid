@@ -5,8 +5,6 @@ import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
 
 import java.io.IOException;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
 import retrofit2.Response;
 
 /**
@@ -95,4 +93,8 @@ public abstract class CallContainer<O, R> {
      */
     protected abstract void onCallFailed();
 
+
+    public String toString() {
+        return getType() + ": " + ", idUser: " + idUser + ", data: " + objectData.toString();
+    }
 }

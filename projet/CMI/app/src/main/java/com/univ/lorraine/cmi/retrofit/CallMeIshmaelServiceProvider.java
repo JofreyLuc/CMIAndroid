@@ -19,12 +19,14 @@ public class CallMeIshmaelServiceProvider {
     public static synchronized CallMeIshmaelService getService() {
         if (service == null) {
             // Configuration du parser json
-            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+            Gson gson = new GsonBuilder()
+                    .excludeFieldsWithoutExposeAnnotation()
+                    .setLenient()
+                    .create();
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(API_URL)
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
-
             service = retrofit.create(CallMeIshmaelService.class);
         }
         return service;

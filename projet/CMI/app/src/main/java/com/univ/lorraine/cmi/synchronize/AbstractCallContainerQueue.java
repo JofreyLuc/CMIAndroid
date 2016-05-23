@@ -1,6 +1,7 @@
 package com.univ.lorraine.cmi.synchronize;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.gson.annotations.Expose;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
@@ -9,6 +10,8 @@ import com.univ.lorraine.cmi.synchronize.callContainer.bibliotheque.AbstractBibl
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by alexis on 22/05/2016.
@@ -16,27 +19,27 @@ import java.util.LinkedList;
 public abstract class AbstractCallContainerQueue {
 
     @Expose
-    private LinkedList<CallContainer> queue = new LinkedList<CallContainer>();
+    private List<CallContainer> queue = new CopyOnWriteArrayList<CallContainer>();
 
     public AbstractCallContainerQueue() {
 
     }
 
-    public LinkedList<CallContainer> getQueue() {
+    public List<CallContainer> getQueue() {
         return queue;
     }
 
-    public void setQueue(LinkedList<CallContainer> queue) {
+    public void setQueue(List<CallContainer> queue) {
         this.queue = queue;
     }
 
-    public final void enqueue(CallContainer item) {
+    public synchronized final void enqueue(CallContainer item) {
         final CallContainer fitem = item;
         new AsyncTask<Void, Integer, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
                 beforeEnqueue(fitem);
-                queue.addLast(fitem);
+                queue.add(fitem);
                 afterEnqueue(fitem);
                 return null;
             }
@@ -44,7 +47,7 @@ public abstract class AbstractCallContainerQueue {
     }
 
     protected final CallContainer dequeue() {
-        return queue.poll();
+        return queue.remove(0);
     }
 
     public final boolean isEmpty() {
@@ -62,7 +65,7 @@ public abstract class AbstractCallContainerQueue {
     /**
      * Exécute tous les call présents dans la file un par un dans l'ordre dans une AsyncTask.
      */
-    public void execute() {
+    public synchronized void execute() {
         if (!isEmpty()) {
             new AsyncTask<Void, Integer, Void>() {
                 @Override
@@ -80,6 +83,10 @@ public abstract class AbstractCallContainerQueue {
     protected abstract void beforeEnqueue(CallContainer callContainer);
 
     protected abstract void afterEnqueue(CallContainer callContainer);
+
+    public final void clear() {
+        queue.clear();
+    }
 
     public final String toString() {
         return queue.toString();
