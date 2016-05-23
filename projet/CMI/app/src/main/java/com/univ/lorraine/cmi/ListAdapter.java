@@ -4,6 +4,7 @@ package com.univ.lorraine.cmi;
 
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,25 +14,37 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.univ.lorraine.cmi.database.model.Livre;
+import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
+import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /**
  * Created by julienhans on 17/05/2016.
  */
 public class ListAdapter extends BaseAdapter {
 
 
-    String [] result;
+    String result;
     Context context;
     int [] imageResult;
+    TextView data;
+    ImageView cover;
 
-    public ListAdapter(Context c, String[] prgmNameList, int[] prgmImages) {
-        result = prgmNameList;
+    public ListAdapter(Context c, String queryTyped, int[] prgmImages) {
+        result = queryTyped;
         context = c;
         imageResult = prgmImages;
     }
     @Override
     public int getCount() {
-        return result.length;
+        return imageResult.length;
     }
 
     @Override
@@ -50,14 +63,29 @@ public class ListAdapter extends BaseAdapter {
         LayoutInflater inflater = ( LayoutInflater )context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View rowView = inflater.inflate(R.layout.list_result_item, parent, false);
-        TextView tv=(TextView) rowView.findViewById(R.id.textViewListResult);
-        ImageView img=(ImageView) rowView.findViewById(R.id.imageViewListResult);
-        tv.setText(result[position]);
-        img.setImageResource(imageResult[position]);
+        data = (TextView) rowView.findViewById(R.id.textViewListResult);
+        cover = (ImageView) rowView.findViewById(R.id.imageViewListResult);
+
+        final CallMeIshmaelService cmiservice = CallMeIshmaelServiceProvider.getService();
+
+        Call<List<Livre>> call = cmiservice.searchLivre(null, null, null, null, null);
+        call.enqueue(new Callback<List<Livre>>() {
+            @Override
+            public void onResponse(Call<List<Livre>> call, Response<List<Livre>> response) {
+                data.setText(response.body().get(position).getTitre());
+            }
+
+            @Override
+            public void onFailure(Call<List<Livre>> call, Throwable t) {
+                Log.e("FAIL",t.toString());
+            }
+        });
+
+        //data.setText(result[position]);
+        cover.setImageResource(imageResult[position]);
         rowView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Selection "+result[position], Toast.LENGTH_LONG).show();
             }
         });
 
@@ -72,7 +100,6 @@ public class ListAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
                     //ouvrir les détails du livre
-                    Toast.makeText(context, "voir détails "+result[position], Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -82,7 +109,6 @@ public class ListAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
                     //ouvrir le reader
-                    Toast.makeText(context, "Lire "+result[position], Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -92,7 +118,6 @@ public class ListAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
                     //ajouter le livre à la bibliothèque
-                    Toast.makeText(context, "Ajouter "+result[position], Toast.LENGTH_SHORT).show();
                 }
             });
         }

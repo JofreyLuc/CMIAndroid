@@ -35,8 +35,6 @@ public class EndOfBookActivity extends AppCompatActivity {
 
     private TextView voir_evaluations;
 
-    private TextView supprimer;
-
     private TextView retour_debut_livre;
 
     private TextView retour_biblio;
@@ -56,7 +54,6 @@ public class EndOfBookActivity extends AppCompatActivity {
         auteur = (TextView) this.findViewById(R.id.auteur);
         evaluer = (TextView) this.findViewById(R.id.evaluer);
         voir_evaluations = (TextView) this.findViewById(R.id.voir_evaluations);
-        supprimer = (TextView) this.findViewById(R.id.supprimer);
         retour_debut_livre = (TextView) this.findViewById(R.id.debut_livre);
         retour_biblio = (TextView) this.findViewById(R.id.retour_biblio);
 
@@ -64,11 +61,24 @@ public class EndOfBookActivity extends AppCompatActivity {
         titre.setText(livre.getTitre());
         auteur.setText(livre.getAuteur());
 
+        // Si le livre est local, on cache Evaluer et voir évaluations
+        /*if (livre.estImporteLocalement()) {
+            evaluer.setEnabled(false);
+            evaluer.setVisibility(View.GONE);
+            voir_evaluations.setEnabled(false);
+            voir_evaluations.setVisibility(View.GONE);
+        }*/
+
         // On passe à l'activité d'évaluation
         evaluer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(EndOfBookActivity.this, "Evaluer", Toast.LENGTH_SHORT).show();
+                Bundle b = new Bundle();
+                b.putParcelable("livre", livre);
+                b.putBoolean("evaluer", true);
+                Intent i = new Intent(getApplicationContext(), BookDetailsActivity.class);
+                i.putExtra("bundle", b);
+                startActivity(i);
             }
         });
 
@@ -81,16 +91,6 @@ public class EndOfBookActivity extends AppCompatActivity {
                 Intent i = new Intent(getApplicationContext(), BookDetailsActivity.class);
                 i.putExtra("bundle", b);
                 startActivity(i);
-            }
-        });
-
-        // On supprime le livre
-        supprimer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(EndOfBookActivity.this, "Supprimer", Toast.LENGTH_SHORT).show();
-                finish();
-                // TODO supprimer
             }
         });
 

@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     // Codes de résultats d'activités (publics afin de pouvoir être utilisés dans d'autres activités)
     public static final int FILEPICKER_CODE = 0;
+    
     public static final int READER_CODE = 1;
 
     // Liste des Bibliothèques des livres de l'utilisateur
@@ -162,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        lancerLecture((Bibliotheque) view.getTag());
+        BookUtilities.lancerLecture(this, (Bibliotheque) view.getTag());
     }
 
     /**
@@ -385,19 +386,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     /**
-     * Lance la lecture d'un epub.
-     * @param bibliotheque : La Bibliothèque contenant le livre à lire
-     */
-    private void lancerLecture(Bibliotheque bibliotheque) {
-        Bundle b = new Bundle();
-        b.putParcelable("bibliotheque", bibliotheque);
-        Intent i = new Intent(getApplicationContext(), ReaderActivity.class);
-        i.putExtra("bundle", b);
-        // On attend un résultat afin de mettre à jour la barre de progression
-        startActivityForResult(i, READER_CODE);
-    }
-
-    /**
      * Gère la suppression d'un livre de la bibliothèque, en demandant confirmation
      * à l'utilisateur.
      * @param bibliotheque La Bibliothèque contenant le livre à supprimer
@@ -424,7 +412,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             .show();
     }
 
-    // A déplacer plus tard
     private void supprimerLivreBibliotheque(Bibliotheque bibliotheque) {
         Livre livre = bibliotheque.getLivre();
         try {

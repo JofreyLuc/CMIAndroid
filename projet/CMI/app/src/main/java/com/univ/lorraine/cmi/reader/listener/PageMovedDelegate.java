@@ -21,8 +21,6 @@ public class PageMovedDelegate implements PageMovedListener {
 
     ReaderActivity reader;
 
-    Dao<Bibliotheque, Long> daobibliotheque;
-
     PageInformation currentPage;
 
     /**

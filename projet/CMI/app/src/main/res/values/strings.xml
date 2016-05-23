@@ -87,7 +87,6 @@
     <!-- String activité fin de livre -->
     <string name="end_book_evaluate"><u>Évaluer le livre</u></string>
     <string name="end_book_see_evaluate"><u>Voir les évaluations</u></string>
-    <string name="end_book_delete"><u>Supprimer le livre</u></string>
     <string name="end_book_book_beginning"><u>Retourner au début du livre</u></string>
     <string name="end_book_back_biblio"><u>Retourner à la bibliothèque</u></string>
     <!-- Fin string activité fin de livre -->
