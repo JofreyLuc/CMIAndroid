@@ -71,29 +71,35 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
+    // Helper permettant d'interagir avec la database
     private CmidbaOpenDatabaseHelper dbhelper = null;
 
-    private static final int FILEPICKER_CODE = 0;
-
+    // Codes de résultats d'activités (publics afin de pouvoir être utilisés dans d'autres activités)
+    public static final int FILEPICKER_CODE = 0;
+    
     public static final int READER_CODE = 1;
 
+    // Liste des Bibliothèques des livres de l'utilisateur
     private List<Bibliotheque> bibliotheques;
 
+    // GridView permettant d'afficher les livres
     private GridView gridView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // Charge la file de requêtes en avance
         CallContainerQueue.getInstance().load(getSharedPreferences(getPackageName(), Context.MODE_PRIVATE));
         Log.d("TEST", CallContainerQueue.getInstance().toString());
+
         setContentView(R.layout.activity_main);
         setTitle(R.string.main_activity_label_alt);
-        //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.rgb(46, 170, 221)));
-        //getWindow().setStatusBarColor(Color.rgb(60,180,221));
+
+        // Initialisation bibliothèques
         bibliotheques = new ArrayList<>();
         setBibliotheques();
-        //testRetrofitUser();
+
         gridView = (GridView) findViewById(R.id.grid);
         gridView.setAdapter(new ImageAdapter(this));
         gridView.setOnItemClickListener(this);
@@ -129,7 +135,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return dbhelper;
     }
 
-    // fonction qui initialise un menu de lActionBar
+    /**
+     * Initialise un menu de l'ActionBar.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -137,32 +145,38 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return super.onCreateOptionsMenu(menu);
     }
 
-    // Fonction qui gère l'action lors d'un clic sur un livre
+    /**
+     * Lance la lecture lors d'un clic sur un livre.
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         BookUtilities.lancerLecture(this, (Bibliotheque) view.getTag());
     }
 
-    // fonction qui gere les actions des items des menus de lActionBar
+    /**
+     * Gère le menu des options
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent i;
         switch (item.getItemId()) {
             case R.id.action_new:
-                pickEpubFiles();   // On demande à l'utilisateur de choisir les fichiers epub à importer.
+                // Choix les fichiers epub à importer
+                pickEpubFiles();
                 return true;
             case R.id.action_search:
-                // DO SOMETHING
+                // Lancement de la page de recherche d'epubs
                 i = new Intent(getApplicationContext(), SearchActivity.class);
                 startActivity(i);
-                //Toast.makeText(getApplicationContext(), "overflow1", Toast.LENGTH_LONG).show();
                 return true;
             case R.id.action_login:
+                // Lancement de la page de connexion
                 i = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(i);
                 return true;
             case R.id.action_signup:
-                exempleMiseEnCacheRequete();
+                // Lancement de la page d'inscription
+                exempleMiseEnCacheRequete(); //Exemple cache
                 i = new Intent(getApplicationContext(), SignupActivity.class);
                 startActivity(i);
                 return true;
@@ -171,38 +185,35 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    // inflate le menu de gestion des livres (suppression, details)
+    /**
+     * Inflate le menu de gestion des livres
+     */
     public void showMenu(View v) {
         // On récupère la bibliotheque lié à cet item de la gridview
         final Bibliotheque bibliotheque = (Bibliotheque)((View)v.getParent().getParent()).getTag();
         final Livre livre = bibliotheque.getLivre();
+        // Popup des options
         PopupMenu popup = new PopupMenu(this, v);
-        final Context context = this;
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    // Visualisation des détails du livre
                     case R.id.action_details:
+                        // Visualisation des détails du livre
                         Bundle b = new Bundle();
                         b.putParcelable("livre", livre);
                         Intent i = new Intent(getApplicationContext(), BookDetailsActivity.class);
                         i.putExtra("bundle", b);
                         startActivity(i);
                         return true;
-                    // Page d'évaluation
                     case R.id.action_evaluate:
-                        // DO SOMETHING
+                        // Page d'évaluation
                         Toast.makeText(getApplicationContext(), "action_evaluate" + livre.getIdLivre(), Toast.LENGTH_LONG).show();
                         return true;
-                    // Suppression du livre
-                    case R.id.action_supp:
-                        // On demande à l'utilisateur si il est certain de vouloir supprimer ce livre
-                        demanderConfirmationSuppressionLivre(bibliotheque);
-                        // On met à jour l'affichage de la bibliothèque
-                        setBibliotheques();
-                        gridView.setAdapter(new ImageAdapter(context));    // Màj des vues
 
+                    case R.id.action_supp:
+                        // Suppression du livre
+                        demanderConfirmationSuppressionLivre(bibliotheque);
                         return true;
                     default:
                         return false;
@@ -215,67 +226,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         popup.show();
     }
 
-    /**********************
-     * classe qui customise les items de la gridview
-     */
 
-    public class ImageAdapter extends BaseAdapter {
-        private Context context;
-
-        public ImageAdapter(Context c) { context = c; }
-
-        @Override
-        public int getCount() { return bibliotheques.size(); }
-
-        @Override
-        public Object getItem(int position) {
-            return position;
-        }
-
-        @Override
-        public long getItemId(int position) { return position; }
-
-        public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View grid_item = inflater.inflate(R.layout.grid_item, parent, false);
-            final TextView titre = (TextView)grid_item.findViewById(R.id.titre);
-            final TextView auteur = (TextView)grid_item.findViewById(R.id.auteur);
-            Bibliotheque bibliotheque = bibliotheques.get(position);
-            Livre livre = bibliotheque.getLivre();
-            // On bind la bibliotheque à la view
-            grid_item.setTag(bibliotheque);
-            // Récupération du titre
-            titre.setText(livre.getTitre());
-
-            // Ajustement des lignes
-            titre.post(new Runnable() {
-                @Override
-                public void run() {
-                    titre.setMaxLines(titre.getLineCount());
-                    auteur.setMaxLines(2 + (4 - titre.getMaxLines()));
-                    auteur.setMinLines(2 + (4 - titre.getMaxLines()));
-                }
-            });
-
-            // Récupération de l'auteur
-            auteur.setText(livre.getAuteur());
-            // Récupération de la couverture
-            ImageView icon=(ImageView)grid_item.findViewById(R.id.icon_image);
-            if (Utilities.hasACover(getApplicationContext(), livre)) {
-                Picasso.with(context).load(new File(Utilities.getBookCoverPath(getApplicationContext(), livre))).fit().centerInside().into(icon);
-            } else {
-                Picasso.with(context).load(R.mipmap.defaultbook).fit().centerInside().into(icon);
-            }
-            // Barre de progression de lecture
-            ProgressBar BarreProgressionLecture = (ProgressBar)grid_item.findViewById(R.id.book_reading_progress_bar);
-            int progressionLecture = (int)(bibliotheque.getPositionLecture() * 100);
-            BarreProgressionLecture.setProgress(progressionLecture);
-            return grid_item;
-        }
-    }
 
     /**
-     * Met à jour la liste de bibliothèques actuelle (pour couvertures et titres)
+     * Recharge la liste de bibliothèques actuelle (pour couvertures et titres)
      */
     private void setBibliotheques() {
         try {
@@ -306,16 +260,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         startActivityForResult(i, FILEPICKER_CODE);
     }
 
+    /**
+     * Décrit le comportement de l'appli lors du retour à la page principale depuis d'autres activités
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch(requestCode) {
+
             // Choix d'un livre (fichier epub) via le Filepicker
             case FILEPICKER_CODE :
                 // Résultat OK
                 if (resultCode == Activity.RESULT_OK) {
                     // Tableau contenant les fichiers epubs
                     File[] epubs;
-                    // Sélection multiple de fichier
+
+                    // Sélection multiple de fichiers
                     if (data.getBooleanExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false)) {
                         ClipData clip = data.getClipData();
                         epubs = new File[clip.getItemCount()];
@@ -323,6 +282,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             for (int i = 0; i < clip.getItemCount(); i++)
                                 epubs[i] = new File(clip.getItemAt(i).getUri().getPath());
                     }
+
                     // Sélection unique de fichier
                     else {
                         epubs = new File[1];
@@ -332,10 +292,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     importEpubs(epubs);
                 }
                 break;
+
             // Retour depuis le reader
             case READER_CODE :
-                // On met à jour les bibliothèques
-                // afin que les changements effectués sur la bibliothèque (livre) qui y était soit pris en compte
+                // On met à jour les bibliothèques afin que les changements soient pris en compte
                 setBibliotheques();
                 gridView.setAdapter(new ImageAdapter(this));    // Màj des vues
                 break;
@@ -350,18 +310,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     private void importEpubs(File[] epubs) {
         try {
-            String epubFilePath = "";
-            FileInputStream fs = null;
-            Book book = null;
-            Livre livre = null;
+            String epubFilePath;
+            FileInputStream fs;
+            Book book;
+            Livre livre;
             // Pour chaque fichier epub
             for (int i = 0; i < epubs.length; i++) {
-                //ProgressDialog.show(this, "Import", "Import epub").setCancelable(false);
-                // On va enregistrer les metadata du livre dans la base de données
-                epubFilePath = epubs[i].getPath();
+
                 // Création de l'objet book à partir du fichier epub
+                epubFilePath = epubs[i].getPath();
                 fs = new FileInputStream(epubFilePath);
                 book = (new EpubReader().readEpub(fs));
+
                 // Création du livre à partir de l'objet book
                 livre = new Livre(book);
                 // Sauvegarde du livre dans la base de données
@@ -382,15 +342,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Utilities.copyFile(epubs[i], new File(newFilePath));    // Copie du fichier
 
                 // Extraction de la couverture dans le dossier crée précédemment
-                String coverPath = dirPath + "/cover";
-                Resource cover = book.getCoverImage();
-                if (cover != null) {
-                    InputStream coverIS = book.getCoverImage().getInputStream();
-                    Utilities.copyFile(coverIS, new File(coverPath));
-                    coverIS.close();
-                } else {
-                    // Génération d'image automatique ?
-                }
+                Utilities.extractCover(getApplicationContext(), livre);
             }
         } catch (SQLException e) {
             Log.e("Exc", e.getMessage());
@@ -402,6 +354,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         gridView.setAdapter(new ImageAdapter(this));
     }
 
+    /**
+     * Gère la suppression d'un livre de la bibliothèque, en demandant confirmation
+     * à l'utilisateur.
+     * @param bibliotheque La Bibliothèque contenant le livre à supprimer
+     */
     private void demanderConfirmationSuppressionLivre(final Bibliotheque bibliotheque) {
         Livre livre = bibliotheque.getLivre();
         new AlertDialog.Builder(this)
@@ -418,7 +375,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             .setNegativeButton(getResources().getString(R.string.confirmation_suppression_no),
                     new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    // do nothing
+                    // Rien à faire
                 }
             })
             .show();
@@ -505,6 +462,79 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 System.out.println(t.toString());
             }
         });
+    }
+
+    /**
+     * Classe gérant les items de la GridView
+     */
+    public class ImageAdapter extends BaseAdapter {
+        // Contexte de l'application (principale)
+        private Context context;
+
+        // Nombre de lignes de base du titre/auteur
+        private static final int TITLE_DEFAULT_LINES = 4;
+        private static final int AUTHOR_DEFAULT_LINES = 2;
+
+        public ImageAdapter(Context c) { context = c; }
+
+        @Override
+        public int getCount() {
+            return bibliotheques.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return position;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View grid_item = inflater.inflate(R.layout.grid_item, parent, false);
+
+            final TextView titre = (TextView) grid_item.findViewById(R.id.titre);
+            titre.setMaxLines(TITLE_DEFAULT_LINES);
+
+            final TextView auteur = (TextView) grid_item.findViewById(R.id.auteur);
+            auteur.setMaxLines(AUTHOR_DEFAULT_LINES);
+
+            // Récupération de la bibliothèque "actuelle"
+            Bibliotheque bibliotheque = bibliotheques.get(position);
+            Livre livre = bibliotheque.getLivre();
+
+            // On bind la bibliotheque à la view
+            grid_item.setTag(bibliotheque);
+            // Récupération du titre
+            titre.setText(livre.getTitre());
+
+            // Ajustement des lignes
+            titre.post(new Runnable() {
+                @Override
+                public void run() {
+                    titre.setMaxLines(titre.getLineCount());
+                    auteur.setMaxLines(AUTHOR_DEFAULT_LINES + (TITLE_DEFAULT_LINES - titre.getMaxLines()));
+                    auteur.setMinLines(AUTHOR_DEFAULT_LINES + (TITLE_DEFAULT_LINES - titre.getMaxLines()));
+                }
+            });
+
+            // Récupération de l'auteur
+            auteur.setText(livre.getAuteur());
+
+            // Récupération de la couverture
+            ImageView icon=(ImageView)grid_item.findViewById(R.id.icon_image);
+            Utilities.loadCoverInto(context, livre, icon);
+
+            // Barre de progression de lecture
+            ProgressBar BarreProgressionLecture = (ProgressBar)grid_item.findViewById(R.id.book_reading_progress_bar);
+            int progressionLecture = (int)(bibliotheque.getPositionLecture() * 100);
+            BarreProgressionLecture.setProgress(progressionLecture);
+
+            return grid_item;
+        }
     }
 }
 

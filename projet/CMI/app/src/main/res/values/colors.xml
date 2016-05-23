@@ -3,7 +3,7 @@
     <color name="colorPrimary">#2EAADD</color>
     <color name="colorPrimaryDark">#2999C6</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="colorBackground">#FFE554</color>
+    <color name="colorBackground">#FFF4BA</color>
     <color name="colorText">#656565</color>
     <!-- Book_reading_progress_bar colors -->
     <color name="progress_gradient_start_color">#98AFC7</color>
