@@ -342,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Utilities.copyFile(epubs[i], new File(newFilePath));    // Copie du fichier
 
                 // Extraction de la couverture dans le dossier crée précédemment
-                Utilities.extractCover(getApplicationContext(), livre);
+                BookUtilities.extractCover(getApplicationContext(), livre);
             }
         } catch (SQLException e) {
             Log.e("Exc", e.getMessage());
