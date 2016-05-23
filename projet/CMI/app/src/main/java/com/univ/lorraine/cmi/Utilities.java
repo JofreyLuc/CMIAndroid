@@ -6,16 +6,22 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.os.Environment;
 
 import android.util.Log;
 
 import android.support.v7.app.AlertDialog;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 
+import com.j256.ormlite.dao.Dao;
 import com.skytree.epub.IOUtils;
+import com.squareup.picasso.Picasso;
+import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.database.model.Livre;
+import com.univ.lorraine.cmi.reader.ReaderActivity;
 import com.univ.lorraine.cmi.retrofit.FileDownloadService;
 import com.univ.lorraine.cmi.retrofit.FileDownloadServiceProvider;
 
@@ -26,6 +32,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.SQLException;
 
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
@@ -151,6 +158,22 @@ public final class Utilities {
                 + "/cover";
     }
 
+    public static void loadCoverInto(Context context, Livre livre, ImageView view){
+        if (Utilities.hasACover(context, livre)) {
+            Picasso.with(context)
+                    .load(new File(Utilities.getBookCoverPath(context, livre)))
+                    .fit()
+                    .centerInside()
+                    .into(view);
+        } else  {
+            Picasso.with(context)
+                    .load(R.mipmap.defaultbook)
+                    .fit()
+                    .centerInside()
+                    .into(view);
+        }
+    }
+
     /**
      * Retourne vrai si ce livre possède une couverture enregistrée
      *
@@ -241,10 +264,17 @@ public final class Utilities {
         });
     }
 
-    public static void extractCover(String epubPath) {
+    public static void downloadBook(Context context, Livre livre){
+        // Téléchargement
+        Utilities.downloadFileAsync(livre.getLienDLEpub(), Utilities.getBookFilePath(context, livre));
+        // Extraction de la couverture
+        Utilities.extractCover(context, livre);
+    }
+
+    public static void extractCover(Context context, Livre livre) {
         try {
-            String coverPath = epubPath + "/../cover";
-            Book book = new EpubReader().readEpub(new FileInputStream(epubPath));
+            String coverPath = Utilities.getBookDirPath(context, livre) + "/cover";
+            Book book = new EpubReader().readEpub(new FileInputStream(Utilities.getBookFilePath(context, livre)));
             Resource cover = book.getCoverImage();
             if (cover != null) {
                 InputStream coverIS = book.getCoverImage().getInputStream();
@@ -286,7 +316,7 @@ public final class Utilities {
 
 
     /**
-     * Popud de dialogue pour activer internet.
+     * Popup de dialogue pour activer internet.
      *
      * @param activity L'activité appelante.
      */
