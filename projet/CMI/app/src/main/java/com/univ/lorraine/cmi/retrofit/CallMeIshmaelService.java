@@ -37,6 +37,7 @@ public interface CallMeIshmaelService {
     Call<Livre> getLivre(@Path("idBook") Long idLivre);
 
     // Recherche de livres
+
     @GET("books")
     Call<List<Livre>> searchLivre(@Query("titre") String titre, @Query("author") String auteur, @Query("language") String langue, @Query("start-limit") Integer startLimit, @Query("end-limit") Integer endLimit);
 
@@ -58,6 +59,7 @@ public interface CallMeIshmaelService {
     Call<ResponseBody> deleteBibliotheque(@Path("idUser") Long idUtilisateur, @Path("idLibrary") Long idBibliotheque);
 
     // Notes
+
     @GET("users/{idUser}/library/{idLibrary}/notes")
     Call<List<Annotation>> getAnnotations(@Path("idUser") Long idUtilisateur, @Path("idLibrary") Long idBibliotheque);
 
@@ -73,4 +75,8 @@ public interface CallMeIshmaelService {
     @DELETE("users/{idUser}/library/{idLibrary}/notes/{idNote}")
     Call<ResponseBody> deleteAnnotation(@Path("idUser") Long idUtilisateur, @Path("idLibrary") Long idBibliotheque, @Path("idNote") Long idAnnotation);
 
+    // Top 10
+
+    @GET("top10")
+    Call<List<Livre>> getTop10();
 }
