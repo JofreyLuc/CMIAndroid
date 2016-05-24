@@ -162,6 +162,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_biblio_perso, menu);
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -243,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
         // On affiche le sous-menu Evaluer si le livre n'est pas un livre importé localement
-        if (!livre.estImporteLocalement()) popup.getMenu().getItem(R.id.action_evaluate).setVisible(true);
+        //if (!livre.estImporteLocalement()) popup.getMenu().getItem(R.id.action_evaluate).setVisible(true);
         popup.inflate(R.menu.menu_livre);
         popup.show();
     }
@@ -439,9 +440,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void supprimerLivreBibliotheque(Bibliotheque bibliotheque) {
         Livre livre = bibliotheque.getLivre();
         try {
+            // Suppression de la bibliothèque sur le serveur
+            if (!livre.estImporteLocalement())  // Si le livre n'est pas importé localement
+                BookUtilities.supprimerBibliothequeSurServeur(bibliotheque);
+
             // Suppression du dossier local du livre (contenant l'epub et la couverture)
-            Utilities.deleteRecursive(
-                    new File(Utilities.getBookDirPath(getApplicationContext(), livre)));
+            Utilities.deleteRecursive(new File(Utilities.getBookDirPath(getApplicationContext(), livre)));
 
             // Suppression des annotations de ce livre
             Dao<Annotation, Long> daoannotation = getHelper().getAnnotationDao();
