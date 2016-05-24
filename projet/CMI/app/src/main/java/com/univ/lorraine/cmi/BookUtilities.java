@@ -12,22 +12,27 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.j256.ormlite.dao.Dao;
+import com.skytree.epub.IOUtils;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Annotation;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.reader.ReaderActivity;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
+import com.univ.lorraine.cmi.retrofit.FileDownloadServiceProvider;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.List;
 
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.epub.EpubReader;
+import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 /**
@@ -228,5 +233,4 @@ public class BookUtilities {
             return false;
         }
     }
-
 }

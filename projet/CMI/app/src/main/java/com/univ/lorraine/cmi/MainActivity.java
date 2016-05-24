@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         recyclerView = (RecyclerView) findViewById(R.id.top_recyclerview);
         recyclerView.setAdapter(new TopRecyclerAdapter(livresTop, getApplicationContext()));
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
     }
 
     @Override
@@ -213,6 +213,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // On récupère la bibliotheque lié à cet item de la gridview
         final Bibliotheque bibliotheque = (Bibliotheque)((View)v.getParent().getParent()).getTag();
         final Livre livre = bibliotheque.getLivre();
+
         // Popup des options
         PopupMenu popup = new PopupMenu(this, v);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -270,8 +271,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         call.enqueue(new Callback<List<Livre>>() {
             @Override
             public void onResponse(Call<List<Livre>> call, Response<List<Livre>> response) {
-                for (Livre l : response.body()){
-                    livresTop.add(l);
+                boolean newTop = false;
+                List<Livre> resLivres = response.body();
+                if (livresTop.isEmpty()) {
+                    newTop = true;
+                } else {
+                    for (Livre l : resLivres) {
+                        for (Livre m : livresTop) {
+                            if (l.getIdServeur() != m.getIdServeur()) {
+                                newTop = true;
+                            }
+                        }
+                        if (newTop) break;
+                    }
+                }
+                if (newTop) {
+                    livresTop = new ArrayList<>(resLivres);
+                    recyclerView.setAdapter(new TopRecyclerAdapter(livresTop, getApplicationContext()));
                 }
             }
 

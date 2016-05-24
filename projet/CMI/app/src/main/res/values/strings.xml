@@ -25,6 +25,8 @@
     <string name="action_import">action import</string>
     <string name="action_overflow">action overflow</string>
     <string name="book_search_activity_label">Rechercher un livre</string>
+    <string name="grid_title">Ma bibliothèque</string>
+    <string name="top_title">Top 10</string>
     <!-- Fin strings de MainActivity -->
 
     <!-- Strings de SearchActivity -->

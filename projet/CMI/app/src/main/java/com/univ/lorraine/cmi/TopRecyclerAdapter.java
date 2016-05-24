@@ -2,14 +2,17 @@ package com.univ.lorraine.cmi;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.univ.lorraine.cmi.database.model.Livre;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -44,7 +47,18 @@ public class TopRecyclerAdapter extends RecyclerView.Adapter<TopRecyclerAdapter.
 
         // Set item views based on the data model
         ImageView imageView = holder.cover;
-        Utilities.loadCoverInto(context, livre, imageView);
+        if (livre.getLienCouverture() == null) {
+            Picasso
+                    .with(context)
+                    .load(livre.getLienCouverture())
+                    .error(R.mipmap.defaultbook)
+                    .into(imageView);
+        } else {
+            Picasso
+                    .with(context)
+                    .load(R.mipmap.defaultbook)
+                    .into(imageView);
+        }
     }
 
     @Override
