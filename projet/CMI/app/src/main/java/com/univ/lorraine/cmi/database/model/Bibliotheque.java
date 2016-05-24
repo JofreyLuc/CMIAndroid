@@ -20,9 +20,9 @@ public class Bibliotheque implements Parcelable {
 
     // json Strings
 
-    public static final String ID_SERVEUR_JSON_NAME = "idBibliotheque";
+    public static final String ID_SERVEUR_JSON_NAME = "id";
 
-    public static final String LIVRE_JSON_NAME = "livre";
+    public static final String LIVRE_JSON_NAME = "idLivre";
 
     public static final String POSITION_LECTURE_JSON_NAME = "positionLecture";
 
@@ -67,7 +67,7 @@ public class Bibliotheque implements Parcelable {
     private Date dateModification;
 
     // Needed by ORMlite
-    Bibliotheque() {}
+    public Bibliotheque() {}
 
     /**
      * Crée un objet Bibliothèque à partir d'un livre.

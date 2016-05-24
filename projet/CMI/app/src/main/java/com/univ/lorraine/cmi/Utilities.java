@@ -249,7 +249,6 @@ public final class Utilities {
         Call<ResponseBody> call = downloadService.downloadFileWithDynamicUrl(urlSource);
         Response<ResponseBody> response = call.execute();
         File file = new File(pathDest);
-        file.mkdirs();
         FileOutputStream fileOutputStream = new FileOutputStream(file);
         IOUtils.write(response.body().bytes(), fileOutputStream);
     }

@@ -49,16 +49,20 @@ public class BookUtilities {
                             .execute()
                             .body();
 
+                    bibliothequeServeur.setLivre(livre);
+
                     // On sauvegarde le livre et la bibliothèque dans la BDD locale
-                    sauverBibliotheque(bibliotheque, dbHelper);
+                    sauverBibliotheque(bibliothequeServeur, dbHelper);
 
                     // On télécharge le livre sur l'appareil
                     downloadBook(context, livre);
 
                 } catch (IOException e) {
+                    e.printStackTrace();
                     return false;
                 } catch (SQLException e) {
-                   return false;
+                    e.printStackTrace();
+                    return false;
                 }
                 return true;
             }
@@ -92,8 +96,10 @@ public class BookUtilities {
                             .execute()
                             .body();
 
+                    bibliothequeServeur.setLivre(livre);
+
                     // On sauvegarde le livre et la bibliothèque dans la BDD locale
-                    sauverBibliotheque(bibliotheque, dbHelper);
+                    sauverBibliotheque(bibliothequeServeur, dbHelper);
 
                     // On télécharge le livre sur l'appareil
                     downloadBook(activity, livre);
@@ -142,8 +148,8 @@ public class BookUtilities {
         Dao<Bibliotheque, Long> bibliothequeDao = dbHelper.getBibliothequeDao();
         Dao<Livre, Long> livreDao = dbHelper.getLivreDao();
 
-        bibliothequeDao.create(bibliotheque);
         livreDao.create(bibliotheque.getLivre());
+        bibliothequeDao.create(bibliotheque);
     }
 
     public static void downloadBook(Context context, Livre livre) throws IOException {

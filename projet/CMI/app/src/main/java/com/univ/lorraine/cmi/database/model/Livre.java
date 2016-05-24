@@ -25,7 +25,7 @@ public class Livre implements Parcelable {
 
     // json Strings
 
-    public static final String ID_SERVEUR_JSON_NAME = "idLivre";
+    public static final String ID_SERVEUR_JSON_NAME = "id";
 
     public static final String TITRE_JSON_NAME = "titre";
 
@@ -127,7 +127,7 @@ public class Livre implements Parcelable {
     private String lienCouverture;
 
     // Nécéssaire pour ORMlite
-    Livre() {}
+    public Livre() {}
 
     /**
      * Crée un livre à partir de données directes (titre, auteur...).

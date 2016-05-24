@@ -125,6 +125,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         CallContainerQueue.getInstance().save(getSharedPreferences(getPackageName(), Context.MODE_PRIVATE));
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setBibliotheques();
+        gridView.setAdapter(new ImageAdapter(this));
+    }
+
     /**
      * Overriden in order to close the database
      */
@@ -570,7 +577,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void testServeur() {
-        BookUtilities.ajouterLivreBibliotheque(this, bibliotheques.get(0).getLivre(), getHelper());
+        Livre livre = new Livre();
+        livre.setLienDLEpub("http://www.gutenberg.org/ebooks/1.epub.images");
+        livre.setTitre("test");
+        livre.setAuteur("test");
+        livre.setIdServeur((long) 1);
+        BookUtilities.ajouterLivreBibliotheque(this, livre, getHelper());
     }
 }
 
