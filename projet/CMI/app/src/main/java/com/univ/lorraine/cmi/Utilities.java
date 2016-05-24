@@ -344,4 +344,8 @@ public final class Utilities {
     public static void disableUserInput(Activity activity) {
         enableUserInput(activity, false);
     }
+
+    public static boolean isErrorCode(int code) {
+        return code >= 400;
+    }
 }

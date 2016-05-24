@@ -28,6 +28,7 @@ import java.sql.SQLException;
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.epub.EpubReader;
+import retrofit2.Response;
 
 /**
  * Created by alexis on 23/05/2016.
@@ -43,11 +44,18 @@ public class BookUtilities {
                 Bibliotheque bibliotheque = new Bibliotheque(livre);
                 try {
                     // On envoie la création de cette bibliothèque au serveur
-                    Bibliotheque bibliothequeServeur = CallMeIshmaelServiceProvider
+                    Response<Bibliotheque> response = CallMeIshmaelServiceProvider
                             .getService()
                             .createBibliotheque(idUser, bibliotheque)
-                            .execute()
-                            .body();
+                            .execute();
+
+                    // Erreur
+                    if (Utilities.isErrorCode(response.code()))
+                        return false;
+
+                    Bibliotheque bibliothequeServeur = response.body();
+                    if (bibliothequeServeur == null)
+                        return false;
 
                     bibliothequeServeur.setLivre(livre);
 
@@ -90,13 +98,18 @@ public class BookUtilities {
                 Bibliotheque bibliotheque = new Bibliotheque(livre);
                 try {
                     // On envoie la création de cette bibliothèque au serveur
-                    Bibliotheque bibliothequeServeur = CallMeIshmaelServiceProvider
+                    Response<Bibliotheque> response = CallMeIshmaelServiceProvider
                             .getService()
                             .createBibliotheque(idUser, bibliotheque)
-                            .execute()
-                            .body();
+                            .execute();
 
-                    progress.setMessage("Ajout du livre...");
+                    // Erreur
+                    if (Utilities.isErrorCode(response.code()))
+                        return null;
+
+                    Bibliotheque bibliothequeServeur = response.body();
+                    if (bibliothequeServeur == null)
+                        return null;
 
                     bibliothequeServeur.setLivre(livre);
 
@@ -104,7 +117,6 @@ public class BookUtilities {
                     sauverBibliotheque(bibliothequeServeur, dbHelper);
 
                     // On télécharge le livre sur l'appareil
-                    progress.setMessage("Téléchargement du fichier epub...");
                     downloadBook(activity, livre);
 
                 } catch (IOException e) {
@@ -118,7 +130,7 @@ public class BookUtilities {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                progress.setMessage("Connexion au serveur...");
+                progress.setMessage("Ajout du livre...");
                 progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 progress.setIndeterminate(true);
                 progress.setProgress(0);
