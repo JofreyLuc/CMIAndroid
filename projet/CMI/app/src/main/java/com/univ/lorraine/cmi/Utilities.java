@@ -170,7 +170,7 @@ public final class Utilities {
                     .fit()
                     .centerInside()
                     .into(view);
-        } else  {
+        } else {
             Picasso.with(context)
                     .load(R.mipmap.defaultbook)
                     .fit()
