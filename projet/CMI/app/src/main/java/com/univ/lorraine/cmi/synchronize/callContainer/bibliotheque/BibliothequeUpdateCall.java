@@ -34,7 +34,8 @@ public class BibliothequeUpdateCall extends AbstractBibliothequeCall<ResponseBod
 
     @Override
     protected Response<ResponseBody> executeCall(CallMeIshmaelService service) throws IOException, RuntimeException {
-        return service.updateBibliotheque(idUser, (Bibliotheque)getObjectData())
+        Bibliotheque bibliotheque = (Bibliotheque) getObjectData();
+        return service.updateBibliotheque(idUser, bibliotheque.getIdServeur(), bibliotheque)
                 .execute();
     }
 

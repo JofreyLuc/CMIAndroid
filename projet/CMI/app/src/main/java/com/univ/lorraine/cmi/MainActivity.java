@@ -190,6 +190,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.action_signup:
                 // Lancement de la page d'inscription
                 exempleMiseEnCacheRequete(); //Exemple cache
+                testServeur();
                 i = new Intent(getApplicationContext(), SignupActivity.class);
                 startActivity(i);
                 return true;
@@ -443,11 +444,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     void exempleMiseEnCacheRequete() {
-        Log.d("TEST", "Test mise en cache");
+        /*Log.d("TEST", "Test mise en cache");
         CallMeIshmaelService cmiservice = CallMeIshmaelServiceProvider.getService();
         final Bibliotheque bibliotheque = bibliotheques.get(0); // Biblio sur laquelle on veut faire un update
         Call<ResponseBody> call = cmiservice.updateBibliotheque(Long.valueOf(1), bibliotheque);
-        /*call.enqueue(new Callback<ResponseBody>() {
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 // Traitement après réussite
@@ -462,14 +463,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         new BibliothequeUpdateCall(call, bibliotheque)
                 );
             }
-        });*/
+        });
 
         // A PART, lors d'une connexion retrouvée par exemple
         //CallContainerQueue.getInstance().execute();
         // Test serialize json
         CallContainer test = new BibliothequeUpdateCall(Long.valueOf(1), bibliotheque);
         CallContainerQueue.getInstance().enqueue(test);
-        CallContainerQueue.getInstance().enqueue(new BibliothequeUpdateCall(Long.valueOf(1), bibliotheque));
+        CallContainerQueue.getInstance().enqueue(new BibliothequeUpdateCall(Long.valueOf(1), bibliotheque));*/
     }
 
     void testRetrofitUser(){
@@ -566,6 +567,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             return grid_item;
         }
+    }
+
+    public void testServeur() {
+        BookUtilities.ajouterLivreBibliotheque(this, bibliotheques.get(0).getLivre(), getHelper());
     }
 }
 
