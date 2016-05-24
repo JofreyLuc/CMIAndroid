@@ -18,6 +18,8 @@ import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.reader.ReaderActivity;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
+import com.univ.lorraine.cmi.synchronize.CallContainerQueue;
+import com.univ.lorraine.cmi.synchronize.callContainer.bibliotheque.BibliothequeDeleteCall;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,6 +30,7 @@ import java.sql.SQLException;
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.epub.EpubReader;
+import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 /**
@@ -76,6 +79,12 @@ public class BookUtilities {
             }
 
             @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                Toast.makeText(context, "Ajout du livre en cours...", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
             protected void onPostExecute(Boolean success) {
                 super.onPostExecute(success);
                 String resultat;
@@ -89,7 +98,7 @@ public class BookUtilities {
     }
 
     public static void ajouterLivreBibliothequeEtLire(final Activity activity, final Livre livre, final CmidbaOpenDatabaseHelper dbHelper) {
-        final ProgressDialog progress = new ProgressDialog(activity);
+        final ProgressDialog progressBar = new ProgressDialog(activity);
         new AsyncTask<Void, Integer, Bibliotheque>() {
             @Override
             protected Bibliotheque doInBackground(Void... params) {
@@ -103,6 +112,8 @@ public class BookUtilities {
                             .createBibliotheque(idUser, bibliotheque)
                             .execute();
 
+                    publishProgress(33);
+
                     // Erreur
                     if (Utilities.isErrorCode(response.code()))
                         return null;
@@ -110,6 +121,8 @@ public class BookUtilities {
                     Bibliotheque bibliothequeServeur = response.body();
                     if (bibliothequeServeur == null)
                         return null;
+
+                    publishProgress(66);
 
                     bibliothequeServeur.setLivre(livre);
 
@@ -130,34 +143,77 @@ public class BookUtilities {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                progress.setMessage("Ajout du livre...");
-                progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                progress.setIndeterminate(true);
-                progress.setProgress(0);
-                //progress.setCancelable(true);
-                progress.setCanceledOnTouchOutside(false);
-                /*progress.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                progressBar.setMessage("Connexion au serveur...");
+                progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressBar.setIndeterminate(true);
+                progressBar.setProgress(0);
+                //progressBar.setCancelable(true);
+                progressBar.setCanceledOnTouchOutside(false);
+                /*progressBar.setOnCancelListener(new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialog) {
                         finish();
                     }
                 });*/
-                progress.show();
+                progressBar.show();
+            }
+
+            protected void onProgressUpdate(Integer... progress) {
+                if (progress[0] <= 33)
+                    progressBar.setMessage("Connexion au serveur...");
+                else if (progress[0] <= 66)
+                    progressBar.setMessage("Ajout du livre...");
+                else
+                    progressBar.setMessage("Téléchargement du fichier epub...");
             }
 
             @Override
             protected void onPostExecute(Bibliotheque bibliotheque) {
                 String erreur = "L'ajout du livre " + livre.getTitre() + " a échoué";
                 if (bibliotheque == null) {
-                    progress.hide();
+                    progressBar.hide();
                     Toast.makeText(activity, erreur, Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    progress.setMessage("Lancement de la lecture...");
+                    progressBar.setMessage("Lancement de la lecture...");
                     // On lance la lecture
                     lancerLecture(activity, bibliotheque);
-                    progress.hide();
+                    progressBar.hide();
                 }
+            }
+        }.execute();
+    }
+
+    public static void supprimerBibliothequeSurServeur(final Bibliotheque bibliotheque) {
+        //TODO récupèrer l'idUser
+        final Long idUser = Long.valueOf(1);
+        new AsyncTask<Void, Integer, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                Response<ResponseBody> response = null;
+                try {
+                    response = CallMeIshmaelServiceProvider
+                            .getService()
+                            .deleteBibliotheque(idUser, bibliotheque.getIdServeur())
+                            .execute();
+
+                // Erreur
+                if (Utilities.isErrorCode(response.code()))
+                    return false;
+
+                } catch (IOException e) {
+                    return false;
+                }
+
+                return true;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean result) {
+                super.onPostExecute(result);
+                // En cas d'échec, on place la requête dans la file d'attente
+                if (!result)
+                    CallContainerQueue.getInstance().enqueue(new BibliothequeDeleteCall(idUser, bibliotheque));
             }
         }.execute();
     }
