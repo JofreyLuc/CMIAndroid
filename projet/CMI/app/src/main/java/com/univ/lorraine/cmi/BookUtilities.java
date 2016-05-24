@@ -12,7 +12,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.j256.ormlite.dao.Dao;
-import com.skytree.epub.IOUtils;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Annotation;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
@@ -33,6 +32,8 @@ import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.epub.EpubReader;
 import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
@@ -189,33 +190,57 @@ public class BookUtilities {
     public static void supprimerBibliothequeSurServeur(final Bibliotheque bibliotheque) {
         //TODO récupèrer l'idUser
         final Long idUser = Long.valueOf(1);
-        new AsyncTask<Void, Integer, Boolean>() {
+        CallMeIshmaelServiceProvider
+                .getService()
+                .deleteBibliotheque(idUser, bibliotheque.getIdServeur())
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        // Ne rien faire
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        // En cas d'échec, on place la requête dans la file d'attente
+                         CallContainerQueue.getInstance().enqueue(new BibliothequeDeleteCall(idUser, bibliotheque));
+                    }
+                });
+    }
+
+    public static void updateBibliotheque(final Bibliotheque bibliotheque, final CmidbaOpenDatabaseHelper dbHelper) {
+        //TODO récupèrer l'idUser
+        final Long idUser = Long.valueOf(1);
+        new AsyncTask<Void, Integer, Void>() {
             @Override
-            protected Boolean doInBackground(Void... params) {
-                Response<ResponseBody> response = null;
+            protected Void doInBackground(Void... params) {
                 try {
-                    response = CallMeIshmaelServiceProvider
-                            .getService()
-                            .deleteBibliotheque(idUser, bibliotheque.getIdServeur())
-                            .execute();
-
-                // Erreur
-                if (Utilities.isErrorCode(response.code()))
-                    return false;
-
-                } catch (IOException e) {
-                    return false;
+                    // Mise à jour de la bibliothèque sur la base de donnée locale
+                    Dao<Bibliotheque, Long> daobibliotheque = dbHelper.getBibliothequeDao();
+                    daobibliotheque.update(bibliotheque);
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
+                // Si le livre est présent sur le serveur
+                if (!bibliotheque.getLivre().estImporteLocalement()) {
+                    // Mise à jour de la bibliothèque sur le serveur
+                    CallMeIshmaelServiceProvider
+                            .getService()
+                            .updateBibliotheque(idUser, bibliotheque.getIdServeur(), bibliotheque)
+                            .enqueue(new Callback<ResponseBody>() {
 
-                return true;
-            }
+                                @Override
+                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                    // Ne rien faire
+                                }
 
-            @Override
-            protected void onPostExecute(Boolean result) {
-                super.onPostExecute(result);
-                // En cas d'échec, on place la requête dans la file d'attente
-                if (!result)
-                    CallContainerQueue.getInstance().enqueue(new BibliothequeDeleteCall(idUser, bibliotheque));
+                                @Override
+                                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                    // En cas d'échec, on place la requête dans la file d'attente
+                                    CallContainerQueue.getInstance().enqueue(new BibliothequeUpdateCall(idUser, bibliotheque));
+                                }
+                            });
+                    }
+                return null;
             }
         }.execute();
     }
