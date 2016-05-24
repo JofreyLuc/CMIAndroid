@@ -8,11 +8,14 @@ import com.j256.ormlite.dao.Dao;
 import com.skytree.epub.Highlight;
 import com.skytree.epub.PageInformation;
 import com.skytree.epub.PageMovedListener;
+import com.univ.lorraine.cmi.BookUtilities;
 import com.univ.lorraine.cmi.EndOfBookActivity;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.reader.ReaderActivity;
 
 import java.sql.SQLException;
+
+import nl.siegmann.epublib.domain.Book;
 
 /**
  * Listener appelé lors d'un changement de page.
@@ -69,7 +72,6 @@ public class PageMovedDelegate implements PageMovedListener {
         Log.e("SKY", msg);
 
         // On enregistre la position de ce livre avec l'objet bibliothèque
-
         double positionLecture;
         if (isAtLastPage())
             positionLecture = 1.;
@@ -78,13 +80,7 @@ public class PageMovedDelegate implements PageMovedListener {
 
         Bibliotheque bibliotheque = reader.getBibliotheque();
         bibliotheque.setPositionLecture(positionLecture);
-
-        try {
-            Dao<Bibliotheque, Long> daobibliotheque = reader.getHelper().getBibliothequeDao();
-            daobibliotheque.update(bibliotheque);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        BookUtilities.updateBibliotheque(bibliotheque, reader.getHelper());
     }
 
     /**

@@ -80,7 +80,7 @@ public class CallMeIshmaelServiceProvider {
             JsonElement elem;
 
             Long idServeur;
-            elem = jobject.get(Bibliotheque.ID_SERVEUR_FIELD_NAME);
+            elem = jobject.get(Bibliotheque.ID_SERVEUR_JSON_NAME);
             if (elem != null)
                 idServeur = elem.getAsLong();
             else
