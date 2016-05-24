@@ -133,8 +133,10 @@ public class BookUtilities {
             @Override
             protected void onPostExecute(Bibliotheque bibliotheque) {
                 String erreur = "L'ajout du livre " + livre.getTitre() + " a échoué";
-                if (bibliotheque == null)
+                if (bibliotheque == null) {
+                    progress.hide();
                     Toast.makeText(activity, erreur, Toast.LENGTH_SHORT).show();
+                }
                 else {
                     progress.setMessage("Lancement de la lecture...");
                     // On lance la lecture
