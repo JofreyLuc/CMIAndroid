@@ -96,12 +96,15 @@ public class BookUtilities {
                             .execute()
                             .body();
 
+                    progress.setMessage("Ajout du livre...");
+
                     bibliothequeServeur.setLivre(livre);
 
                     // On sauvegarde le livre et la bibliothèque dans la BDD locale
                     sauverBibliotheque(bibliothequeServeur, dbHelper);
 
                     // On télécharge le livre sur l'appareil
+                    progress.setMessage("Téléchargement du fichier epub...");
                     downloadBook(activity, livre);
 
                 } catch (IOException e) {
@@ -115,7 +118,7 @@ public class BookUtilities {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                progress.setMessage("Ajout du livre...");
+                progress.setMessage("Connexion au serveur...");
                 progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 progress.setIndeterminate(true);
                 progress.setProgress(0);
@@ -141,6 +144,7 @@ public class BookUtilities {
                     progress.setMessage("Lancement de la lecture...");
                     // On lance la lecture
                     lancerLecture(activity, bibliotheque);
+                    progress.hide();
                 }
             }
         }.execute();

@@ -582,7 +582,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         livre.setTitre("test");
         livre.setAuteur("test");
         livre.setIdServeur((long) 1);
-        BookUtilities.ajouterLivreBibliotheque(this, livre, getHelper());
+        BookUtilities.ajouterLivreBibliothequeEtLire(this, livre, getHelper());
     }
 }
 
