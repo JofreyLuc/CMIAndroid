@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
@@ -27,6 +28,7 @@ import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.siegmann.epublib.epub.Main;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

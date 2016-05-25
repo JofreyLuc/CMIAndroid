@@ -5,6 +5,7 @@ package com.univ.lorraine.cmi;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -74,7 +75,7 @@ public class ListAdapter extends BaseAdapter {
 
 
         ImageButton add = (ImageButton) rowView.findViewById(R.id.imageButtonAdd);
-        Button lire = (Button) rowView.findViewById(R.id.buttonRead);
+        final Button lire = (Button) rowView.findViewById(R.id.buttonRead);
         Button details = (Button) rowView.findViewById(R.id.buttonDetails);
 
         if (details != null) {
@@ -92,7 +93,9 @@ public class ListAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
                     //ouvrir le reader
-                    BookUtilities.ajouterLivreBibliothequeEtLire(activity, result.get(position), dbHelper);
+                    Livre livre = result.get(position);
+                    Log.d("LIVRE", livre.toString());
+                    BookUtilities.ajouterLivreBibliothequeEtLire(activity, livre, dbHelper);
                 }
             });
         }
@@ -102,7 +105,9 @@ public class ListAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
                     //ajouter le livre à la bibliothèque
-                    BookUtilities.ajouterLivreBibliotheque(activity, result.get(position), dbHelper);
+                    Livre livre = result.get(position);
+                    Log.d("LIVRE", livre.toString());
+                    BookUtilities.ajouterLivreBibliotheque(activity, livre, dbHelper);
                 }
             });
         }
