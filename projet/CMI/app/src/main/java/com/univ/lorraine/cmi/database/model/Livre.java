@@ -330,8 +330,8 @@ public class Livre implements Parcelable {
      * Permet de recréer un Livre à partir d'une Parcel in.
      */
     private Livre(Parcel in){
-        idLivre = in.readLong();
-        idServeur = in.readLong();
+        idLivre = (long) in.readValue(Long.class.getClassLoader());
+        idServeur = (long) in.readValue(Long.class.getClassLoader());
         titre = in.readString();
         auteur = in.readString();
         genre = in.readString();
@@ -347,11 +347,8 @@ public class Livre implements Parcelable {
      */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(idLivre);
-        // idServeur à -1 si null pour éviter une NullPointerException
-        if (idServeur == null)
-            idServeur = Long.valueOf(-1);
-        dest.writeLong(idServeur);
+        dest.writeValue(idLivre);
+        dest.writeValue(idServeur);
         dest.writeString(titre);
         dest.writeString(auteur);
         dest.writeString(genre);

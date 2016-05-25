@@ -140,8 +140,8 @@ public class Bibliotheque implements Parcelable {
      * Permet de recréer un Bibliothèque à partir d'une Parcel in.
      */
     public Bibliotheque(Parcel in) {
-        idBibliotheque = in.readLong();
-        idServeur = in.readLong();
+        idBibliotheque = (long) in.readValue(Long.class.getClassLoader());
+        idServeur = (long) in.readValue(Long.class.getClassLoader());
         livre = in.readParcelable(getClass().getClassLoader());
         positionLecture = in.readDouble();
         dateModification = new Date(in.readLong());
@@ -152,14 +152,8 @@ public class Bibliotheque implements Parcelable {
      */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        // idBibliotheque à -1 si null pour éviter une NullPointerException
-        if (idBibliotheque == null)
-            idBibliotheque = Long.valueOf(-1);
-        dest.writeLong(idBibliotheque);
-        // idServeur à -1 si null pour éviter une NullPointerException
-        if (idServeur == null)
-            idServeur = Long.valueOf(-1);
-        dest.writeLong(idServeur);
+        dest.writeValue(idBibliotheque);
+        dest.writeValue(idServeur);
         dest.writeParcelable(livre, flags);
         dest.writeDouble(positionLecture);
         dest.writeLong(dateModification.getTime());
