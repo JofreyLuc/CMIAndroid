@@ -55,6 +55,7 @@ public class Evaluation {
         livre = l;
         note = rating;
         commentaire = com;
+        dateModification = new Date();
     }
 
     public Long getIdEvaluation() {

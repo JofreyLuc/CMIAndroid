@@ -3,8 +3,8 @@ package com.univ.lorraine.cmi;
 
 
 
+import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,16 +15,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Livre;
-import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
-import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
 
 import java.util.List;
-
-import okhttp3.internal.Util;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by julienhans on 17/05/2016.
@@ -32,13 +26,15 @@ import retrofit2.Response;
 public class ListAdapter extends BaseAdapter {
 
     List<Livre> result;
-    Context context;
+    Activity activity;
     TextView data;
     ImageView cover;
+    CmidbaOpenDatabaseHelper dbHelper;
 
-    public ListAdapter(Context c, List<Livre> livres) {
+    public ListAdapter(Activity a, CmidbaOpenDatabaseHelper dbH, List<Livre> livres) {
         result = livres;
-        context = c;
+        activity = a;
+        dbHelper = dbH;
     }
     @Override
     public int getCount() {
@@ -58,7 +54,7 @@ public class ListAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = ( LayoutInflater )context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = ( LayoutInflater ) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View rowView = inflater.inflate(R.layout.list_result_item, parent, false);
         data = (TextView) rowView.findViewById(R.id.textViewListResult);
@@ -67,7 +63,7 @@ public class ListAdapter extends BaseAdapter {
 
         data.setText(String.format("%s\n\n%s", result.get(position).getTitre(), result.get(position).getAuteur()));
 
-        Utilities.loadLinkedCoverInto(context, result.get(position), cover);
+        Utilities.loadLinkedCoverInto(activity, result.get(position), cover);
 
         rowView.setOnClickListener(new OnClickListener() {
             @Override
@@ -86,6 +82,7 @@ public class ListAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
                     //ouvrir les détails du livre
+
                 }
             });
         }
@@ -95,6 +92,7 @@ public class ListAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
                     //ouvrir le reader
+                    BookUtilities.ajouterLivreBibliothequeEtLire(activity, result.get(position), dbHelper);
                 }
             });
         }
@@ -104,6 +102,7 @@ public class ListAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
                     //ajouter le livre à la bibliothèque
+                    BookUtilities.ajouterLivreBibliotheque(activity, result.get(position), dbHelper);
                 }
             });
         }
