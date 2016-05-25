@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
@@ -206,7 +207,7 @@ public class BookUtilities {
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         // En cas d'échec, on place la requête dans la file d'attente
-                         CallContainerQueue.getInstance().enqueue(new BibliothequeDeleteCall(idUser, bibliotheque));
+                        CallContainerQueue.getInstance().enqueue(new BibliothequeDeleteCall(idUser, bibliotheque));
                     }
                 });
     }
@@ -288,7 +289,15 @@ public class BookUtilities {
         Bibliotheque bibliotheque = null;
         try {
             daoBiblio = dbHelper.getBibliothequeDao();
-            bibliotheque = daoBiblio.queryForEq("idLivre", livre).get(0);
+            List<Bibliotheque> resultat;
+            resultat = daoBiblio.queryForEq("idLivre", livre);
+            // Si il n'y a pas de résultat, on crée la bibliothèque
+            if (resultat.isEmpty()) {
+                bibliotheque = new Bibliotheque(livre);
+                daoBiblio.create(bibliotheque);
+            }
+            else
+                bibliotheque = resultat.get(0);
         } catch (SQLException e) {
             e.printStackTrace();
         }

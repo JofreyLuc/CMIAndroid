@@ -20,7 +20,7 @@ public class Bibliotheque implements Parcelable {
 
     // json Strings
 
-    public static final String ID_SERVEUR_JSON_NAME = "id";
+    public static final String ID_SERVEUR_JSON_NAME = "idBibliotheque";
 
     public static final String LIVRE_JSON_NAME = "idLivre";
 

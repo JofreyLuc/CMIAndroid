@@ -28,6 +28,16 @@ android:layout_height="wrap_content">
         android:layout_below="@+id/buttonDetails"
         android:layout_alignParentEnd="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/deja_ajoute"
+        android:layout_below="@+id/buttonDetails"
+        android:text="@string/deja_ajoute"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_alignParentEnd="true"/>
+
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"

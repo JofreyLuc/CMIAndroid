@@ -5,6 +5,8 @@ package com.univ.lorraine.cmi;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.skytree.epub.Book;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Livre;
 
@@ -57,14 +60,20 @@ public class ListAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = ( LayoutInflater ) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+        Livre livre = result.get(position);
         View rowView = inflater.inflate(R.layout.list_result_item, parent, false);
         data = (TextView) rowView.findViewById(R.id.textViewListResult);
         cover = (ImageView) rowView.findViewById(R.id.imageViewListResult);
 
+        data.setText(String.format("%s\n\n%s", livre.getTitre(), result.get(position).getAuteur()));
 
-        data.setText(String.format("%s\n\n%s", result.get(position).getTitre(), result.get(position).getAuteur()));
+        Utilities.loadLinkedCoverInto(activity, livre, cover);
 
-        Utilities.loadLinkedCoverInto(activity, result.get(position), cover);
+        // Si le livre est déjà présent dans la bibliothèque
+        if (BookUtilities.isInBdd(livre, dbHelper))
+            rowView.findViewById(R.id.imageButtonAdd).setVisibility(View.GONE);
+        else
+            rowView.findViewById(R.id.deja_ajoute).setVisibility(View.GONE);
 
         rowView.setOnClickListener(new OnClickListener() {
             @Override
@@ -83,7 +92,12 @@ public class ListAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
                     //ouvrir les détails du livre
-
+                    Livre livre = result.get(position);
+                    Bundle b = new Bundle();
+                    b.putParcelable("livre", livre);
+                    Intent i = new Intent(activity, BookDetailsActivity.class);
+                    i.putExtra("bundle", b);
+                    activity.startActivity(i);
                 }
             });
         }
@@ -94,8 +108,11 @@ public class ListAdapter extends BaseAdapter {
                 public void onClick(View v) {
                     //ouvrir le reader
                     Livre livre = result.get(position);
-                    Log.e("LIVRE", livre.toString());
-                    BookUtilities.ajouterLivreBibliothequeEtLire(activity, livre, dbHelper);
+                    // Si le livre n'est pas déjà dans la base locale, on l'ajoute et on le lit
+                    if (!BookUtilities.isInBdd(livre, dbHelper))
+                        BookUtilities.ajouterLivreBibliothequeEtLire(activity, livre, dbHelper);
+                    else
+                        BookUtilities.lancerLecture(activity, livre, dbHelper);
                 }
             });
         }
@@ -106,7 +123,6 @@ public class ListAdapter extends BaseAdapter {
                 public void onClick(View v) {
                     //ajouter le livre à la bibliothèque
                     Livre livre = result.get(position);
-                    Log.e("LIVRE", livre.toString());
                     BookUtilities.ajouterLivreBibliotheque(activity, livre, dbHelper);
                 }
             });
