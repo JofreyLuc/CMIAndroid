@@ -330,8 +330,8 @@ public class Livre implements Parcelable {
      * Permet de recréer un Livre à partir d'une Parcel in.
      */
     private Livre(Parcel in){
-        idLivre = (long) in.readValue(Long.class.getClassLoader());
-        idServeur = (long) in.readValue(Long.class.getClassLoader());
+        idLivre = (Long) in.readValue(Long.class.getClassLoader());
+        idServeur = (Long) in.readValue(Long.class.getClassLoader());
         titre = in.readString();
         auteur = in.readString();
         genre = in.readString();
