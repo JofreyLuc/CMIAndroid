@@ -316,12 +316,16 @@ public class BookUtilities {
 
     /**
      * Retourne vrai si le livre l existe dans la BDD.
-     * @param l Livre.
+     * @param livre Livre.
      */
-    public static boolean isInBdd(Livre l, CmidbaOpenDatabaseHelper dbHelper){
+    public static boolean isInBdd(Livre livre, CmidbaOpenDatabaseHelper dbHelper){
         try {
             Dao<Livre, Long> daoLivre = dbHelper.getLivreDao();
-            return (daoLivre.queryForId(l.getIdLivre()) != null);
+            // Si le livre est importé localement
+            if (livre.estImporteLocalement())
+                return (daoLivre.queryForId(livre.getIdLivre()) != null);
+            else
+                return (daoLivre.queryForEq(Livre.ID_SERVEUR_FIELD_NAME, livre.getIdServeur()) != null);
         } catch (SQLException e) {
             Log.e("EXC", e.getMessage());
             return false;
