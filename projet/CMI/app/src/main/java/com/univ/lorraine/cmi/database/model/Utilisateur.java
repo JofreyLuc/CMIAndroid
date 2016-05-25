@@ -81,4 +81,102 @@ public class Utilisateur {
     @Expose
     @SerializedName(INSCRIPTION_VALIDEE_JSON_NAME)
     private boolean inscriptionValidee;
+
+    public Utilisateur() {}
+
+    public Long getIdUtilisateur() {
+        return idUtilisateur;
+    }
+
+    public void setIdUtilisateur(Long idUtilisateur) {
+        this.idUtilisateur = idUtilisateur;
+    }
+
+    public String getFacebookId() {
+        return facebookId;
+    }
+
+    public void setFacebookId(String facebookId) {
+        this.facebookId = facebookId;
+    }
+
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPseudo() {
+        return pseudo;
+    }
+
+    public void setPseudo(String pseudo) {
+        this.pseudo = pseudo;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
+
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
+    }
+
+    public Date getDateNaissance() {
+        return dateNaissance;
+    }
+
+    public void setDateNaissance(Date dateNaissance) {
+        this.dateNaissance = dateNaissance;
+    }
+
+    public char getSexe() {
+        return sexe;
+    }
+
+    public void setSexe(char sexe) {
+        this.sexe = sexe;
+    }
+
+    public boolean isPossibiliteSuivi() {
+        return possibiliteSuivi;
+    }
+
+    public void setPossibiliteSuivi(boolean possibiliteSuivi) {
+        this.possibiliteSuivi = possibiliteSuivi;
+    }
+
+    public boolean isInscriptionValidee() {
+        return inscriptionValidee;
+    }
+
+    public void setInscriptionValidee(boolean inscriptionValidee) {
+        this.inscriptionValidee = inscriptionValidee;
+    }
 }
