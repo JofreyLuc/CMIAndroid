@@ -55,6 +55,7 @@ public class Evaluation {
         livre = l;
         note = rating;
         commentaire = com;
+        dateModification = new Date();
     }
 
     public Long getIdEvaluation() {
@@ -103,5 +104,10 @@ public class Evaluation {
 
     public void setDateModification(Date dateModification) {
         this.dateModification = dateModification;
+    }
+
+    @Override
+    public String toString() {
+        return "Eval : " + idEvaluation + " note : " + note + " comment : " + commentaire;
     }
 }

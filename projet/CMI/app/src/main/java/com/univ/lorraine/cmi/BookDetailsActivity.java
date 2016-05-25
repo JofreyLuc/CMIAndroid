@@ -229,6 +229,7 @@ public class BookDetailsActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<Evaluation> call, Throwable t) {
+                        Log.e("ERR", "", t);
                         Toast.makeText(BookDetailsActivity.this, "Erreur lors de l'envoi de l'évaluation au serveur", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -264,9 +265,7 @@ public class BookDetailsActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<Evaluation>>() {
             @Override
             public void onResponse(Call<List<Evaluation>> call, Response<List<Evaluation>> response) {
-                Log.e("HUM", "PASS");
                 if (response.body() != null) {
-
                     evaluations = response.body();
                     evalsView.setAdapter(new EvalRecyclerAdapter(getApplicationContext(), evaluations));
                 }

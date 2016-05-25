@@ -606,9 +606,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void testServeur() {
         Livre livre = new Livre();
-        livre.setLienDLEpub("http://www.gutenberg.org/ebooks/1.epub.images");
-        livre.setTitre("test");
-        livre.setAuteur("test");
         livre.setIdServeur((long) 1);
         BookUtilities.ajouterLivreBibliothequeEtLire(this, livre, getHelper());
     }
