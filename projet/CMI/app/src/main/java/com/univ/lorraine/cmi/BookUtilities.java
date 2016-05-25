@@ -108,6 +108,7 @@ public class BookUtilities {
                 //TODO récupèrer l'idUser
                 Long idUser = Long.valueOf(1);
                 Bibliotheque bibliotheque = new Bibliotheque(livre);
+                Bibliotheque bibliothequeServeur;
                 try {
                     // On envoie la création de cette bibliothèque au serveur
                     Response<Bibliotheque> response = CallMeIshmaelServiceProvider
@@ -121,7 +122,7 @@ public class BookUtilities {
                     if (Utilities.isErrorCode(response.code()))
                         return null;
 
-                    Bibliotheque bibliothequeServeur = response.body();
+                    bibliothequeServeur = response.body();
                     if (bibliothequeServeur == null)
                         return null;
 
@@ -142,7 +143,7 @@ public class BookUtilities {
                 } catch (SQLException e) {
                     return null;
                 }
-                return bibliotheque;
+                return bibliothequeServeur;
             }
 
             @Override
@@ -253,7 +254,7 @@ public class BookUtilities {
 
         livreDao.create(bibliotheque.getLivre());
         bibliothequeDao.create(bibliotheque);
-        Log.d("TESTTTTTTTTTTTT", "idBib : "+bibliotheque.getIdBibliotheque());
+        Log.d("TESTTTTTTTTTTTT", "idBib : " + bibliotheque.getIdBibliotheque());
     }
 
     public static void downloadBook(Context context, Livre livre) throws IOException {

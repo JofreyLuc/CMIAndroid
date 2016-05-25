@@ -140,8 +140,8 @@ public class Bibliotheque implements Parcelable {
      * Permet de recréer un Bibliothèque à partir d'une Parcel in.
      */
     public Bibliotheque(Parcel in) {
-        idBibliotheque = (long) in.readValue(Long.class.getClassLoader());
-        idServeur = (long) in.readValue(Long.class.getClassLoader());
+        idBibliotheque = (Long) in.readValue(Long.class.getClassLoader());
+        idServeur = (Long) in.readValue(Long.class.getClassLoader());
         livre = in.readParcelable(getClass().getClassLoader());
         positionLecture = in.readDouble();
         dateModification = new Date(in.readLong());
