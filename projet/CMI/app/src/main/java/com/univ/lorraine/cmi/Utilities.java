@@ -179,6 +179,21 @@ public final class Utilities {
         }
     }
 
+    public static void loadLinkedCoverInto(Context context, Livre livre, ImageView view){
+        if (livre.getLienCouverture() != null) {
+            Picasso
+                    .with(context)
+                    .load(livre.getLienCouverture())
+                    .error(R.mipmap.defaultbook)
+                    .into(view);
+        } else {
+            Picasso
+                    .with(context)
+                    .load(R.mipmap.defaultbook)
+                    .into(view);
+        }
+    }
+
     /**
      * Retourne vrai si ce livre possède une couverture enregistrée
      *
