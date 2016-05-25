@@ -9,7 +9,8 @@
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="android:strokeColor">@color/colorText</item>
         <item name="android:textColor">@color/colorText</item>
-        <item name="android:colorForeground">@color/colorText</item>
+        <item name="android:colorFocusedHighlight">@color/colorTest</item>
+        <!--<item name="android:colorBackground">@color/colorBackground</item>-->
         <!-- Need to set this also to style create folder dialog -->
         <item name="alertDialogTheme">@style/FilePickerAlertDialogTheme</item>
 
