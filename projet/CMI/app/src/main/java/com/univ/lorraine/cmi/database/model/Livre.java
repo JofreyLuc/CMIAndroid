@@ -316,8 +316,22 @@ public class Livre implements Parcelable {
 
     @Override
     public String toString() {
-        return titre +" " +  auteur + " " + dateParution + " id  : " + idLivre;
+        return "Livre{" +
+                "idLivre=" + idLivre +
+                ", idServeur=" + idServeur +
+                ", titre='" + titre + '\'' +
+                ", auteur='" + auteur + '\'' +
+                ", langue='" + langue + '\'' +
+                ", genre='" + genre + '\'' +
+                ", dateParution='" + dateParution + '\'' +
+                ", resume='" + resume + '\'' +
+                ", noteMoyenne=" + noteMoyenne +
+                ", lienDLEpub='" + lienDLEpub + '\'' +
+                ", lienCouverture='" + lienCouverture + '\'' +
+                '}';
     }
+
+
 
     /* Parcelable */
 
