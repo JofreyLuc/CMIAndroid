@@ -235,7 +235,6 @@ public class BookUtilities {
 
                                 @Override
                                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                                    Log.d("LA", "FAILLLLLLL");
                                     // En cas d'échec, on place la requête dans la file d'attente
                                     CallContainerQueue.getInstance().enqueue(new BibliothequeUpdateCall(idUser, bibliotheque));
                                 }

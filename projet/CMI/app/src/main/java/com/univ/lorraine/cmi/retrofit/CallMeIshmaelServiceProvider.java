@@ -29,6 +29,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class CallMeIshmaelServiceProvider {
 
+    public static final String DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
+
     // URL à modifier pour les tests
     private static final String API_URL = AdresseLocale.adresse;
 
@@ -67,7 +69,7 @@ public class CallMeIshmaelServiceProvider {
             json.addProperty(Bibliotheque.ID_SERVEUR_JSON_NAME, src.getIdServeur());
             json.addProperty(Bibliotheque.LIVRE_JSON_NAME, src.getLivre().getIdServeur());
             json.addProperty(Bibliotheque.POSITION_LECTURE_JSON_NAME, src.getPositionLecture());
-            json.addProperty(Bibliotheque.DATE_MODIFICATION_JSON_NAME, src.getDateModification().toString());
+            json.addProperty(Bibliotheque.DATE_MODIFICATION_JSON_NAME, new SimpleDateFormat(DATE_FORMAT).format(src.getDateModification()));
             return json;
         }
     }
@@ -79,24 +81,14 @@ public class CallMeIshmaelServiceProvider {
             JsonObject jobject = (JsonObject) json;
             JsonElement elem;
 
-            /*Long idServeur;
-            elem = jobject.get(Bibliotheque.ID_SERVEUR_JSON_NAME);
-            Log.d("LOLLLLLLLLLLLLL", "jsonelement == null : "+ (elem == null));
-
-            if (elem != null)
-                idServeur = elem.getAsLong();
-            else
-                idServeur = null;*/
-
             Long idServeur = jobject.get(Bibliotheque.ID_SERVEUR_JSON_NAME).getAsLong();
-            Log.d("LOLLLLLLLLL", "idServeur = "+idServeur);
 
             Long idServeurLivre = jobject.get(Bibliotheque.LIVRE_JSON_NAME).getAsLong();
             double positionLecture = jobject.get(Bibliotheque.POSITION_LECTURE_JSON_NAME).getAsDouble();
             Date dateModif = null;
             try {
                 Log.d("date", jobject.get(Bibliotheque.DATE_MODIFICATION_JSON_NAME).getAsString());
-                dateModif = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(jobject.get(Bibliotheque.DATE_MODIFICATION_JSON_NAME).getAsString());
+                dateModif = new SimpleDateFormat(DATE_FORMAT).parse(jobject.get(Bibliotheque.DATE_MODIFICATION_JSON_NAME).getAsString());
             } catch (ParseException e) {
 
             }
