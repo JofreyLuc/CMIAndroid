@@ -1,5 +1,6 @@
 package com.univ.lorraine.cmi;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
@@ -17,6 +18,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
@@ -34,6 +37,8 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     private SearchView searchView;
     private TextView resultText;
     ListView listResult;
+    // Helper permettant d'interagir avec la database
+    private CmidbaOpenDatabaseHelper dbhelper = null;
 
     private List<Livre> resultats;
 
@@ -64,6 +69,28 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         resultats = new ArrayList<>();
     }
 
+    /**
+     * Overriden in order to close the database
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (dbhelper != null){
+            OpenHelperManager.releaseHelper();
+            dbhelper = null;
+        }
+    }
+
+    /**
+     * Retourne le databaseHelper (crée si il n'existe pas)
+     * @return dbhelper
+     */
+    private CmidbaOpenDatabaseHelper getHelper(){
+        if (dbhelper == null){
+            dbhelper = OpenHelperManager.getHelper(this, CmidbaOpenDatabaseHelper.class);
+        }
+        return dbhelper;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -104,7 +131,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         progress.setIndeterminate(true);
         progress.setCanceledOnTouchOutside(false);
         progress.show();*/
-
+        final Activity activity = this;
         CallMeIshmaelService cmiService = CallMeIshmaelServiceProvider.getService();
         Call<List<Livre>> call = cmiService.searchLivre(query, query, query, null, null);
         call.enqueue(new Callback<List<Livre>>() {
@@ -112,7 +139,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
             public void onResponse(Call<List<Livre>> call, Response<List<Livre>> response) {
                 Log.e("RES", response.body().toString());
                 resultats = response.body();
-                listResult.setAdapter(new ListAdapter(getApplicationContext(), resultats));
+                listResult.setAdapter(new ListAdapter(activity, getHelper(), resultats));
             }
 
             @Override
