@@ -26,14 +26,20 @@ import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.database.model.Evaluation;
 import com.univ.lorraine.cmi.database.model.Livre;
+import com.univ.lorraine.cmi.database.model.Utilisateur;
 import com.univ.lorraine.cmi.reader.ReaderActivity;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -129,15 +135,19 @@ public class BookDetailsActivity extends AppCompatActivity {
             }
         });
 
-
         writeComment = (FloatingActionButton) findViewById(R.id.fab);
-        if (writeComment != null) {
-            writeComment.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    demanderAEvaluer();
-                }
-            });
+        // Si le livre est importé localement, on ne peut pas le noter et on affiche pas les commentaires/notes
+        if (livre.estImporteLocalement()) {
+            writeComment.setVisibility(View.GONE);
+        } else {
+            if (writeComment != null) {
+                writeComment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        demanderAEvaluer();
+                    }
+                });
+            }
         }
 
         if (demande_evaluation)
@@ -187,10 +197,41 @@ public class BookDetailsActivity extends AppCompatActivity {
         envoyer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(BookDetailsActivity.this,ratingBar.getRating() + " " + comment.getText(), Toast.LENGTH_SHORT).show();
+                envoyerEvaluationLivre((double) ratingBar.getRating(), comment.getText().toString());
             }
         });
         rateDialog.show();
+    }
+
+    public void envoyerEvaluationLivre(double rating, String comment) {
+        //TODO idUser
+        Long idUser = (long) 1;
+        Evaluation evaluation = new Evaluation(idUser, livre, rating, comment);
+        // On envoie l'évaluation au serveur
+        CallMeIshmaelServiceProvider
+                .getService()
+                .createEvaluation(idUser, livre.getIdLivre(), evaluation)
+                .enqueue(new Callback<Evaluation>() {
+                    @Override
+                    public void onResponse(Call<Evaluation> call, Response<Evaluation> response) {
+                        // Erreur dans la réponse
+                        if (Utilities.isErrorCode(response.code()))
+                            onFailure(call, new IOException());
+
+                        Evaluation evaluation = response.body();
+                        if (evaluation == null)
+                            onFailure(call, new IOException());
+
+                        Toast.makeText(BookDetailsActivity.this, "Votre évaluation a bien été enregistré", Toast.LENGTH_SHORT).show();
+                        // Rafraichir l'affichage avec l'évaluation de l'utilisateur
+                        //TODO affichage évaluation user
+                    }
+
+                    @Override
+                    public void onFailure(Call<Evaluation> call, Throwable t) {
+                        Toast.makeText(BookDetailsActivity.this, "Erreur lors de l'envoi de l'évaluation au serveur", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     /**
@@ -205,13 +246,13 @@ public class BookDetailsActivity extends AppCompatActivity {
         if (livre.getAuteur() != null) sb.append(livre.getAuteur() + '\n');
         else sb.append("Auteur inconnu\n");
 
-        if (!livre.getGenre().equals("")) sb.append("Genre : " + livre.getGenre() + '\n');
+        if (livre.getGenre() != null && !livre.getGenre().equals("")) sb.append("Genre : " + livre.getGenre() + '\n');
 
-        if (!livre.getDateParution().equals("")) sb.append("Date de parution : " + livre.getDateParution() + '\n');
+        if (livre.getDateParution() != null && !livre.getDateParution().equals("")) sb.append("Date de parution : " + livre.getDateParution() + '\n');
 
-        if (!livre.getLangue().equals("")) sb.append("Langue : " + livre.getLangue() + '\n');
+        if (livre.getLangue() != null && !livre.getLangue().equals("")) sb.append("Langue : " + livre.getLangue() + '\n');
 
-        if (!livre.getResume().equals("")) sb.append("Résumé : " + livre.getResume() + '\n');
+        if (livre.getResume() != null && !livre.getResume().equals("")) sb.append("Résumé : " + livre.getResume() + '\n');
 
         return sb.toString();
     }
@@ -223,7 +264,9 @@ public class BookDetailsActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<Evaluation>>() {
             @Override
             public void onResponse(Call<List<Evaluation>> call, Response<List<Evaluation>> response) {
+                Log.e("HUM", "PASS");
                 if (response.body() != null) {
+
                     evaluations = response.body();
                     evalsView.setAdapter(new EvalRecyclerAdapter(getApplicationContext(), evaluations));
                 }
@@ -231,7 +274,7 @@ public class BookDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Evaluation>> call, Throwable t) {
-                Log.e("EXCEVALS", t.getMessage());
+                Log.e("EXCEVALS", "", t);
             }
         });
     }

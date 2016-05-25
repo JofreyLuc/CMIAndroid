@@ -220,18 +220,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
+                Bundle b;
+                Intent i;
                 switch (item.getItemId()) {
                     case R.id.action_details:
                         // Visualisation des détails du livre
-                        Bundle b = new Bundle();
+                        b = new Bundle();
                         b.putParcelable("livre", livre);
-                        Intent i = new Intent(getApplicationContext(), BookDetailsActivity.class);
+                        i = new Intent(getApplicationContext(), BookDetailsActivity.class);
                         i.putExtra("bundle", b);
                         startActivity(i);
                         return true;
                     case R.id.action_evaluate:
                         // Page d'évaluation
-                        Toast.makeText(getApplicationContext(), "action_evaluate" + livre.getIdLivre(), Toast.LENGTH_LONG).show();
+                        b = new Bundle();
+                        b.putParcelable("livre", livre);
+                        b.putBoolean("evaluer", true);
+                        i = new Intent(getApplicationContext(), BookDetailsActivity.class);
+                        i.putExtra("bundle", b);
+                        startActivity(i);
                         return true;
 
                     case R.id.action_supp:

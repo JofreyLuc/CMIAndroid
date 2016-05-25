@@ -53,7 +53,6 @@
             android:id="@+id/details_tags"
             android:text="Text"
             android:layout_below="@id/layout_cover_buttons"
-            android:scrollbars = "vertical"
             android:gravity="center"
             android:layout_centerHorizontal="true"
             />
@@ -65,25 +64,23 @@
             android:layout_margin="16dp"
             android:clickable="true"
             android:src="@mipmap/ic_create_white_36dp"
-            android:layout_below="@id/details_tags"/>
+            android:layout_below="@id/details_tags"
+            />
 
-
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/layout_evals"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/evals_recyclerView"
+        <LinearLayout
+            android:id="@+id/layout_evals"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </android.support.v7.widget.RecyclerView>
+            android:layout_height="wrap_content">
 
-    </LinearLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/evals_recyclerView"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </android.support.v7.widget.RecyclerView>
 
+        </LinearLayout>
+    </RelativeLayout>
 
 </ScrollView>
