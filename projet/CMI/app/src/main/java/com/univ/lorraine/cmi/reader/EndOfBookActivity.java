@@ -1,6 +1,5 @@
-package com.univ.lorraine.cmi;
+package com.univ.lorraine.cmi.reader;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
@@ -8,16 +7,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.dao.Dao;
+import com.univ.lorraine.cmi.BookDetailsActivity;
+import com.univ.lorraine.cmi.MainActivity;
+import com.univ.lorraine.cmi.R;
+import com.univ.lorraine.cmi.Utilities;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.database.model.Livre;
-import com.univ.lorraine.cmi.reader.ReaderActivity;
-
-import java.sql.SQLException;
+import com.univ.lorraine.cmi.reader.listener.OnSwipeTouchListener;
 
 public class EndOfBookActivity extends AppCompatActivity {
 
@@ -62,6 +61,7 @@ public class EndOfBookActivity extends AppCompatActivity {
         auteur.setText(livre.getAuteur());
 
         // Si le livre est local, on cache Evaluer et voir évaluations
+        //TODO décommenter ICI
         /*if (livre.estImporteLocalement()) {
             evaluer.setEnabled(false);
             evaluer.setVisibility(View.GONE);

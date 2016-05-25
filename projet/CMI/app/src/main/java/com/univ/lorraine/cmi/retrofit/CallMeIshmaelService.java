@@ -2,6 +2,7 @@ package com.univ.lorraine.cmi.retrofit;
 
 import com.univ.lorraine.cmi.database.model.Annotation;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
+import com.univ.lorraine.cmi.database.model.Evaluation;
 import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.database.model.Utilisateur;
 
@@ -74,6 +75,17 @@ public interface CallMeIshmaelService {
 
     @DELETE("users/{idUser}/library/{idLibrary}/notes/{idNote}")
     Call<ResponseBody> deleteAnnotation(@Path("idUser") Long idUtilisateur, @Path("idLibrary") Long idBibliotheque, @Path("idNote") Long idAnnotation);
+
+    // Evaluations
+
+    @GET("books/{idBook}/ratings")
+    Call<List<Evaluation>> getEvaluations(@Path("idBook") Long idLivre, @Query("comment") boolean onlyWithComment);
+
+    @POST("users/{idUser}/books/{idBook}/ratings")
+    Call<Evaluation> createEvaluation(@Path("idUser") Long idUtilisateur, @Path("idBook") Long idLivre, @Body Evaluation evaluation);
+
+    @PUT("users/{idUser}/books/{idBook}/ratings/{idRating}")
+    Call<ResponseBody> updateEvaluation(@Path("idUser") Long idUtilisateur, @Path("idBook") Long idLivre, @Path("idRating") Long idEvaluation, @Body Evaluation evaluation);
 
     // Top 10
 

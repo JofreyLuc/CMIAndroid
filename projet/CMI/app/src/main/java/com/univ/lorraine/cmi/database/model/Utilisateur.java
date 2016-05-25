@@ -84,6 +84,10 @@ public class Utilisateur {
 
     public Utilisateur() {}
 
+    public Utilisateur(Long idU) {
+        idUtilisateur = idU;
+    }
+
     public Long getIdUtilisateur() {
         return idUtilisateur;
     }
