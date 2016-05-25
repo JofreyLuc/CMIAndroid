@@ -27,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.Date;
 
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
@@ -215,6 +216,8 @@ public class BookUtilities {
         new AsyncTask<Void, Integer, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
+                // On change la date de modification de la bibliothèque
+                bibliotheque.setDateModification(new Date());
                 try {
                     // Mise à jour de la bibliothèque sur la base de donnée locale
                     Dao<Bibliotheque, Long> daobibliotheque = dbHelper.getBibliothequeDao();
