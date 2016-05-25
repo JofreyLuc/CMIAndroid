@@ -1,18 +1,32 @@
 package com.univ.lorraine.cmi;
 
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.univ.lorraine.cmi.database.model.Livre;
+import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
+import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class SearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
@@ -21,8 +35,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     private TextView resultText;
     ListView listResult;
 
-    public int [] images = {R.mipmap.no_cover,R.mipmap.no_cover,R.mipmap.no_cover,R.mipmap.no_cover,R.mipmap.no_cover,R.mipmap.no_cover,R.mipmap.no_cover,R.mipmap.no_cover};
-    public String [] list = {"Book1","Book2","Book3","Book4","Book5","Book6","Book7","Book8"};
+    private List<Livre> resultats;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +60,8 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
                 }
             });
         }
+
+        resultats = new ArrayList<>();
     }
 
 
@@ -87,8 +102,32 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
     @Override
     public boolean onQueryTextSubmit(final String query) {
+
+        /*ProgressDialog progress = new ProgressDialog(getApplicationContext());
+        progress.setMessage("Recherche...");
+        progress.setIndeterminate(true);
+        progress.setCanceledOnTouchOutside(false);
+        progress.show();*/
+
+        CallMeIshmaelService cmiService = CallMeIshmaelServiceProvider.getService();
+        Call<List<Livre>> call = cmiService.searchLivre(query, query, query, null, null);
+        call.enqueue(new Callback<List<Livre>>() {
+            @Override
+            public void onResponse(Call<List<Livre>> call, Response<List<Livre>> response) {
+                Log.e("RES", response.body().toString());
+                resultats = response.body();
+                listResult.setAdapter(new ListAdapter(getApplicationContext(), resultats));
+            }
+
+            @Override
+            public void onFailure(Call<List<Livre>> call, Throwable t) {
+                Log.e("FAIL",t.toString());
+            }
+        });
+
+        //progress.dismiss();
+
         resultText.setText(String.format("%s%s", getResources().getString(R.string.result_recherche), query));
-        listResult.setAdapter(new ListAdapter(this, query, images));
         return true;
     }
 

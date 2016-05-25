@@ -40,7 +40,7 @@ public interface CallMeIshmaelService {
     // Recherche de livres
 
     @GET("books")
-    Call<List<Livre>> searchLivre(@Query("titre") String titre, @Query("author") String auteur, @Query("language") String langue, @Query("start-limit") Integer startLimit, @Query("end-limit") Integer endLimit);
+    Call<List<Livre>> searchLivre(@Query("titre") String titre, @Query("auteur") String auteur, @Query("genre") String genre, @Query("start-limit") Integer startLimit, @Query("end-limit") Integer endLimit);
 
     // Bibliotheque
 

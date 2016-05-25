@@ -46,19 +46,8 @@ public class TopRecyclerAdapter extends RecyclerView.Adapter<TopRecyclerAdapter.
         Livre livre = items.get(position);
 
         // Set item views based on the data model
-        ImageView imageView = holder.cover;
-        if (livre.getLienCouverture() == null) {
-            Picasso
-                    .with(context)
-                    .load(livre.getLienCouverture())
-                    .error(R.mipmap.defaultbook)
-                    .into(imageView);
-        } else {
-            Picasso
-                    .with(context)
-                    .load(R.mipmap.defaultbook)
-                    .into(imageView);
-        }
+        ImageView cover = holder.cover;
+        Utilities.loadLinkedCoverInto(context, livre, cover);
     }
 
     @Override

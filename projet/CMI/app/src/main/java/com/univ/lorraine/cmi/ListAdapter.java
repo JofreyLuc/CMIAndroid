@@ -21,6 +21,7 @@ import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
 
 import java.util.List;
 
+import okhttp3.internal.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -30,21 +31,18 @@ import retrofit2.Response;
  */
 public class ListAdapter extends BaseAdapter {
 
-
-    String result;
+    List<Livre> result;
     Context context;
-    int [] imageResult;
     TextView data;
     ImageView cover;
 
-    public ListAdapter(Context c, String queryTyped, int[] prgmImages) {
-        result = queryTyped;
+    public ListAdapter(Context c, List<Livre> livres) {
+        result = livres;
         context = c;
-        imageResult = prgmImages;
     }
     @Override
     public int getCount() {
-        return imageResult.length;
+        return result.size();
     }
 
     @Override
@@ -66,23 +64,10 @@ public class ListAdapter extends BaseAdapter {
         data = (TextView) rowView.findViewById(R.id.textViewListResult);
         cover = (ImageView) rowView.findViewById(R.id.imageViewListResult);
 
-        final CallMeIshmaelService cmiservice = CallMeIshmaelServiceProvider.getService();
+        data.setText(result.get(position).getTitre() + '\n' + result.get(position).getAuteur());
 
-        Call<List<Livre>> call = cmiservice.searchLivre(null, null, null, null, null);
-        call.enqueue(new Callback<List<Livre>>() {
-            @Override
-            public void onResponse(Call<List<Livre>> call, Response<List<Livre>> response) {
-                data.setText(response.body().get(position).getTitre());
-            }
+        Utilities.loadLinkedCoverInto(context, result.get(position), cover);
 
-            @Override
-            public void onFailure(Call<List<Livre>> call, Throwable t) {
-                Log.e("FAIL",t.toString());
-            }
-        });
-
-        //data.setText(result[position]);
-        cover.setImageResource(imageResult[position]);
         rowView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
