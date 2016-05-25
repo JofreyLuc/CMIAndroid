@@ -50,6 +50,13 @@ public class Evaluation {
 
     public Evaluation(){}
 
+    public Evaluation(Long idU, Livre l, double rating, String com) {
+        utilisateur = new Utilisateur(idU);
+        livre = l;
+        note = rating;
+        commentaire = com;
+    }
+
     public Long getIdEvaluation() {
         return idEvaluation;
     }

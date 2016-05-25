@@ -71,7 +71,7 @@
                 android:value="com.univ.lorraine.cmi.MainActivity" />
         </activity>
         <activity
-            android:name=".EndOfBookActivity"
+            android:name=".reader.EndOfBookActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:noHistory="true">
         </activity>

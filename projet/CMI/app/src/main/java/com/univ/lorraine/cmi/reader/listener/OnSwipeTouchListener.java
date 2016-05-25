@@ -1,4 +1,4 @@
-package com.univ.lorraine.cmi;
+package com.univ.lorraine.cmi.reader.listener;
 
 import android.app.Activity;
 import android.content.Context;
