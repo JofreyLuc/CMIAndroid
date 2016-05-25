@@ -64,7 +64,7 @@ public class ListAdapter extends BaseAdapter {
         data = (TextView) rowView.findViewById(R.id.textViewListResult);
         cover = (ImageView) rowView.findViewById(R.id.imageViewListResult);
 
-        data.setText(result.get(position).getTitre() + '\n' + result.get(position).getAuteur());
+        data.setText(result.get(position).getTitre());
 
         Utilities.loadLinkedCoverInto(context, result.get(position), cover);
 

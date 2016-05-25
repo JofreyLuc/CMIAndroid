@@ -8,6 +8,8 @@ import android.graphics.PorterDuff;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,11 +24,20 @@ import com.j256.ormlite.dao.Dao;
 import com.squareup.picasso.Picasso;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
+import com.univ.lorraine.cmi.database.model.Evaluation;
 import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.reader.ReaderActivity;
+import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
+import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Activité affichant les détails d'un livre de la bibliothèque ou d'un résultat de recherche.
@@ -55,6 +66,9 @@ public class BookDetailsActivity extends AppCompatActivity {
     private TextView envoyer;
 // Commentaire
     private EditText comment;
+
+    private RecyclerView evalsView;
+    private List<Evaluation> evaluations;
 
 
     @Override
@@ -128,6 +142,13 @@ public class BookDetailsActivity extends AppCompatActivity {
 
         if (demande_evaluation)
             demanderAEvaluer();
+
+        evaluations = new ArrayList<>();
+        setEvaluations();
+
+        evalsView = (RecyclerView) findViewById(R.id.evals_recyclerView);
+        evalsView.setAdapter(new EvalRecyclerAdapter(getApplicationContext(), evaluations));
+        evalsView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
     }
 
     /**
@@ -195,5 +216,23 @@ public class BookDetailsActivity extends AppCompatActivity {
         return sb.toString();
     }
 
+    private void setEvaluations(){
+        final CallMeIshmaelService cmiService = CallMeIshmaelServiceProvider.getService();
 
+        Call<List<Evaluation>> call = cmiService.getEvaluations(livre.getIdServeur(), true);
+        call.enqueue(new Callback<List<Evaluation>>() {
+            @Override
+            public void onResponse(Call<List<Evaluation>> call, Response<List<Evaluation>> response) {
+                if (response.body() != null) {
+                    evaluations = response.body();
+                    evalsView.setAdapter(new EvalRecyclerAdapter(getApplicationContext(), evaluations));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Evaluation>> call, Throwable t) {
+                Log.e("EXCEVALS", t.getMessage());
+            }
+        });
+    }
 }
