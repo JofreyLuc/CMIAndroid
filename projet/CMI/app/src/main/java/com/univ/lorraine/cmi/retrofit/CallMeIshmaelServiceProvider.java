@@ -79,12 +79,17 @@ public class CallMeIshmaelServiceProvider {
             JsonObject jobject = (JsonObject) json;
             JsonElement elem;
 
-            Long idServeur;
+            /*Long idServeur;
             elem = jobject.get(Bibliotheque.ID_SERVEUR_JSON_NAME);
+            Log.d("LOLLLLLLLLLLLLL", "jsonelement == null : "+ (elem == null));
+
             if (elem != null)
                 idServeur = elem.getAsLong();
             else
-                idServeur = null;
+                idServeur = null;*/
+
+            Long idServeur = jobject.get(Bibliotheque.ID_SERVEUR_JSON_NAME).getAsLong();
+            Log.d("LOLLLLLLLLL", "idServeur = "+idServeur);
 
             Long idServeurLivre = jobject.get(Bibliotheque.LIVRE_JSON_NAME).getAsLong();
             double positionLecture = jobject.get(Bibliotheque.POSITION_LECTURE_JSON_NAME).getAsDouble();

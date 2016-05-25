@@ -243,9 +243,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             }
         });
-        // On affiche le sous-menu Evaluer si le livre n'est pas un livre importé localement
-        //if (!livre.estImporteLocalement()) popup.getMenu().getItem(R.id.action_evaluate).setVisible(true);
         popup.inflate(R.menu.menu_livre);
+        // On affiche le sous-menu Evaluer si le livre n'est pas un livre importé localement
+        if (!livre.estImporteLocalement())
+            popup.getMenu().findItem(R.id.action_evaluate).setVisible(true);
         popup.show();
     }
 

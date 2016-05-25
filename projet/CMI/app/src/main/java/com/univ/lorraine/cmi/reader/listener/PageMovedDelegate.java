@@ -73,12 +73,17 @@ public class PageMovedDelegate implements PageMovedListener {
 
         // On enregistre la position de ce livre avec l'objet bibliothèque
         double positionLecture;
+        Bibliotheque bibliotheque = reader.getBibliotheque();
+
         if (isAtLastPage())
             positionLecture = 1.;
         else
             positionLecture = currentPage.pagePositionInBook;
 
-        Bibliotheque bibliotheque = reader.getBibliotheque();
+        // Si la position de lecture n'a pas changé, on ne fait rien
+        if (positionLecture == bibliotheque.getPositionLecture())
+            return;
+
         bibliotheque.setPositionLecture(positionLecture);
         BookUtilities.updateBibliotheque(bibliotheque, reader.getHelper());
     }
