@@ -74,10 +74,6 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         Utilities.checkNetworkAvailable(this);
 
         listResult = (ListView) findViewById(R.id.list_result);
-        if (listResult != null) {
-            //listResult.setAdapter(new ListAdapter(this, list, images));
-        }
-
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
