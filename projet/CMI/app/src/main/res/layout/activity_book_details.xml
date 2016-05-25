@@ -122,22 +122,24 @@
 
             </LinearLayout>
 
-        </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_evals"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/evals_recyclerView"
+            <LinearLayout
+                android:id="@+id/layout_evals"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </android.support.v7.widget.RecyclerView>
+                android:layout_height="wrap_content"
+                android:layout_below="@id/evaluer_layout">
 
-        </LinearLayout>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/evals_recyclerView"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                </android.support.v7.widget.RecyclerView>
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
     </RelativeLayout>
 
 </ScrollView>
