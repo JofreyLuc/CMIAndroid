@@ -94,7 +94,7 @@ public class ListAdapter extends BaseAdapter {
                 public void onClick(View v) {
                     //ouvrir le reader
                     Livre livre = result.get(position);
-                    Log.d("LIVRE", livre.toString());
+                    Log.e("LIVRE", livre.toString());
                     BookUtilities.ajouterLivreBibliothequeEtLire(activity, livre, dbHelper);
                 }
             });
@@ -106,7 +106,7 @@ public class ListAdapter extends BaseAdapter {
                 public void onClick(View v) {
                     //ajouter le livre à la bibliothèque
                     Livre livre = result.get(position);
-                    Log.d("LIVRE", livre.toString());
+                    Log.e("LIVRE", livre.toString());
                     BookUtilities.ajouterLivreBibliotheque(activity, livre, dbHelper);
                 }
             });

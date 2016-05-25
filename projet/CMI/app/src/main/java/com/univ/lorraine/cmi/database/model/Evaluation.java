@@ -12,7 +12,7 @@ public class Evaluation {
 
     // json Strings
 
-    public static final String ID_SERVEUR_JSON_NAME = "id";
+    public static final String ID_SERVEUR_JSON_NAME = "idEvaluation";
 
     public static final String UTILISATEUR_JSON_NAME = "idUtilisateur";
 

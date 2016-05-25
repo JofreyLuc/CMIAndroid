@@ -25,7 +25,7 @@ public class Livre implements Parcelable {
 
     // json Strings
 
-    public static final String ID_SERVEUR_JSON_NAME = "id";
+    public static final String ID_SERVEUR_JSON_NAME = "idLivre";
 
     public static final String TITRE_JSON_NAME = "titre";
 
@@ -41,7 +41,7 @@ public class Livre implements Parcelable {
 
     public static final String NOTE_MOYENNE_JSON_NAME = "noteMoyenne";
 
-    public static final String LIEN_DL_EPUB_JSON_NAME = "lienDLEpub";
+    public static final String LIEN_DL_EPUB_JSON_NAME = "lienEpub";
 
     public static final String LIEN_COUVERTURE_JSON_NAME = "lienCouverture";
 

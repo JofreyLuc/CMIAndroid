@@ -261,6 +261,7 @@ public final class Utilities {
 
     public static void downloadFileSync(String urlSource, final String pathDest) throws IOException {
         final FileDownloadService downloadService = FileDownloadServiceProvider.getService();
+        Log.e("URL", urlSource);
         Call<ResponseBody> call = downloadService.downloadFileWithDynamicUrl(urlSource);
         Response<ResponseBody> response = call.execute();
         File file = new File(pathDest);
