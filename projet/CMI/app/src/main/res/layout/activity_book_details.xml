@@ -57,15 +57,72 @@
             android:layout_centerHorizontal="true"
             />
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
+        <!-- Note + éval perso -->
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:clickable="true"
-            android:src="@mipmap/ic_create_white_36dp"
-            android:layout_below="@id/details_tags"
-            />
+            android:layout_below="@+id/details_tags">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:id="@+id/note_layout">
+
+                <android.support.v7.widget.AppCompatRatingBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rating_bar"
+                    android:rating="2.1"
+                    android:isIndicator="true"
+                    android:stepSize="0.1"
+                    style="?android:attr/ratingBarStyleIndicator"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/note"
+                    android:text="2.1"
+                    android:textStyle="bold"
+                    android:textSize="32sp"
+                    android:paddingLeft="8sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/nb_evals"
+                    android:textSize="12sp"
+                    android:textStyle="italic"
+                    android:text="(5000 évaluations)"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:id="@+id/evaluer_layout"
+                android:layout_below="@+id/note_layout">
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:clickable="true"
+                    android:src="@mipmap/ic_create_white_36dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/fab"
+                    android:id="@+id/evaluer_text"
+                    android:text="@string/evaluer_livre"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
     </RelativeLayout>
 </ScrollView>
