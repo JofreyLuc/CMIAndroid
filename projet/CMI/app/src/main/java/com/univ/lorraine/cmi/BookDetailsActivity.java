@@ -154,11 +154,11 @@ public class BookDetailsActivity extends AppCompatActivity {
             }
         }
 
-        if (demande_evaluation)
-            demanderAEvaluer();
-
         evaluations = new ArrayList<>();
         setEvaluations();
+
+        if (demande_evaluation)
+            demanderAEvaluer();
 
         evalsView = (RecyclerView) findViewById(R.id.evals_recyclerView);
         evalsView.setAdapter(new EvalRecyclerAdapter(getApplicationContext(), evaluations));
@@ -380,6 +380,10 @@ public class BookDetailsActivity extends AppCompatActivity {
                                 .setRating((float) evaluationPerso.getNote());
                         ((TextView) evalPersoView.findViewById(R.id.eval_eval))
                                 .setText(evaluationPerso.getCommentaire());
+
+                        // On met à jour le dialogue
+                        ratingBar.setRating((float) evaluationPerso.getNote());
+                        comment.setText(evaluationPerso.getCommentaire());
                     }
                     else {
                         findViewById(R.id.eval_perso).setVisibility(View.GONE);
