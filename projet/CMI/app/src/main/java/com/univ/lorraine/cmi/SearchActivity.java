@@ -134,7 +134,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
     @Override
     public boolean onQueryTextSubmit(final String query) {
-
+        searchView.clearFocus();
 
         final ProgressDialog progressBar = new ProgressDialog(this);
         progressBar.setMessage("Connexion au serveur...");

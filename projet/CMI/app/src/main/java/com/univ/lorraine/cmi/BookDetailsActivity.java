@@ -173,6 +173,7 @@ public class BookDetailsActivity extends AppCompatActivity {
         }
     }
 
+
     /**
      * Retourne le databaseHelper (crée si il n'existe pas).
      * @return dbhelper.
@@ -199,6 +200,7 @@ public class BookDetailsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 envoyerEvaluationLivre((double) ratingBar.getRating(), comment.getText().toString());
                 rateDialog.dismiss();
+                setEvaluations();
             }
         });
         rateDialog.show();

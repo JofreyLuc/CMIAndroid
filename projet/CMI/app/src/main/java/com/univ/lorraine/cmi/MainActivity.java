@@ -198,7 +198,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.action_signup:
                 // Lancement de la page d'inscription
                 exempleMiseEnCacheRequete(); //Exemple cache
-                testServeur();
                 i = new Intent(getApplicationContext(), SignupActivity.class);
                 startActivity(i);
                 return true;
@@ -605,12 +604,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             return grid_item;
         }
-    }
-
-    public void testServeur() {
-        Livre livre = new Livre();
-        livre.setIdServeur((long) 1);
-        BookUtilities.ajouterLivreBibliothequeEtLire(this, livre, getHelper());
     }
 }
 
