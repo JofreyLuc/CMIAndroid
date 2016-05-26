@@ -87,6 +87,9 @@ public interface CallMeIshmaelService {
     @PUT("users/{idUser}/books/{idBook}/ratings/{idRating}")
     Call<ResponseBody> updateEvaluation(@Path("idUser") Long idUtilisateur, @Path("idBook") Long idLivre, @Path("idRating") Long idEvaluation, @Body Evaluation evaluation);
 
+    @DELETE("users/{idUser}/books/{idBook}/ratings/{idRating}")
+    Call<ResponseBody> deleteEvaluation(@Path("idUser") Long idUtilisateur, @Path("idBook") Long idLivre, @Path("idRating") Long idEvaluation);
+
     // Top 10
 
     @GET("top10")

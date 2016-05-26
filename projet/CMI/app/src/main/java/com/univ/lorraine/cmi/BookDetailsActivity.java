@@ -163,6 +163,9 @@ public class BookDetailsActivity extends AppCompatActivity {
         evalsView = (RecyclerView) findViewById(R.id.evals_recyclerView);
         evalsView.setAdapter(new EvalRecyclerAdapter(getApplicationContext(), evaluations));
         evalsView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
+        // On rafraîchit la note
+        rafraichirAffichageNote();
     }
 
     /**
@@ -235,6 +238,8 @@ public class BookDetailsActivity extends AppCompatActivity {
                         if (Utilities.isErrorCode(response.code()))
                             onFailure(call, new IOException());
                         Toast.makeText(BookDetailsActivity.this, "Votre évaluation a bien été modifiée", Toast.LENGTH_SHORT).show();
+                        // On rafraîchit la note
+                        rafraichirAffichageNote();
                     }
 
                     @Override
@@ -265,8 +270,8 @@ public class BookDetailsActivity extends AppCompatActivity {
                             onFailure(call, new IOException());
 
                         Toast.makeText(BookDetailsActivity.this, "Votre évaluation a bien été enregistrée", Toast.LENGTH_SHORT).show();
-                        // Rafraichir l'affichage avec l'évaluation de l'utilisateur
-                        //TODO affichage évaluation user
+                        // On rafraîchit la note
+                        rafraichirAffichageNote();
                     }
 
                     @Override
@@ -298,6 +303,40 @@ public class BookDetailsActivity extends AppCompatActivity {
         if (livre.getResume() != null && !livre.getResume().equals("")) sb.append("Résumé : " + livre.getResume() + '\n');
 
         return sb.toString();
+    }
+
+    private void setNoteLivre() {
+        CallMeIshmaelServiceProvider
+                .getService()
+                .getLivre(livre.getIdServeur())
+                .enqueue(new Callback<Livre>() {
+                    @Override
+                    public void onResponse(Call<Livre> call, Response<Livre> response) {
+                        // Erreur dans la réponse
+                        if (Utilities.isErrorCode(response.code()))
+                            onFailure(call, new IOException());
+
+                        Livre l = response.body();
+                        if (l == null)
+                            onFailure(call, new IOException());
+
+                        livre = l;
+                        rafraichirAffichageNote();
+                    }
+
+                    @Override
+                    public void onFailure(Call<Livre> call, Throwable t) {
+                        Log.e("EXCEVALS", "", t);
+                        rafraichirAffichageNote();
+                    }
+                });
+    }
+
+    private void rafraichirAffichageNote() {
+        // On rafraîchit la note et le nombre d'évaluations
+        ((RatingBar) findViewById(R.id.rating_bar)).setRating(livre.getNoteMoyenne());
+        ((TextView) findViewById(R.id.note)).setText(livre.getNoteMoyenne()+"");
+        ((TextView) findViewById(R.id.nb_evals)).setText("("+livre.getNombreEvaluations()+" évaluations)");
     }
 
     private void setEvaluations(){

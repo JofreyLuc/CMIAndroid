@@ -305,6 +305,14 @@ public class Livre implements Parcelable {
         this.noteMoyenne = noteMoyenne;
     }
 
+    public int getNombreEvaluations() {
+        return nombreEvaluations;
+    }
+
+    public void setNombreEvaluations(int nombreEvaluations) {
+        this.nombreEvaluations = nombreEvaluations;
+    }
+
     public String getLienDLEpub() {
         return lienDLEpub;
     }
