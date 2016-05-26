@@ -42,8 +42,6 @@ public class EvaluationJsonAdapter implements JsonSerializer<Evaluation>, JsonDe
         JsonObject jobject = (JsonObject) json;
 
         Long idServeur = jobject.get(Evaluation.ID_SERVEUR_JSON_NAME).getAsLong();
-        Long idUtilisateur = jobject.get(Evaluation.UTILISATEUR_JSON_NAME).getAsLong();
-        String pseudo = jobject.get(Utilisateur.PSEUDO_JSON_NAME).getAsString();
         Long idLivre = jobject.get(Evaluation.LIVRE_JSON_NAME).getAsLong();
         String commentaire = jobject.get(Evaluation.COMMENTAIRE_JSON_NAME).getAsString();
         double note = jobject.get(Evaluation.NOTE_JSON_NAME).getAsDouble();
@@ -57,11 +55,16 @@ public class EvaluationJsonAdapter implements JsonSerializer<Evaluation>, JsonDe
         Evaluation evaluation = new Evaluation();
         evaluation.setIdEvaluation(idServeur);
 
-
-        Utilisateur utilisateur = new Gson().fromJson(
-                jobject.getAsJsonObject().get(Evaluation.UTILISATEUR_JSON_OBJECT)
-                        , Utilisateur.class);
+        JsonObject utilisateurJson = (JsonObject) jobject.getAsJsonObject().get(Evaluation.UTILISATEUR_JSON_OBJECT);
+        Long idUtilisateur = utilisateurJson.get(Utilisateur.ID_UTILISATEUR_JSON_NAME).getAsLong();
+        String pseudo = utilisateurJson.get(Utilisateur.PSEUDO_JSON_NAME).getAsString();
+        boolean possibiliteSuivi = utilisateurJson.get(Utilisateur.POSSIBILITE_SUIVI_JSON_NAME).getAsBoolean();
+        Utilisateur utilisateur = new Utilisateur();
+        utilisateur.setIdUtilisateur(idUtilisateur);
+        utilisateur.setPseudo(pseudo);
+        utilisateur.setPossibiliteSuivi(possibiliteSuivi);
         evaluation.setUtilisateur(utilisateur);
+
         Livre livre = new Livre();
         livre.setIdServeur(idLivre);
         evaluation.setLivre(livre);
