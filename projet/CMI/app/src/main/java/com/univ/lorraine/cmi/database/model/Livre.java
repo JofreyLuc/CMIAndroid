@@ -343,14 +343,14 @@ public class Livre implements Parcelable {
                 ", dateParution='" + dateParution + '\'' +
                 ", resume='" + resume + '\'' +
                 ", noteMoyenne=" + noteMoyenne +
+                ", nombreEvaluations=" + nombreEvaluations +
                 ", lienDLEpub='" + lienDLEpub + '\'' +
                 ", lienCouverture='" + lienCouverture + '\'' +
                 '}';
     }
 
 
-
-    /* Parcelable */
+/* Parcelable */
 
     @Override
     public int describeContents() {
