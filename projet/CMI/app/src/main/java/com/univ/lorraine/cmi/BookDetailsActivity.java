@@ -337,8 +337,9 @@ public class BookDetailsActivity extends AppCompatActivity {
 
     private void rafraichirAffichageNote() {
         // On rafraîchit la note et le nombre d'évaluations
-        ((RatingBar) findViewById(R.id.rating_bar)).setRating(livre.getNoteMoyenne());
-        ((TextView) findViewById(R.id.note)).setText((livre.getNoteMoyenne()+"").substring(0, 3));  // 3 caractères
+        float moyenne = (float) Math.round(livre.getNoteMoyenne() * 10) / 10;
+        ((RatingBar) findViewById(R.id.rating_bar)).setRating(moyenne);
+        ((TextView) findViewById(R.id.note)).setText(moyenne+"");
         ((TextView) findViewById(R.id.nb_evals)).setText("("+livre.getNombreEvaluations()+" évaluations)");
         Log.e("LIVRE", livre.toString());
     }
