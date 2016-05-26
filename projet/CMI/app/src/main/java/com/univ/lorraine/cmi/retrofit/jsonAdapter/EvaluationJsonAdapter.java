@@ -1,10 +1,12 @@
 package com.univ.lorraine.cmi.retrofit.jsonAdapter;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.univ.lorraine.cmi.Utilities;
@@ -55,11 +57,11 @@ public class EvaluationJsonAdapter implements JsonSerializer<Evaluation>, JsonDe
         Evaluation evaluation = new Evaluation();
         evaluation.setIdEvaluation(idServeur);
 
-        Utilisateur utilisateur = new Utilisateur();
-        utilisateur.setIdUtilisateur(idUtilisateur);
-        utilisateur.setPseudo(pseudo);
-        evaluation.setUtilisateur(utilisateur);
 
+        Utilisateur utilisateur = new Gson().fromJson(
+                jobject.getAsJsonObject().get(Evaluation.UTILISATEUR_JSON_OBJECT)
+                        , Utilisateur.class);
+        evaluation.setUtilisateur(utilisateur);
         Livre livre = new Livre();
         livre.setIdServeur(idLivre);
         evaluation.setLivre(livre);

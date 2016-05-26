@@ -16,6 +16,8 @@ public class Evaluation {
 
     public static final String UTILISATEUR_JSON_NAME = "idUtilisateur";
 
+    public static final String UTILISATEUR_JSON_OBJECT = "utilisateur";
+
     public static final String LIVRE_JSON_NAME = "idLivre";
 
     public static final String COMMENTAIRE_JSON_NAME = "commentaire";
