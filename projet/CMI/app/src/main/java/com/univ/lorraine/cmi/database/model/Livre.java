@@ -41,6 +41,8 @@ public class Livre implements Parcelable {
 
     public static final String NOTE_MOYENNE_JSON_NAME = "noteMoyenne";
 
+    public static final String NOMBRE_EVALUATION_JSON_NAME = "nombreEvaluations";
+
     public static final String LIEN_DL_EPUB_JSON_NAME = "lienEpub";
 
     public static final String LIEN_COUVERTURE_JSON_NAME = "lienCouverture";
@@ -66,6 +68,8 @@ public class Livre implements Parcelable {
     public static final String RESUME_FIELD_NAME = "resume";
 
     public static final String NOTE_MOYENNE_FIELD_NAME = "noteMoyenne";
+
+    public static final String NOMBRE_EVALUATION_FIELD_NAME = "nombreEvaluations";
 
     public static final String LIEN_DL_EPUB_FIELD_NAME = "lienDLEpub";
 
@@ -115,6 +119,11 @@ public class Livre implements Parcelable {
     @SerializedName(NOTE_MOYENNE_JSON_NAME)
     @DatabaseField(columnName = NOTE_MOYENNE_FIELD_NAME)
     private float noteMoyenne;
+
+    @Expose
+    @SerializedName(NOMBRE_EVALUATION_JSON_NAME)
+    @DatabaseField(columnName = NOMBRE_EVALUATION_FIELD_NAME)
+    private int nombreEvaluations;
 
     @Expose
     @SerializedName(LIEN_DL_EPUB_JSON_NAME)
