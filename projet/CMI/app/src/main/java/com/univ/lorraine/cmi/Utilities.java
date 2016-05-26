@@ -290,7 +290,7 @@ public final class Utilities {
      *
      * @return Un booléen indiquant si la connexion internet est disponible.
      */
-    private static boolean isNetworkAvailable(Activity activity) {
+    public static boolean isNetworkAvailable(Activity activity) {
         ConnectivityManager connectivityManager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 

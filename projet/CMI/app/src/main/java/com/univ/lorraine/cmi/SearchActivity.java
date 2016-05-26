@@ -49,6 +49,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         resultText = (TextView) findViewById(R.id.status_text);
+        listResult = (ListView) findViewById(R.id.list_result);
 
         Spinner spinnerLangue = (Spinner) findViewById(R.id.spinnerLangue);
 
@@ -81,6 +82,12 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
             OpenHelperManager.releaseHelper();
             dbhelper = null;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        listResult.setAdapter(new ListAdapter(this, getHelper(), resultats));
     }
 
     /**
@@ -128,29 +135,36 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     @Override
     public boolean onQueryTextSubmit(final String query) {
 
-        /*ProgressDialog progress = new ProgressDialog(getApplicationContext());
-        progress.setMessage("Recherche...");
-        progress.setIndeterminate(true);
-        progress.setCanceledOnTouchOutside(false);
-        progress.show();*/
-        final Activity activity = this;
-        CallMeIshmaelService cmiService = CallMeIshmaelServiceProvider.getService();
-        Call<List<Livre>> call = cmiService.searchLivre(query, query, query, null, null);
-        call.enqueue(new Callback<List<Livre>>() {
-            @Override
-            public void onResponse(Call<List<Livre>> call, Response<List<Livre>> response) {
-                Log.e("RES", response.body().toString());
-                resultats = response.body();
-                listResult.setAdapter(new ListAdapter(activity, getHelper(), resultats));
-            }
+        final ProgressDialog progressBar = new ProgressDialog(this);
+        progressBar.setMessage("Connexion au serveur...");
+        progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressBar.setIndeterminate(true);
+        progressBar.setCanceledOnTouchOutside(false);
+        progressBar.show();
 
-            @Override
-            public void onFailure(Call<List<Livre>> call, Throwable t) {
-                Log.e("FAIL",t.toString());
-            }
-        });
+        if (Utilities.isNetworkAvailable(this)) {
+            final Activity activity = this;
+            CallMeIshmaelService cmiService = CallMeIshmaelServiceProvider.getService();
+            Call<List<Livre>> call = cmiService.searchLivre(query, query, query, null, null);
+            call.enqueue(new Callback<List<Livre>>() {
+                @Override
+                public void onResponse(Call<List<Livre>> call, Response<List<Livre>> response) {
+                    resultats = response.body();
+                    listResult.setAdapter(new ListAdapter(activity, getHelper(), resultats));
+                    progressBar.dismiss();
+                }
 
-        //progress.dismiss();
+                @Override
+                public void onFailure(Call<List<Livre>> call, Throwable t) {
+                    progressBar.dismiss();
+                    Toast.makeText(getApplicationContext(), "Impossible de communiquer avec le serveur", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            progressBar.dismiss();
+            Toast.makeText(getApplicationContext(), "Réseau indisponible", Toast.LENGTH_SHORT).show();
+        }
+
 
         resultText.setText(String.format("%s%s", getResources().getString(R.string.result_recherche), query));
         return true;
