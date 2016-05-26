@@ -296,13 +296,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 if (newTop) {
                     livresTop = new ArrayList<>(resLivres);
+                    findViewById(R.id.loading_top).setVisibility(View.GONE);
                     recyclerView.setAdapter(new TopRecyclerAdapter(livresTop, getApplicationContext()));
                 }
             }
 
             @Override
             public void onFailure(Call<List<Livre>> call, Throwable t) {
-                Log.e("PBTOP", t.getMessage());
+                findViewById(R.id.loading_top).setVisibility(View.GONE);
+                TextView tv = (TextView) findViewById(R.id.loading_top_text);
+                tv.setText("Impossible de charger le top 10.");
             }
         });
     }

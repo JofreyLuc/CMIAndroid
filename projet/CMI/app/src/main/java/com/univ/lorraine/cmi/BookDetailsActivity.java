@@ -198,6 +198,7 @@ public class BookDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 envoyerEvaluationLivre((double) ratingBar.getRating(), comment.getText().toString());
+                rateDialog.dismiss();
             }
         });
         rateDialog.show();
@@ -210,7 +211,7 @@ public class BookDetailsActivity extends AppCompatActivity {
         // On envoie l'évaluation au serveur
         CallMeIshmaelServiceProvider
                 .getService()
-                .createEvaluation(idUser, livre.getIdLivre(), evaluation)
+                .createEvaluation(idUser, livre.getIdServeur(), evaluation)
                 .enqueue(new Callback<Evaluation>() {
                     @Override
                     public void onResponse(Call<Evaluation> call, Response<Evaluation> response) {
