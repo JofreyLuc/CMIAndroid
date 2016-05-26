@@ -198,7 +198,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.action_signup:
                 // Lancement de la page d'inscription
                 exempleMiseEnCacheRequete(); //Exemple cache
-                testServeur();
                 i = new Intent(getApplicationContext(), SignupActivity.class);
                 startActivity(i);
                 return true;
@@ -296,13 +295,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 if (newTop) {
                     livresTop = new ArrayList<>(resLivres);
+                    findViewById(R.id.loading_top).setVisibility(View.GONE);
                     recyclerView.setAdapter(new TopRecyclerAdapter(livresTop, getApplicationContext()));
                 }
             }
 
             @Override
             public void onFailure(Call<List<Livre>> call, Throwable t) {
-                Log.e("PBTOP", t.getMessage());
+                findViewById(R.id.loading_top).setVisibility(View.GONE);
+                TextView tv = (TextView) findViewById(R.id.loading_top_text);
+                tv.setText("Impossible de charger le top 10.");
             }
         });
     }
@@ -602,12 +604,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             return grid_item;
         }
-    }
-
-    public void testServeur() {
-        Livre livre = new Livre();
-        livre.setIdServeur((long) 1);
-        BookUtilities.ajouterLivreBibliothequeEtLire(this, livre, getHelper());
     }
 }
 

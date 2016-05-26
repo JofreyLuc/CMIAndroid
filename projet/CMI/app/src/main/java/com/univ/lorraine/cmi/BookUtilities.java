@@ -131,11 +131,9 @@ public class BookUtilities {
                     publishProgress(66);
 
                     bibliothequeServeur.setLivre(livre);
-                    Log.d("TESTTTTTTTTTTTT", "idBib avant : " + bibliothequeServeur.getIdBibliotheque());
 
                     // On sauvegarde le livre et la bibliothèque dans la BDD locale
                     sauverBibliotheque(bibliothequeServeur, dbHelper);
-                    Log.d("TESTTTTTTTTTTTT", "idBibapres : " + bibliothequeServeur.getIdBibliotheque());
 
                     // On télécharge le livre sur l'appareil
                     downloadBook(activity, livre);
@@ -258,7 +256,6 @@ public class BookUtilities {
 
         livreDao.create(bibliotheque.getLivre());
         bibliothequeDao.create(bibliotheque);
-        Log.d("TESTTTTTTTTTTTT", "idBib : " + bibliotheque.getIdBibliotheque());
     }
 
     public static void downloadBook(Context context, Livre livre) throws IOException {
@@ -325,7 +322,7 @@ public class BookUtilities {
             if (livre.estImporteLocalement())
                 return (daoLivre.queryForId(livre.getIdLivre()) != null);
             else
-                return (daoLivre.queryForEq(Livre.ID_SERVEUR_FIELD_NAME, livre.getIdServeur()) != null);
+                return (!daoLivre.queryForEq(Livre.ID_SERVEUR_FIELD_NAME, livre.getIdServeur()).isEmpty());
         } catch (SQLException e) {
             Log.e("EXC", e.getMessage());
             return false;
