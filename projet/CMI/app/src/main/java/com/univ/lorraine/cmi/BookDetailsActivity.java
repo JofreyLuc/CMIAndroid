@@ -294,6 +294,12 @@ public class BookDetailsActivity extends AppCompatActivity {
                     if (evaluationPerso != null) {
                         findViewById(R.id.evaluer_text).setVisibility(View.GONE);
                         View evalPersoView = findViewById(R.id.eval_perso);
+                        evalPersoView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                demanderAEvaluer();
+                            }
+                        });
                         ((TextView) evalPersoView.findViewById(R.id.eval_rater))
                                 .setText("Mon évaluation");
                         ((RatingBar) evalPersoView.findViewById(R.id.eval_rating_bar))
@@ -301,8 +307,15 @@ public class BookDetailsActivity extends AppCompatActivity {
                         ((TextView) evalPersoView.findViewById(R.id.eval_eval))
                                 .setText(evaluationPerso.getCommentaire());
                     }
-                    else
+                    else {
                         findViewById(R.id.eval_perso).setVisibility(View.GONE);
+                        findViewById(R.id.evaluer_text).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                demanderAEvaluer();
+                            }
+                        });
+                    }
 
                     evalsView.setAdapter(new EvalRecyclerAdapter(getApplicationContext(), evaluations));
                 }
