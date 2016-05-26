@@ -120,6 +120,12 @@
                     android:id="@+id/evaluer_text"
                     android:text="@string/evaluer_livre"/>
 
+                <include layout="@layout/eval_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/fab"
+                    android:id="@+id/eval_perso" />
+
             </LinearLayout>
 
             <LinearLayout

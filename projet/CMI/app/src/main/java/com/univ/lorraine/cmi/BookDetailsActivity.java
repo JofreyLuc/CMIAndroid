@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -262,6 +263,8 @@ public class BookDetailsActivity extends AppCompatActivity {
     }
 
     private void setEvaluations(){
+        //TODO récupérer idUser
+        final Long idUser = (long) 1;
         final CallMeIshmaelService cmiService = CallMeIshmaelServiceProvider.getService();
 
         Call<List<Evaluation>> call = cmiService.getEvaluations(livre.getIdServeur(), true);
@@ -270,6 +273,32 @@ public class BookDetailsActivity extends AppCompatActivity {
             public void onResponse(Call<List<Evaluation>> call, Response<List<Evaluation>> response) {
                 if (response.body() != null) {
                     evaluations = response.body();
+                    // On regarde si le commentaire de l'utilisateur se trouve parmi les commentaires
+                    Evaluation evalPerso = null;
+                    boolean match = false;
+                    Iterator<Evaluation> it = evaluations.iterator();
+                    while (it.hasNext() && !match) {
+                        Evaluation eval = it.next();
+                        if (eval.getUtilisateur().getIdUtilisateur().equals(idUser)) {
+                            evalPerso = eval;
+                            it.remove();
+                            match = true;
+                        }
+                    }
+                    // Si l'utilisateur a déjà mis un commentaire
+                    if (evalPerso != null) {
+                        findViewById(R.id.evaluer_text).setVisibility(View.GONE);
+                        View evalPersoView = findViewById(R.id.eval_perso);
+                        ((TextView) evalPersoView.findViewById(R.id.eval_rater))
+                                .setText("Mon évaluation");
+                        ((RatingBar) evalPersoView.findViewById(R.id.eval_rating_bar))
+                                .setRating((float) evalPerso.getNote());
+                        ((TextView) evalPersoView.findViewById(R.id.eval_eval))
+                                .setText(evalPerso.getCommentaire());
+                    }
+                    else
+                        findViewById(R.id.eval_perso).setVisibility(View.GONE);
+
                     evalsView.setAdapter(new EvalRecyclerAdapter(getApplicationContext(), evaluations));
                 }
             }
