@@ -165,7 +165,7 @@ public class BookDetailsActivity extends AppCompatActivity {
         evalsView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         // On rafraîchit la note
-        rafraichirAffichageNote();
+        setNoteLivre();
     }
 
     /**
@@ -239,7 +239,7 @@ public class BookDetailsActivity extends AppCompatActivity {
                             onFailure(call, new IOException());
                         Toast.makeText(BookDetailsActivity.this, "Votre évaluation a bien été modifiée", Toast.LENGTH_SHORT).show();
                         // On rafraîchit la note
-                        rafraichirAffichageNote();
+                        setNoteLivre();
                     }
 
                     @Override
@@ -271,7 +271,7 @@ public class BookDetailsActivity extends AppCompatActivity {
 
                         Toast.makeText(BookDetailsActivity.this, "Votre évaluation a bien été enregistrée", Toast.LENGTH_SHORT).show();
                         // On rafraîchit la note
-                        rafraichirAffichageNote();
+                        setNoteLivre();
                     }
 
                     @Override
