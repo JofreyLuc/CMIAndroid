@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.univ.lorraine.cmi.Utilities;
 import com.univ.lorraine.cmi.database.model.Evaluation;
 import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.database.model.Utilisateur;
@@ -40,6 +41,7 @@ public class EvaluationJsonAdapter implements JsonSerializer<Evaluation>, JsonDe
 
         Long idServeur = jobject.get(Evaluation.ID_SERVEUR_JSON_NAME).getAsLong();
         Long idUtilisateur = jobject.get(Evaluation.UTILISATEUR_JSON_NAME).getAsLong();
+        String pseudo = jobject.get(Utilisateur.PSEUDO_JSON_NAME).getAsString();
         Long idLivre = jobject.get(Evaluation.LIVRE_JSON_NAME).getAsLong();
         String commentaire = jobject.get(Evaluation.COMMENTAIRE_JSON_NAME).getAsString();
         double note = jobject.get(Evaluation.NOTE_JSON_NAME).getAsDouble();
@@ -55,6 +57,7 @@ public class EvaluationJsonAdapter implements JsonSerializer<Evaluation>, JsonDe
 
         Utilisateur utilisateur = new Utilisateur();
         utilisateur.setIdUtilisateur(idUtilisateur);
+        utilisateur.setPseudo(pseudo);
         evaluation.setUtilisateur(utilisateur);
 
         Livre livre = new Livre();
