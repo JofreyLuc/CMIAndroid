@@ -303,7 +303,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             @Override
             public void onFailure(Call<List<Livre>> call, Throwable t) {
-                //Toast.makeText(getApplicationContext(), "")
                 findViewById(R.id.loading_top).setVisibility(View.GONE);
                 TextView tv = (TextView) findViewById(R.id.loading_top_text);
                 tv.setText("Impossible de charger le top 10.");
