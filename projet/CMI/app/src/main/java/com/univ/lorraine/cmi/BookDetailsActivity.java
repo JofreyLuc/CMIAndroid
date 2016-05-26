@@ -340,6 +340,7 @@ public class BookDetailsActivity extends AppCompatActivity {
         ((RatingBar) findViewById(R.id.rating_bar)).setRating(livre.getNoteMoyenne());
         ((TextView) findViewById(R.id.note)).setText(livre.getNoteMoyenne()+"");
         ((TextView) findViewById(R.id.nb_evals)).setText("("+livre.getNombreEvaluations()+" évaluations)");
+        Log.e("LIVRE", livre.toString());
     }
 
     private void setEvaluations(){
@@ -368,6 +369,7 @@ public class BookDetailsActivity extends AppCompatActivity {
                     if (evaluationPerso != null) {
                         findViewById(R.id.evaluer_text).setVisibility(View.GONE);
                         View evalPersoView = findViewById(R.id.eval_perso);
+                        evalPersoView.setVisibility(View.VISIBLE);
                         evalPersoView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -387,6 +389,7 @@ public class BookDetailsActivity extends AppCompatActivity {
                     }
                     else {
                         findViewById(R.id.eval_perso).setVisibility(View.GONE);
+                        findViewById(R.id.evaluer_text).setVisibility(View.VISIBLE);
                         findViewById(R.id.evaluer_text).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
