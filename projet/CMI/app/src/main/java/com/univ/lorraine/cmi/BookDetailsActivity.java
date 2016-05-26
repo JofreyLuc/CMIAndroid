@@ -216,7 +216,6 @@ public class BookDetailsActivity extends AppCompatActivity {
                 else
                     modifierEvaluationLivre((double) ratingBar.getRating(), comment.getText().toString());
                 rateDialog.dismiss();
-                setEvaluations();
             }
         });
         rateDialog.show();
@@ -240,6 +239,8 @@ public class BookDetailsActivity extends AppCompatActivity {
                         Toast.makeText(BookDetailsActivity.this, "Votre évaluation a bien été modifiée", Toast.LENGTH_SHORT).show();
                         // On rafraîchit la note
                         setNoteLivre();
+                        // et les évaluations
+                        setEvaluations();
                     }
 
                     @Override
@@ -272,6 +273,8 @@ public class BookDetailsActivity extends AppCompatActivity {
                         Toast.makeText(BookDetailsActivity.this, "Votre évaluation a bien été enregistrée", Toast.LENGTH_SHORT).show();
                         // On rafraîchit la note
                         setNoteLivre();
+                        // et les évaluations
+                        setEvaluations();
                     }
 
                     @Override
