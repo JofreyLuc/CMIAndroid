@@ -77,6 +77,7 @@ public class BookDetailsActivity extends AppCompatActivity {
     private RecyclerView evalsView;
     private List<Evaluation> evaluations;
 
+    private Evaluation evaluationPerso;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,9 +194,14 @@ public class BookDetailsActivity extends AppCompatActivity {
         ratingBar = (RatingBar) rateDialog.findViewById(R.id.dialog_ratingbar);
         TextView dialogTitle = (TextView) rateDialog.findViewById(R.id.rate_dialog_title);
         dialogTitle.setText(livre.getTitre());
-
         envoyer = (TextView) rateDialog.findViewById(R.id.rate_dialog_submit);
         comment = (EditText) rateDialog.findViewById(R.id.edit_commentaire);
+
+        // Si il y a déjà un commentaire de cet utilisateur
+        if (evaluationPerso != null) {
+            ratingBar.setRating((float) evaluationPerso.getNote());
+            comment.setText(evaluationPerso.getCommentaire());
+        }
         envoyer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -274,27 +280,26 @@ public class BookDetailsActivity extends AppCompatActivity {
                 if (response.body() != null) {
                     evaluations = response.body();
                     // On regarde si le commentaire de l'utilisateur se trouve parmi les commentaires
-                    Evaluation evalPerso = null;
                     boolean match = false;
                     Iterator<Evaluation> it = evaluations.iterator();
                     while (it.hasNext() && !match) {
                         Evaluation eval = it.next();
                         if (eval.getUtilisateur().getIdUtilisateur().equals(idUser)) {
-                            evalPerso = eval;
+                            evaluationPerso = eval;
                             it.remove();
                             match = true;
                         }
                     }
                     // Si l'utilisateur a déjà mis un commentaire
-                    if (evalPerso != null) {
+                    if (evaluationPerso != null) {
                         findViewById(R.id.evaluer_text).setVisibility(View.GONE);
                         View evalPersoView = findViewById(R.id.eval_perso);
                         ((TextView) evalPersoView.findViewById(R.id.eval_rater))
                                 .setText("Mon évaluation");
                         ((RatingBar) evalPersoView.findViewById(R.id.eval_rating_bar))
-                                .setRating((float) evalPerso.getNote());
+                                .setRating((float) evaluationPerso.getNote());
                         ((TextView) evalPersoView.findViewById(R.id.eval_eval))
-                                .setText(evalPerso.getCommentaire());
+                                .setText(evaluationPerso.getCommentaire());
                     }
                     else
                         findViewById(R.id.eval_perso).setVisibility(View.GONE);
