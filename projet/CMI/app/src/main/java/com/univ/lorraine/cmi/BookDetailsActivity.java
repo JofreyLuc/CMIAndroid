@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -198,6 +199,7 @@ public class BookDetailsActivity extends AppCompatActivity {
         envoyer = (TextView) rateDialog.findViewById(R.id.rate_dialog_submit);
         comment = (EditText) rateDialog.findViewById(R.id.edit_commentaire);
 
+
         // Si il y a déjà un commentaire de cet utilisateur
         if (evaluationPerso != null) {
             ratingBar.setRating((float) evaluationPerso.getNote());
@@ -206,7 +208,10 @@ public class BookDetailsActivity extends AppCompatActivity {
         envoyer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                envoyerEvaluationLivre((double) ratingBar.getRating(), comment.getText().toString());
+                if (evaluationPerso == null)
+                    envoyerEvaluationLivre((double) ratingBar.getRating(), comment.getText().toString());
+                else
+                    modifierEvaluationLivre((double) ratingBar.getRating(), comment.getText().toString());
                 rateDialog.dismiss();
                 setEvaluations();
             }
@@ -214,59 +219,62 @@ public class BookDetailsActivity extends AppCompatActivity {
         rateDialog.show();
     }
 
+    public void modifierEvaluationLivre(double rating, String comment) {
+        //TODO idUser
+        Long idUser = (long) 1;
+        evaluationPerso.setNote(rating);
+        evaluationPerso.setCommentaire(comment);
+        evaluationPerso.setDateModification(new Date());
+        CallMeIshmaelServiceProvider
+                .getService()
+                .updateEvaluation(idUser, livre.getIdServeur(), evaluationPerso.getIdEvaluation(), evaluationPerso)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        // Erreur dans la réponse
+                        if (Utilities.isErrorCode(response.code()))
+                            onFailure(call, new IOException());
+                        Toast.makeText(BookDetailsActivity.this, "Votre évaluation a bien été modifiée", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Log.e("ERR", "", t);
+                        Toast.makeText(BookDetailsActivity.this, "Erreur lors de l'envoi de l'évaluation au serveur", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
     public void envoyerEvaluationLivre(double rating, String comment) {
         //TODO idUser
         Long idUser = (long) 1;
-        // Si il s'agit d'une modification d'évaluation
-        if (evaluationPerso != null) {
-            CallMeIshmaelServiceProvider
-                    .getService()
-                    .updateEvaluation(idUser, livre.getIdServeur(), evaluationPerso.getIdEvaluation(), evaluationPerso)
-                    .enqueue(new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            // Erreur dans la réponse
-                            if (Utilities.isErrorCode(response.code()))
-                                onFailure(call, new IOException());
-                            Toast.makeText(BookDetailsActivity.this, "Votre évaluation a bien été modifiée", Toast.LENGTH_SHORT).show();
-                        }
+        Evaluation evaluation = new Evaluation(idUser, livre, rating, comment);
+        // On envoie l'évaluation au serveur
+        CallMeIshmaelServiceProvider
+                .getService()
+                .createEvaluation(idUser, livre.getIdServeur(), evaluation)
+                .enqueue(new Callback<Evaluation>() {
+                    @Override
+                    public void onResponse(Call<Evaluation> call, Response<Evaluation> response) {
+                        // Erreur dans la réponse
+                        if (Utilities.isErrorCode(response.code()))
+                            onFailure(call, new IOException());
 
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            Log.e("ERR", "", t);
-                            Toast.makeText(BookDetailsActivity.this, "Erreur lors de l'envoi de l'évaluation au serveur", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-        }
-        else {
-            Evaluation evaluation = new Evaluation(idUser, livre, rating, comment);
-            // On envoie l'évaluation au serveur
-            CallMeIshmaelServiceProvider
-                    .getService()
-                    .createEvaluation(idUser, livre.getIdServeur(), evaluation)
-                    .enqueue(new Callback<Evaluation>() {
-                        @Override
-                        public void onResponse(Call<Evaluation> call, Response<Evaluation> response) {
-                            // Erreur dans la réponse
-                            if (Utilities.isErrorCode(response.code()))
-                                onFailure(call, new IOException());
+                        Evaluation evaluation = response.body();
+                        if (evaluation == null)
+                            onFailure(call, new IOException());
 
-                            Evaluation evaluation = response.body();
-                            if (evaluation == null)
-                                onFailure(call, new IOException());
+                        Toast.makeText(BookDetailsActivity.this, "Votre évaluation a bien été enregistrée", Toast.LENGTH_SHORT).show();
+                        // Rafraichir l'affichage avec l'évaluation de l'utilisateur
+                        //TODO affichage évaluation user
+                    }
 
-                            Toast.makeText(BookDetailsActivity.this, "Votre évaluation a bien été enregistrée", Toast.LENGTH_SHORT).show();
-                            // Rafraichir l'affichage avec l'évaluation de l'utilisateur
-                            //TODO affichage évaluation user
-                        }
-
-                        @Override
-                        public void onFailure(Call<Evaluation> call, Throwable t) {
-                            Log.e("ERR", "", t);
-                            Toast.makeText(BookDetailsActivity.this, "Erreur lors de l'envoi de l'évaluation au serveur", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-        }
+                    @Override
+                    public void onFailure(Call<Evaluation> call, Throwable t) {
+                        Log.e("ERR", "", t);
+                        Toast.makeText(BookDetailsActivity.this, "Erreur lors de l'envoi de l'évaluation au serveur", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     /**
