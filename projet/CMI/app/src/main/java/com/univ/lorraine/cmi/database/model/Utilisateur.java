@@ -10,29 +10,29 @@ import java.util.Date;
  */
 public class Utilisateur {
 
-    private static final String ID_UTILISATEUR_JSON_NAME = "idUtilisateur";
+    public static final String ID_UTILISATEUR_JSON_NAME = "idUtilisateur";
 
-    private static final String FACEBOOK_ID_JSON_NAME = "facebookId";
+    public static final String FACEBOOK_ID_JSON_NAME = "facebookId";
 
-    private static final String GOOGLE_ID_JSON_NAME = "googleId";
+    public static final String GOOGLE_ID_JSON_NAME = "googleId";
 
-    private static final String EMAIL_JSON_NAME = "email";
+    public static final String EMAIL_JSON_NAME = "email";
 
-    private static final String PASSWORD_JSON_NAME = "password";
+    public static final String PASSWORD_JSON_NAME = "password";
 
-    private static final String PSEUDO_JSON_NAME = "pseudo";
+    public static final String PSEUDO_JSON_NAME = "pseudo";
 
-    private static final String NOM_JSON_NAME = "nom";
+    public static final String NOM_JSON_NAME = "nom";
 
-    private static final String PRENOM_JSON_NAME = "prenom";
+    public static final String PRENOM_JSON_NAME = "prenom";
 
-    private static final String DATE_NAISSANCE_JSON_NAME = "dateNaissance";
+    public static final String DATE_NAISSANCE_JSON_NAME = "dateNaissance";
 
-    private static final String SEXE_JSON_NAME = "sexe";
+    public static final String SEXE_JSON_NAME = "sexe";
 
-    private static final String POSSIBILITE_SUIVI_JSON_NAME = "possibiliteSuivi";
+    public static final String POSSIBILITE_SUIVI_JSON_NAME = "possibiliteSuivi";
 
-    private static final String INSCRIPTION_VALIDEE_JSON_NAME = "inscriptionValidee";
+    public static final String INSCRIPTION_VALIDEE_JSON_NAME = "inscriptionValidee";
 
     @Expose
     @SerializedName(ID_UTILISATEUR_JSON_NAME)
