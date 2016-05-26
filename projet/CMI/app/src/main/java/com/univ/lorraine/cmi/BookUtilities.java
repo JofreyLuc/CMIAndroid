@@ -325,7 +325,7 @@ public class BookUtilities {
             if (livre.estImporteLocalement())
                 return (daoLivre.queryForId(livre.getIdLivre()) != null);
             else
-                return (daoLivre.queryForEq(Livre.ID_SERVEUR_FIELD_NAME, livre.getIdServeur()) != null);
+                return (!daoLivre.queryForEq(Livre.ID_SERVEUR_FIELD_NAME, livre.getIdServeur()).isEmpty());
         } catch (SQLException e) {
             Log.e("EXC", e.getMessage());
             return false;

@@ -16,6 +16,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.skytree.epub.Book;
@@ -70,8 +71,12 @@ public class ListAdapter extends BaseAdapter {
         Utilities.loadLinkedCoverInto(activity, livre, cover);
 
         // Si le livre est déjà présent dans la bibliothèque
-        if (BookUtilities.isInBdd(livre, dbHelper))
-            rowView.findViewById(R.id.imageButtonAdd).setVisibility(View.GONE);
+        if (BookUtilities.isInBdd(livre, dbHelper)) {
+            rowView.findViewById(R.id.imageButtonAdd).setVisibility(ImageButton.INVISIBLE);
+            rowView.findViewById(R.id.buttonRead).setVisibility(Button.INVISIBLE);
+            rowView.findViewById(R.id.buttonDetails).setVisibility(Button.INVISIBLE);
+
+        }
         else
             rowView.findViewById(R.id.deja_ajoute).setVisibility(View.GONE);
 
