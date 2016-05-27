@@ -409,56 +409,60 @@ public class BookDetailsActivity extends AppCompatActivity {
                             match = true;
                         }
                     }
-                    // Si l'utilisateur a déjà mis un commentaire
-                    if (evaluationPerso != null) {
-                        findViewById(R.id.evaluer_text).setVisibility(View.GONE);
-                        View evalPersoView = findViewById(R.id.eval_perso);
-                        evalPersoView.setVisibility(View.VISIBLE);
-                        evalPersoView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                demanderAEvaluer();
-                            }
-                        });
-                        evalPersoView.setOnLongClickListener(new View.OnLongClickListener() {
-                            @Override
-                            public boolean onLongClick(View v) {
-                                demanderConfirmationSuppressionEvaluation();
-                                return false;
-                            }
-                        });
-                        ((TextView) evalPersoView.findViewById(R.id.eval_poster))
-                                .setText("Mon évaluation");
-                        ((RatingBar) evalPersoView.findViewById(R.id.eval_rating_bar))
-                                .setRating((float) evaluationPerso.getNote());
-                        ((TextView) evalPersoView.findViewById(R.id.eval_rating_text))
-                                .setText(evaluationPerso.getNote()+"");
-                        ((TextView) evalPersoView.findViewById(R.id.eval_eval))
-                                .setText(evaluationPerso.getCommentaire());
-
-                        // On met à jour le dialogue
-                        ratingBar.setRating((float) evaluationPerso.getNote());
-                        comment.setText(evaluationPerso.getCommentaire());
-                    }
-                    else {
-                        findViewById(R.id.eval_perso).setVisibility(View.GONE);
-                        findViewById(R.id.evaluer_text).setVisibility(View.VISIBLE);
-                        findViewById(R.id.evaluer_text).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                demanderAEvaluer();
-                            }
-                        });
-                    }
-
+                    setEvaluationPerso();
                     evalsView.setAdapter(new EvalRecyclerAdapter(getApplicationContext(), evaluations));
                 }
             }
 
             @Override
             public void onFailure(Call<List<Evaluation>> call, Throwable t) {
+                setEvaluationPerso();
                 Log.e("EXCEVALS", "", t);
             }
         });
+    }
+
+    private void setEvaluationPerso() {
+        // Si l'utilisateur a déjà mis un commentaire
+        if (evaluationPerso != null) {
+            findViewById(R.id.evaluer_text).setVisibility(View.GONE);
+            View evalPersoView = findViewById(R.id.eval_perso);
+            evalPersoView.setVisibility(View.VISIBLE);
+            evalPersoView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    demanderAEvaluer();
+                }
+            });
+            evalPersoView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    demanderConfirmationSuppressionEvaluation();
+                    return false;
+                }
+            });
+            ((TextView) evalPersoView.findViewById(R.id.eval_poster))
+                    .setText("Mon évaluation");
+            ((RatingBar) evalPersoView.findViewById(R.id.eval_rating_bar))
+                    .setRating((float) evaluationPerso.getNote());
+            ((TextView) evalPersoView.findViewById(R.id.eval_rating_text))
+                    .setText(evaluationPerso.getNote()+"");
+            ((TextView) evalPersoView.findViewById(R.id.eval_eval))
+                    .setText(evaluationPerso.getCommentaire());
+
+            // On met à jour le dialogue
+            ratingBar.setRating((float) evaluationPerso.getNote());
+            comment.setText(evaluationPerso.getCommentaire());
+        }
+        else {
+            findViewById(R.id.eval_perso).setVisibility(View.GONE);
+            findViewById(R.id.evaluer_text).setVisibility(View.VISIBLE);
+            findViewById(R.id.evaluer_text).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    demanderAEvaluer();
+                }
+            });
+        }
     }
 }
