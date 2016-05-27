@@ -144,7 +144,7 @@ public class SearchActivity extends RefreshActivityInterface implements SearchVi
         progressBar.show();
 
         if (Utilities.isNetworkAvailable(this)) {
-            final Activity activity = this;
+            final RefreshActivityInterface activity = this;
             CallMeIshmaelService cmiService = CallMeIshmaelServiceProvider.getService();
             Call<List<Livre>> call = cmiService.searchLivre(query, query, query, null, null);
             call.enqueue(new Callback<List<Livre>>() {

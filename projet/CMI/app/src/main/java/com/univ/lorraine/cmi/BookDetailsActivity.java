@@ -31,6 +31,7 @@ import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Ref;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -114,7 +115,7 @@ public class BookDetailsActivity extends RefreshActivityInterface {
             boutonLecture.setText(R.string.button_readNow_alt);
         }
 
-        final Activity activity = this;
+        final RefreshActivityInterface activity = this;
 
         boutonAjout.setOnClickListener(new View.OnClickListener() {
             @Override
