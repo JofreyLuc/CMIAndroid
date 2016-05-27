@@ -54,11 +54,19 @@ public class EvaluationJsonAdapter implements JsonSerializer<Evaluation>, JsonDe
 
         Evaluation evaluation = new Evaluation();
         evaluation.setIdEvaluation(idServeur);
+        Long idUtilisateur;
+        String pseudo = "";
+        boolean possibiliteSuivi = false;
+        // Si on reçoit l'utilisateur sous forme de nested object
+        if (jobject.has(Evaluation.UTILISATEUR_JSON_OBJECT)) {
+            JsonObject utilisateurJson = (JsonObject) jobject.getAsJsonObject().get(Evaluation.UTILISATEUR_JSON_OBJECT);
+            idUtilisateur = utilisateurJson.get(Utilisateur.ID_UTILISATEUR_JSON_NAME).getAsLong();
+            pseudo = utilisateurJson.get(Utilisateur.PSEUDO_JSON_NAME).getAsString();
+            possibiliteSuivi = utilisateurJson.get(Utilisateur.POSSIBILITE_SUIVI_JSON_NAME).getAsBoolean();
+        }
+        else
+            idUtilisateur = jobject.get(Utilisateur.ID_UTILISATEUR_JSON_NAME).getAsLong();
 
-        JsonObject utilisateurJson = (JsonObject) jobject.getAsJsonObject().get(Evaluation.UTILISATEUR_JSON_OBJECT);
-        Long idUtilisateur = utilisateurJson.get(Utilisateur.ID_UTILISATEUR_JSON_NAME).getAsLong();
-        String pseudo = utilisateurJson.get(Utilisateur.PSEUDO_JSON_NAME).getAsString();
-        boolean possibiliteSuivi = utilisateurJson.get(Utilisateur.POSSIBILITE_SUIVI_JSON_NAME).getAsBoolean();
         Utilisateur utilisateur = new Utilisateur();
         utilisateur.setIdUtilisateur(idUtilisateur);
         utilisateur.setPseudo(pseudo);
