@@ -4,6 +4,7 @@ package com.univ.lorraine.cmi;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,9 +19,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.skytree.epub.Book;
+import com.univ.lorraine.cmi.asyncTask.AjouterLivreBibliothequeAsyncTask;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
+import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.database.model.Livre;
 
 import java.util.List;
@@ -62,7 +66,7 @@ public class ListAdapter extends BaseAdapter {
         LayoutInflater inflater = ( LayoutInflater ) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         Livre livre = result.get(position);
-        View rowView = inflater.inflate(R.layout.list_result_item, parent, false);
+        final View rowView = inflater.inflate(R.layout.list_result_item, parent, false);
         data = (TextView) rowView.findViewById(R.id.textViewListResult);
         cover = (ImageView) rowView.findViewById(R.id.imageViewListResult);
 
@@ -114,8 +118,53 @@ public class ListAdapter extends BaseAdapter {
                     //ouvrir le reader
                     Livre livre = result.get(position);
                     // Si le livre n'est pas déjà dans la base locale, on l'ajoute et on le lit
-                    if (!BookUtilities.isInBdd(livre, dbHelper))
-                        BookUtilities.ajouterLivreBibliothequeEtLire(activity, livre, dbHelper);
+                    if (!BookUtilities.isInBdd(livre, dbHelper)) {
+                        //BookUtilities.ajouterLivreBibliothequeEtLire(activity, livre, dbHelper);
+                        final ProgressDialog progressBar = new ProgressDialog(activity);
+                        new AjouterLivreBibliothequeAsyncTask(activity, dbHelper, livre) {
+                            @Override
+                            protected void onPreExecute() {
+                                progressBar.setMessage("Connexion au serveur...");
+                                progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                progressBar.setIndeterminate(true);
+                                progressBar.setProgress(0);
+                                //progressBar.setCancelable(true);
+                                progressBar.setCanceledOnTouchOutside(false);
+                                /*progressBar.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                    @Override
+                                    public void onCancel(DialogInterface dialog) {
+                                        finish();
+                                    }
+                                });*/
+                                progressBar.show();
+                            }
+
+                            @Override
+                            protected void onPostExecute(Bibliotheque bibliotheque) {
+                                String erreur = "L'ajout du livre " + livre.getTitre() + " a échoué";
+                                if (bibliotheque == null) {
+                                    progressBar.hide();
+                                    Toast.makeText(activity, erreur, Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    progressBar.setMessage("Lancement de la lecture...");
+                                    // On lance la lecture
+                                    BookUtilities.lancerLecture(activity, bibliotheque);
+                                    progressBar.hide();
+                                }
+                            }
+
+                            @Override
+                            protected void onProgressUpdate(Integer... values) {
+                                super.onProgressUpdate(values);
+                                if (isBeforeAjoutLivre())
+                                    progressBar.setMessage("Ajout du livre...");
+                                else if (isBeforeTelechargementLivre())
+                                    progressBar.setMessage("Téléchargement du fichier epub...");
+
+                            }
+                        }.execute();
+                    }
                     else
                         BookUtilities.lancerLecture(activity, livre, dbHelper);
                 }
@@ -128,7 +177,31 @@ public class ListAdapter extends BaseAdapter {
                 public void onClick(View v) {
                     //ajouter le livre à la bibliothèque
                     Livre livre = result.get(position);
-                    BookUtilities.ajouterLivreBibliotheque(activity, livre, dbHelper);
+                    //BookUtilities.ajouterLivreBibliotheque(activity, livre, dbHelper);
+                    new AjouterLivreBibliothequeAsyncTask(activity, dbHelper, livre) {
+
+                        @Override
+                        protected void onPreExecute() {
+                            Toast.makeText(activity, "Ajout du livre en cours...", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        protected void onPostExecute(Bibliotheque bibliotheque) {
+                            String resultat;
+                            if (bibliotheque != null) {
+                                resultat = "Le livre " + livre.getTitre() + " a été ajouté à votre bibliothèque";
+                                // On rafraîchit le bouton "Ajouter livre" de ce livre
+                                rowView.findViewById(R.id.imageButtonAdd).setVisibility(ImageButton.INVISIBLE);
+                                rowView.findViewById(R.id.buttonRead).setVisibility(Button.INVISIBLE);
+                                rowView.findViewById(R.id.buttonDetails).setVisibility(Button.INVISIBLE);
+                                rowView.findViewById(R.id.deja_ajoute).setVisibility(View.VISIBLE);
+                            }
+                            else
+                                resultat = "L'ajout du livre " + livre.getTitre() + " a échoué";
+                            Toast.makeText(activity, resultat, Toast.LENGTH_SHORT).show();
+
+                        }
+                    }.execute();
                 }
             });
         }
