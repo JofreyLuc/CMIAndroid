@@ -91,7 +91,7 @@ public abstract class AjouterLivreBibliothequeAsyncTask extends AsyncTask<Void, 
             e.printStackTrace();
             return null;
         }
-        return bibliotheque;
+        return bibliothequeServeur;
     }
 
     @Override
