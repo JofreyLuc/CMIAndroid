@@ -132,40 +132,39 @@ public class BookDetailsActivity extends AppCompatActivity {
             }
         });
 
-        writeComment = (FloatingActionButton) findViewById(R.id.fab);
         // Si le livre est importé localement, on ne peut pas le noter et on affiche pas les commentaires/notes
-        if (livre.estImporteLocalement()) {
-            writeComment.setVisibility(View.GONE);
-        } else {
-            if (writeComment != null) {
-                writeComment.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        demanderAEvaluer();
-                    }
-                });
-            }
+        if (livre.estImporteLocalement())
+            findViewById(R.id.layout_eval_part).setVisibility(View.GONE);
+        else {
+            writeComment = (FloatingActionButton) findViewById(R.id.fab);
+            writeComment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    demanderAEvaluer();
+                }
+            });
+
+            rateDialog = new Dialog(BookDetailsActivity.this);
+            rateDialog.setContentView(R.layout.rate_layout);
+            rateDialog.setCancelable(true);
+            ratingBar = (RatingBar) rateDialog.findViewById(R.id.dialog_ratingbar);
+            TextView dialogTitle = (TextView) rateDialog.findViewById(R.id.rate_dialog_title);
+            dialogTitle.setText(livre.getTitre());
+            envoyer = (TextView) rateDialog.findViewById(R.id.rate_dialog_submit);
+            comment = (EditText) rateDialog.findViewById(R.id.edit_commentaire);
+            evaluations = new ArrayList<>();
+            setEvaluations();
+
+            if (demande_evaluation)
+                demanderAEvaluer();
+
+            evalsView = (RecyclerView) findViewById(R.id.evals_recyclerView);
+            evalsView.setAdapter(new EvalRecyclerAdapter(getApplicationContext(), evaluations));
+            evalsView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
+            // On rafraîchit la note
+            setNoteLivre();
         }
-        rateDialog = new Dialog(BookDetailsActivity.this);
-        rateDialog.setContentView(R.layout.rate_layout);
-        rateDialog.setCancelable(true);
-        ratingBar = (RatingBar) rateDialog.findViewById(R.id.dialog_ratingbar);
-        TextView dialogTitle = (TextView) rateDialog.findViewById(R.id.rate_dialog_title);
-        dialogTitle.setText(livre.getTitre());
-        envoyer = (TextView) rateDialog.findViewById(R.id.rate_dialog_submit);
-        comment = (EditText) rateDialog.findViewById(R.id.edit_commentaire);
-        evaluations = new ArrayList<>();
-        setEvaluations();
-
-        if (demande_evaluation)
-            demanderAEvaluer();
-
-        evalsView = (RecyclerView) findViewById(R.id.evals_recyclerView);
-        evalsView.setAdapter(new EvalRecyclerAdapter(getApplicationContext(), evaluations));
-        evalsView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-
-        // On rafraîchit la note
-        setNoteLivre();
     }
 
     /**
