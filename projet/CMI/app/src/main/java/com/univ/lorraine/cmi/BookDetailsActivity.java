@@ -92,7 +92,7 @@ public class BookDetailsActivity extends AppCompatActivity {
         details = (TextView) findViewById(R.id.details_tags);
         boutonAjout = (Button) findViewById(R.id.button_add);
         boutonLecture = (Button) findViewById(R.id.button_readNow);
-
+        findViewById(R.id.eval_perso).setVisibility(View.GONE);
 
         // Chargement de l'image de couverture
         if (Utilities.hasACover(getApplicationContext(), livre)) {
