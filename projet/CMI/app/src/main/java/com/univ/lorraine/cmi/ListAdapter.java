@@ -35,12 +35,12 @@ import java.util.List;
 public class ListAdapter extends BaseAdapter {
 
     List<Livre> result;
-    RefreshActivityInterface activity;
+    Activity activity;
     TextView data;
     ImageView cover;
     CmidbaOpenDatabaseHelper dbHelper;
 
-    public ListAdapter(RefreshActivityInterface a, CmidbaOpenDatabaseHelper dbH, List<Livre> livres) {
+    public ListAdapter(Activity a, CmidbaOpenDatabaseHelper dbH, List<Livre> livres) {
         result = livres;
         activity = a;
         dbHelper = dbH;

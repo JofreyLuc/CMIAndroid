@@ -123,8 +123,15 @@ public class Bibliotheque implements Parcelable {
         this.dateModification = dateModification;
     }
 
-    public String toString(){
-        return "Bibliothèque : " + idBibliotheque;
+    @Override
+    public String toString() {
+        return "Bibliotheque{" +
+                "idBibliotheque=" + idBibliotheque +
+                ", idServeur=" + idServeur +
+                ", livre=" + livre +
+                ", positionLecture=" + positionLecture +
+                ", dateModification=" + dateModification +
+                '}';
     }
 
     // FIN GETTERS AND SETTERS

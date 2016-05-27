@@ -34,7 +34,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class SearchActivity extends RefreshActivityInterface implements SearchView.OnQueryTextListener {
+public class SearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     private SearchView searchView;
     private TextView resultText;
@@ -144,7 +144,7 @@ public class SearchActivity extends RefreshActivityInterface implements SearchVi
         progressBar.show();
 
         if (Utilities.isNetworkAvailable(this)) {
-            final RefreshActivityInterface activity = this;
+            final Activity activity = this;
             CallMeIshmaelService cmiService = CallMeIshmaelServiceProvider.getService();
             Call<List<Livre>> call = cmiService.searchLivre(query, query, query, null, null);
             call.enqueue(new Callback<List<Livre>>() {
@@ -174,9 +174,5 @@ public class SearchActivity extends RefreshActivityInterface implements SearchVi
         return false;
     }
 
-    @Override
-    public void refresh() {
-        Toast.makeText(SearchActivity.this, "REFRESH", Toast.LENGTH_SHORT).show();
-    }
 }
 
