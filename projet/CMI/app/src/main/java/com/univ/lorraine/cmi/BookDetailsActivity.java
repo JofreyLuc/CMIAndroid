@@ -1,7 +1,9 @@
 package com.univ.lorraine.cmi;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.design.widget.FloatingActionButton;
@@ -23,6 +25,7 @@ import com.squareup.picasso.Picasso;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Evaluation;
 import com.univ.lorraine.cmi.database.model.Livre;
+import com.univ.lorraine.cmi.database.model.Utilisateur;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
 
@@ -221,8 +224,10 @@ public class BookDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         // Erreur dans la réponse
-                        if (Utilities.isErrorCode(response.code()))
+                        if (Utilities.isErrorCode(response.code())) {
                             onFailure(call, new IOException());
+                            return;
+                        }
                         Toast.makeText(BookDetailsActivity.this, "Votre évaluation a bien été modifiée", Toast.LENGTH_SHORT).show();
                         // On rafraîchit la note
                         setNoteLivre();
@@ -250,12 +255,16 @@ public class BookDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<Evaluation> call, Response<Evaluation> response) {
                         // Erreur dans la réponse
-                        if (Utilities.isErrorCode(response.code()))
+                        if (Utilities.isErrorCode(response.code())) {
                             onFailure(call, new IOException());
+                            return;
+                        }
 
                         Evaluation evaluation = response.body();
-                        if (evaluation == null)
+                        if (evaluation == null) {
                             onFailure(call, new IOException());
+                            return;
+                        }
 
                         Toast.makeText(BookDetailsActivity.this, "Votre évaluation a bien été enregistrée", Toast.LENGTH_SHORT).show();
                         // On rafraîchit la note
@@ -268,6 +277,50 @@ public class BookDetailsActivity extends AppCompatActivity {
                     public void onFailure(Call<Evaluation> call, Throwable t) {
                         Log.e("ERR", "", t);
                         Toast.makeText(BookDetailsActivity.this, "Erreur lors de l'envoi de l'évaluation au serveur", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    public void demanderConfirmationSuppressionEvaluation() {
+        new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string.confirmation_suppression_eval_title))
+                .setMessage(getResources().getString(R.string.confirmation_suppression_eval_message))
+                .setPositiveButton(getResources().getString(R.string.confirmation_suppression_yes),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                supprimerEvaluationPerso();
+                            }
+                        })
+                .setNegativeButton(getResources().getString(R.string.confirmation_suppression_no),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Rien à faire
+                            }
+                        })
+                .show();
+    }
+
+    public void supprimerEvaluationPerso() {
+        //TODO idUser
+        final Long idUser = (long) 1;
+        CallMeIshmaelServiceProvider
+                .getService()
+                .deleteEvaluation(idUser, livre.getIdServeur(), evaluationPerso.getIdEvaluation())
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        // Code d'erreur
+                        if (Utilities.isErrorCode(response.code())) {
+                            onFailure(call, new IOException());
+                            return;
+                        }
+                        Toast.makeText(BookDetailsActivity.this, "Votre évaluation a bien été supprimée", Toast.LENGTH_SHORT).show();
+                        setEvaluations();
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(BookDetailsActivity.this, "Erreur de communication avec le serveur", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -303,12 +356,16 @@ public class BookDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<Livre> call, Response<Livre> response) {
                         // Erreur dans la réponse
-                        if (Utilities.isErrorCode(response.code()))
+                        if (Utilities.isErrorCode(response.code())) {
                             onFailure(call, new IOException());
+                            return;
+                        }
 
                         Livre l = response.body();
-                        if (l == null)
+                        if (l == null) {
                             onFailure(call, new IOException());
+                            return;
+                        }
 
                         livre = l;
                         rafraichirAffichageNote();
@@ -362,6 +419,13 @@ public class BookDetailsActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 demanderAEvaluer();
+                            }
+                        });
+                        evalPersoView.setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View v) {
+                                demanderConfirmationSuppressionEvaluation();
+                                return false;
                             }
                         });
                         ((TextView) evalPersoView.findViewById(R.id.eval_poster))

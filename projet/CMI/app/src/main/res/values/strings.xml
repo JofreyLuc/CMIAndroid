@@ -93,6 +93,8 @@
     <string name="end_book_back_biblio"><u>Retourner à la bibliothèque</u></string>
     <string name="evaluer_livre">Évaluer ce livre</string>
     <string name="deja_ajoute">Déjà ajouté</string>
+    <string name="confirmation_suppression_eval_title">Suppression de votre évaluation</string>
+    <string name="confirmation_suppression_eval_message">Êtes-vous certain de vouloir supprimer votre évaluation ?</string>
     <!-- Fin string activité fin de livre -->
 
     <string-array name="langues">

@@ -598,6 +598,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Utilities.loadCoverInto(context, livre, icon);
 
             // Barre de progression de lecture
+            // Barre de progression de lecture
             ProgressBar BarreProgressionLecture = (ProgressBar)grid_item.findViewById(R.id.book_reading_progress_bar);
             int progressionLecture = (int)(bibliotheque.getPositionLecture() * 100);
             BarreProgressionLecture.setProgress(progressionLecture);
