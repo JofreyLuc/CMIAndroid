@@ -3,6 +3,7 @@ package com.univ.lorraine.cmi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -22,7 +24,9 @@ import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.squareup.picasso.Picasso;
+import com.univ.lorraine.cmi.asyncTask.AjouterLivreBibliothequeAsyncTask;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
+import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.database.model.Evaluation;
 import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.database.model.Utilisateur;
@@ -108,10 +112,7 @@ public class BookDetailsActivity extends AppCompatActivity {
 
         // Si livre déjà téléchargé
         if (isInBdd){
-            boutonAjout.setEnabled(false);
-            boutonAjout.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
-            boutonAjout.setText(R.string.button_add_inactive);
-            boutonLecture.setText(R.string.button_readNow_alt);
+            disableBoutonAjout();
         }
 
         final Activity activity = this;
@@ -120,17 +121,86 @@ public class BookDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //BookUtilities.ajouterLivreBibliotheque(activity, livre, getHelper());
-                finish();
+                //ajouter le livre à la bibliothèque
+                new AjouterLivreBibliothequeAsyncTask(activity, getHelper(), livre) {
+
+                    @Override
+                    protected void onPreExecute() {
+                        Toast.makeText(activity, "Ajout du livre en cours...", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    protected void onPostExecute(Bibliotheque bibliotheque) {
+                        String resultat;
+                        if (bibliotheque != null) {
+                            resultat = "Le livre " + livre.getTitre() + " a été ajouté à votre bibliothèque";
+                            // On rafraîchit le bouton "Ajouter livre"
+                            disableBoutonAjout();
+                        }
+                        else
+                            resultat = "L'ajout du livre " + livre.getTitre() + " a échoué";
+                        Toast.makeText(activity, resultat, Toast.LENGTH_SHORT).show();
+
+                    }
+                }.execute();
             }
         });
 
-        /*boutonLecture.setOnClickListener(new View.OnClickListener() {
+        boutonLecture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isInBdd) BookUtilities.lancerLecture(activity, livre, getHelper());
-                else BookUtilities.ajouterLivreBibliothequeEtLire(activity, livre, getHelper());
+                // Si le livre n'est pas déjà dans la base locale, on l'ajoute et on le lit
+                if (!BookUtilities.isInBdd(livre, getHelper())) {
+                    //BookUtilities.ajouterLivreBibliothequeEtLire(activity, livre, dbHelper);
+                    final ProgressDialog progressBar = new ProgressDialog(activity);
+                    new AjouterLivreBibliothequeAsyncTask(activity, getHelper(), livre) {
+                        @Override
+                        protected void onPreExecute() {
+                            progressBar.setMessage("Connexion au serveur...");
+                            progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            progressBar.setIndeterminate(true);
+                            progressBar.setProgress(0);
+                            //progressBar.setCancelable(true);
+                            progressBar.setCanceledOnTouchOutside(false);
+                                /*progressBar.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                    @Override
+                                    public void onCancel(DialogInterface dialog) {
+                                        finish();
+                                    }
+                                });*/
+                            progressBar.show();
+                        }
+
+                        @Override
+                        protected void onPostExecute(Bibliotheque bibliotheque) {
+                            String erreur = "L'ajout du livre " + livre.getTitre() + " a échoué";
+                            if (bibliotheque == null) {
+                                progressBar.hide();
+                                Toast.makeText(activity, erreur, Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                progressBar.setMessage("Lancement de la lecture...");
+                                // On lance la lecture
+                                BookUtilities.lancerLecture(activity, bibliotheque);
+                                progressBar.hide();
+                            }
+                        }
+
+                        @Override
+                        protected void onProgressUpdate(Integer... values) {
+                            super.onProgressUpdate(values);
+                            if (isBeforeAjoutLivre())
+                                progressBar.setMessage("Ajout du livre...");
+                            else if (isBeforeTelechargementLivre())
+                                progressBar.setMessage("Téléchargement du fichier epub...");
+
+                        }
+                    }.execute();
+                }
+                else
+                    BookUtilities.lancerLecture(activity, livre, getHelper());
             }
-        });*/
+        });
 
         // Si le livre est importé localement, on ne peut pas le noter et on affiche pas les commentaires/notes
         if (livre.estImporteLocalement())
@@ -189,6 +259,13 @@ public class BookDetailsActivity extends AppCompatActivity {
             dbhelper = OpenHelperManager.getHelper(this, CmidbaOpenDatabaseHelper.class);
         }
         return dbhelper;
+    }
+
+    private void disableBoutonAjout() {
+        boutonAjout.setEnabled(false);
+        boutonAjout.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+        boutonAjout.setText(R.string.button_add_inactive);
+        boutonLecture.setText(R.string.button_readNow_alt);
     }
 
     private void demanderAEvaluer() {
@@ -389,8 +466,7 @@ public class BookDetailsActivity extends AppCompatActivity {
         float moyenne = (float) Math.round(livre.getNoteMoyenne() * 10) / 10;
         ((RatingBar) findViewById(R.id.rating_bar)).setRating(moyenne);
         ((TextView) findViewById(R.id.note)).setText(moyenne+"");
-        ((TextView) findViewById(R.id.nb_evals)).setText("("+livre.getNombreEvaluations()+" évaluations)");
-        Log.e("LIVRE", livre.toString());
+        ((TextView) findViewById(R.id.nb_evals)).setText("(" + livre.getNombreEvaluations()+" évaluations)");
     }
 
     private void setEvaluations(){
