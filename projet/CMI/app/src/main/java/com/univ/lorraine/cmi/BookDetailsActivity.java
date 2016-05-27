@@ -31,7 +31,6 @@ import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Ref;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -45,7 +44,7 @@ import retrofit2.Response;
 /**
  * Activité affichant les détails d'un livre de la bibliothèque ou d'un résultat de recherche.
  */
-public class BookDetailsActivity extends RefreshActivityInterface {
+public class BookDetailsActivity extends AppCompatActivity {
 
     // Helper pour la database
     private CmidbaOpenDatabaseHelper dbhelper;
@@ -115,23 +114,23 @@ public class BookDetailsActivity extends RefreshActivityInterface {
             boutonLecture.setText(R.string.button_readNow_alt);
         }
 
-        final RefreshActivityInterface activity = this;
+        final Activity activity = this;
 
         boutonAjout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BookUtilities.ajouterLivreBibliotheque(activity, livre, getHelper());
+                //BookUtilities.ajouterLivreBibliotheque(activity, livre, getHelper());
                 finish();
             }
         });
 
-        boutonLecture.setOnClickListener(new View.OnClickListener() {
+        /*boutonLecture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isInBdd) BookUtilities.lancerLecture(activity, livre, getHelper());
                 else BookUtilities.ajouterLivreBibliothequeEtLire(activity, livre, getHelper());
             }
-        });
+        });*/
 
         // Si le livre est importé localement, on ne peut pas le noter et on affiche pas les commentaires/notes
         if (livre.estImporteLocalement())
@@ -471,10 +470,5 @@ public class BookDetailsActivity extends RefreshActivityInterface {
                 }
             });
         }
-    }
-
-    @Override
-    public void refresh() {
-        Toast.makeText(BookDetailsActivity.this, "REFRESH", Toast.LENGTH_SHORT).show();
     }
 }
