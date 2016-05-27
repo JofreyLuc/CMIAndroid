@@ -43,7 +43,7 @@ import retrofit2.Response;
  */
 public class BookUtilities {
 
-    public static void ajouterLivreBibliotheque(final Context context, final Livre livre, final CmidbaOpenDatabaseHelper dbHelper) {
+    public static void ajouterLivreBibliotheque(final RefreshActivityInterface activity, final Livre livre, final CmidbaOpenDatabaseHelper dbHelper) {
         new AsyncTask<Void, Integer, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... params) {
@@ -71,7 +71,7 @@ public class BookUtilities {
                     sauverBibliotheque(bibliothequeServeur, dbHelper);
 
                     // On télécharge le livre sur l'appareil
-                    downloadBook(context, livre);
+                    downloadBook(activity, livre);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -86,18 +86,21 @@ public class BookUtilities {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                Toast.makeText(context, "Ajout du livre en cours...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "Ajout du livre en cours...", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             protected void onPostExecute(Boolean success) {
                 super.onPostExecute(success);
                 String resultat;
-                if (success)
+                if (success) {
                     resultat = "Le livre " + livre.getTitre() + " a été ajouté à votre bibliothèque";
+                    // On rafraîchit l'activité appelante
+                    activity.refresh();
+                }
                 else
                     resultat = "L'ajout du livre " + livre.getTitre() + " a échoué";
-                Toast.makeText(context, resultat, Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, resultat, Toast.LENGTH_SHORT).show();
             }
         }.execute();
     }

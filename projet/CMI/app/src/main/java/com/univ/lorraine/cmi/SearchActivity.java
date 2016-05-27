@@ -34,7 +34,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class SearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+public class SearchActivity extends RefreshActivityInterface implements SearchView.OnQueryTextListener {
 
     private SearchView searchView;
     private TextView resultText;
@@ -174,5 +174,9 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         return false;
     }
 
+    @Override
+    public void refresh() {
+        Toast.makeText(SearchActivity.this, "REFRESH", Toast.LENGTH_SHORT).show();
+    }
 }
 

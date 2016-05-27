@@ -44,7 +44,7 @@ import retrofit2.Response;
 /**
  * Activité affichant les détails d'un livre de la bibliothèque ou d'un résultat de recherche.
  */
-public class BookDetailsActivity extends AppCompatActivity {
+public class BookDetailsActivity extends RefreshActivityInterface {
 
     // Helper pour la database
     private CmidbaOpenDatabaseHelper dbhelper;
@@ -470,5 +470,10 @@ public class BookDetailsActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    public void refresh() {
+        Toast.makeText(BookDetailsActivity.this, "REFRESH", Toast.LENGTH_SHORT).show();
     }
 }
