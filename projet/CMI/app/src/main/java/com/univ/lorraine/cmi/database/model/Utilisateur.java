@@ -34,6 +34,8 @@ public class Utilisateur {
 
     public static final String INSCRIPTION_VALIDEE_JSON_NAME = "inscriptionValidee";
 
+    public static final String TOKEN_JSON_NAME_JSON = "token";
+
     @Expose
     @SerializedName(ID_UTILISATEUR_JSON_NAME)
     private Long idUtilisateur;
@@ -81,6 +83,10 @@ public class Utilisateur {
     @Expose
     @SerializedName(INSCRIPTION_VALIDEE_JSON_NAME)
     private boolean inscriptionValidee;
+
+    @Expose
+    @SerializedName(TOKEN_JSON_NAME_JSON)
+    private String token;
 
     public Utilisateur() {}
 
