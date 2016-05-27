@@ -7,7 +7,11 @@ import com.univ.lorraine.cmi.database.model.Evaluation;
 import com.univ.lorraine.cmi.retrofit.jsonAdapter.BibliothequeJsonAdapter;
 import com.univ.lorraine.cmi.retrofit.jsonAdapter.EvaluationJsonAdapter;
 
+import java.io.IOException;
+
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -24,9 +28,47 @@ public class CallMeIshmaelServiceProvider {
 
     private static CallMeIshmaelService service;
 
+    public static void setHeaderAuthorization(final String token) {
+        // Define the interceptor, add authentication headers
+        Interceptor interceptor = new Interceptor() {
+            @Override
+            public okhttp3.Response intercept(Chain chain) throws IOException {
+                Request newRequest = chain.request().newBuilder().addHeader("Authorization", token).build();
+                return chain.proceed(newRequest);
+            }
+        };
+
+        // Add the interceptor to OkHttpClient
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.interceptors().add(interceptor);
+
+        // Ajout du logInterceptor
+        HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
+        logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        builder.interceptors().add(logInterceptor);
+
+        OkHttpClient client = builder.build();
+
+        // Configuration du parser json
+        Gson gson = new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .setLenient()
+                .registerTypeAdapter(Bibliotheque.class, new BibliothequeJsonAdapter())
+                .registerTypeAdapter(Evaluation.class, new EvaluationJsonAdapter())
+                .create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(API_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .client(client)
+                .build();
+        service = retrofit.create(CallMeIshmaelService.class);
+    }
+
     public static synchronized CallMeIshmaelService getService() {
         if (service == null) {
 
+            // Ajout du logInterceptor
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();

@@ -24,6 +24,16 @@ import retrofit2.http.Query;
  */
 public interface CallMeIshmaelService {
 
+    // Connexion
+
+    @POST("users/login")
+    Call<Utilisateur> login(@Body Utilisateur utilisateur);
+
+    // Inscription
+
+    @POST("users/signin")
+    Call<Utilisateur> signin(@Body Utilisateur utilisateur);
+
     // Utilisateur
 
     @GET("users/{idUser}")
