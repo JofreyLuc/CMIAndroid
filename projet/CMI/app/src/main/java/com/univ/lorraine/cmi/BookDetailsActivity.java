@@ -2,7 +2,6 @@ package com.univ.lorraine.cmi;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.design.widget.FloatingActionButton;
@@ -20,30 +19,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.dao.Dao;
 import com.squareup.picasso.Picasso;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
-import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.database.model.Evaluation;
 import com.univ.lorraine.cmi.database.model.Livre;
-import com.univ.lorraine.cmi.database.model.Utilisateur;
-import com.univ.lorraine.cmi.reader.ReaderActivity;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -377,10 +367,12 @@ public class BookDetailsActivity extends AppCompatActivity {
                                 demanderAEvaluer();
                             }
                         });
-                        ((TextView) evalPersoView.findViewById(R.id.eval_rater))
+                        ((TextView) evalPersoView.findViewById(R.id.eval_poster))
                                 .setText("Mon évaluation");
                         ((RatingBar) evalPersoView.findViewById(R.id.eval_rating_bar))
                                 .setRating((float) evaluationPerso.getNote());
+                        ((TextView) evalPersoView.findViewById(R.id.eval_rating_text))
+                                .setText(evaluationPerso.getNote()+"");
                         ((TextView) evalPersoView.findViewById(R.id.eval_eval))
                                 .setText(evaluationPerso.getCommentaire());
 

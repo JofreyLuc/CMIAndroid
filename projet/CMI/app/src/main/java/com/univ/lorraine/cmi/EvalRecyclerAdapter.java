@@ -5,11 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.univ.lorraine.cmi.database.model.Evaluation;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -43,10 +44,12 @@ public class EvalRecyclerAdapter extends RecyclerView.Adapter<EvalRecyclerAdapte
         Evaluation e = evals.get(position);
 
         RatingBar rate = holder.rate;
+        TextView note = holder.note;
         TextView rater = holder.rater;
         TextView eval = holder.eval;
 
         rate.setRating((float) e.getNote());
+        note.setText(e.getNote()+"");
         rater.setText(e.getUtilisateur().getPseudo());
         eval.setText(e.getCommentaire());
     }
@@ -58,13 +61,15 @@ public class EvalRecyclerAdapter extends RecyclerView.Adapter<EvalRecyclerAdapte
 
     public static class EvalViewHolder extends RecyclerView.ViewHolder {
         public RatingBar rate;
+        public TextView note;
         public TextView rater;
         public TextView eval;
 
         public EvalViewHolder(View itemView) {
             super(itemView);
             rate = (RatingBar) itemView.findViewById(R.id.eval_rating_bar);
-            rater = (TextView) itemView.findViewById(R.id.eval_rater);
+            note = (TextView) itemView.findViewById(R.id.eval_rating_text);
+            rater = (TextView) itemView.findViewById(R.id.eval_poster);
             eval = (TextView) itemView.findViewById(R.id.eval_eval);
         }
     }
