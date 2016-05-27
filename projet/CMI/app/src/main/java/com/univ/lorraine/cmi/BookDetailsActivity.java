@@ -143,7 +143,14 @@ public class BookDetailsActivity extends AppCompatActivity {
                 });
             }
         }
-
+        rateDialog = new Dialog(BookDetailsActivity.this);
+        rateDialog.setContentView(R.layout.rate_layout);
+        rateDialog.setCancelable(true);
+        ratingBar = (RatingBar) rateDialog.findViewById(R.id.dialog_ratingbar);
+        TextView dialogTitle = (TextView) rateDialog.findViewById(R.id.rate_dialog_title);
+        dialogTitle.setText(livre.getTitre());
+        envoyer = (TextView) rateDialog.findViewById(R.id.rate_dialog_submit);
+        comment = (EditText) rateDialog.findViewById(R.id.edit_commentaire);
         evaluations = new ArrayList<>();
         setEvaluations();
 
@@ -183,16 +190,6 @@ public class BookDetailsActivity extends AppCompatActivity {
     }
 
     private void demanderAEvaluer() {
-        rateDialog = new Dialog(BookDetailsActivity.this);
-        rateDialog.setContentView(R.layout.rate_layout);
-        rateDialog.setCancelable(true);
-        ratingBar = (RatingBar) rateDialog.findViewById(R.id.dialog_ratingbar);
-        TextView dialogTitle = (TextView) rateDialog.findViewById(R.id.rate_dialog_title);
-        dialogTitle.setText(livre.getTitre());
-        envoyer = (TextView) rateDialog.findViewById(R.id.rate_dialog_submit);
-        comment = (EditText) rateDialog.findViewById(R.id.edit_commentaire);
-
-
         // Si il y a déjà un commentaire de cet utilisateur
         if (evaluationPerso != null) {
             ratingBar.setRating((float) evaluationPerso.getNote());
