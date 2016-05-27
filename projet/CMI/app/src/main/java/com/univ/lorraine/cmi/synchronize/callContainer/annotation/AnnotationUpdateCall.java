@@ -44,10 +44,4 @@ public class AnnotationUpdateCall extends AbstractAnnotationCall<ResponseBody> {
 
     }
 
-    @Override
-    protected void onCallFailed() {
-
-    }
-
-
 }

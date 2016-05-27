@@ -79,7 +79,7 @@ public class ServerSynchronizer extends AsyncTask<Void, Integer, Void> {
                     }
 
                     /* Gestion des annotations de cette bibliothèque */
-
+                    /*
                     // On récupère les annotations de l'utilisateur sur le serveur
                     Response<List<Annotation>> annotResponse = service.getAnnotations(idUser, biblioServeur.getIdServeur()).execute();
                     List<Annotation> annotationsServeur = annotResponse.body();

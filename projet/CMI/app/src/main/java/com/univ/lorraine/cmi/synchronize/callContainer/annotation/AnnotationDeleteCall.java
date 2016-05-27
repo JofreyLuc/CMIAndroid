@@ -44,10 +44,4 @@ public class AnnotationDeleteCall extends AbstractAnnotationCall<ResponseBody> {
 
     }
 
-    @Override
-    protected void onCallFailed() {
-
-    }
-
-
 }

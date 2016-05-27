@@ -44,10 +44,4 @@ public class BibliothequeUpdateCall extends AbstractBibliothequeCall<ResponseBod
 
     }
 
-    @Override
-    protected void onCallFailed() {
-
-    }
-
-
 }

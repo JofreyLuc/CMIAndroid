@@ -80,9 +80,7 @@ public class BookUtilities {
                 }
                 // Si le livre est présent sur le serveur
                 if (!bibliotheque.getLivre().estImporteLocalement()) {
-                    Log.d("BIBLIO", bibliotheque.toString());
                     // Mise à jour de la bibliothèque sur le serveur
-                    CallMeIshmaelServiceProvider.setHeaderAuthorization("DAT TOKEN BITCH");
                     CallMeIshmaelServiceProvider
                             .getService()
                             .updateBibliotheque(idUser, bibliotheque.getIdServeur(), bibliotheque)

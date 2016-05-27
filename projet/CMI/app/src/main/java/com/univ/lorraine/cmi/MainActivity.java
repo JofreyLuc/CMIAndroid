@@ -97,6 +97,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         // Charge la file de requêtes en avance
         CallContainerQueue.getInstance().load(getSharedPreferences(getPackageName(), Context.MODE_PRIVATE));
+        CallContainerQueue.getInstance().clear();
+
         Log.d("TEST", CallContainerQueue.getInstance().toString());
 
         setContentView(R.layout.activity_main);

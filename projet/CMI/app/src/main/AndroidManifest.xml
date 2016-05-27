@@ -75,6 +75,12 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:noHistory="true">
         </activity>
+        <receiver android:name="com.univ.lorraine.cmi.synchronize.ConnectionChangeReceiver"
+            android:label="NetworkConnection">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

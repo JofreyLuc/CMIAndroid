@@ -45,9 +45,4 @@ public class BibliothequeDeleteCall extends AbstractBibliothequeCall<ResponseBod
 
     }
 
-    @Override
-    protected void onCallFailed() {
-
-    }
-
 }

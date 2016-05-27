@@ -1,6 +1,9 @@
 package com.univ.lorraine.cmi.synchronize.callContainer;
 
+import android.util.Log;
+
 import com.google.gson.annotations.Expose;
+import com.univ.lorraine.cmi.Utilities;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
 
 import java.io.IOException;
@@ -20,11 +23,14 @@ public abstract class CallContainer<O, R> {
     @Expose
     protected O objectData;
 
+    private boolean failed;
+
     public CallContainer() {}
 
     public CallContainer(Long idU, O o) {
         idUser = idU;
         objectData = o;
+        failed = false;
     }
 
     public abstract String getDataType();
@@ -47,6 +53,10 @@ public abstract class CallContainer<O, R> {
         this.objectData = objectData;
     }
 
+    public boolean hasFailed() {
+        return failed;
+    }
+
     /**
      * Lance dans l'ordre :
      * - beforeExecuteCall()
@@ -58,7 +68,12 @@ public abstract class CallContainer<O, R> {
         Response<R> response = null;
         beforeExecuteCall();
         try {
-        response = executeCall(service);
+            response = executeCall(service);
+            onCallFailed();
+
+            if (responseCodeIsFailed(response.code()))
+                onCallFailed();
+
         } catch (IOException e) {
             e.printStackTrace();
             onCallFailed();
@@ -67,6 +82,10 @@ public abstract class CallContainer<O, R> {
             onCallFailed();
         }
         afterExecuteCall(response);
+    }
+
+    protected boolean responseCodeIsFailed(int code) {
+        return false;
     }
 
     /**
@@ -90,9 +109,11 @@ public abstract class CallContainer<O, R> {
 
     /**
      * Exécuté si une exception survient (levé par executeCall) dans execute.
+     * Met failed à true (getter : hasFailed).
      */
-    protected abstract void onCallFailed();
-
+    protected void onCallFailed() {
+        failed = true;
+    }
 
     public String toString() {
         return getType() + ": " + ", idUser: " + idUser + ", data: " + objectData.toString();

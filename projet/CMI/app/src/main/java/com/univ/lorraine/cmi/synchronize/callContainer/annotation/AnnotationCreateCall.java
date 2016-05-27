@@ -44,10 +44,4 @@ public class AnnotationCreateCall extends AbstractAnnotationCall<Annotation> {
         //TODO
     }
 
-    @Override
-    protected void onCallFailed() {
-
-    }
-
-
 }

@@ -48,6 +48,8 @@ public class CallContainerQueue extends AbstractCallContainerQueue {
      */
     @Override
     protected void beforeEnqueue(CallContainer callToAdd) {
+        Log.e("QUEUE", "avant= " + this.toString());
+        Log.e("QUEUE","a ajouter = " + callToAdd);
         CallContainer currentCall;
         Iterator<CallContainer> it;
         Bibliotheque biblio;
@@ -124,7 +126,14 @@ public class CallContainerQueue extends AbstractCallContainerQueue {
      */
     @Override
     protected void afterEnqueue(CallContainer callContainer) {
+        Log.e("QUEUE","apres= "+this.toString());
+        Log.e("QUEUE","taille apres : "+size());
+    }
 
+    @Override
+    protected void onCallFailed(CallContainer callContainer) {
+        Log.e("QUEUE", "FAILED");
+        cancel();   // On arrête l'exécution de la file
     }
 
     public void save(SharedPreferences preferences) {
