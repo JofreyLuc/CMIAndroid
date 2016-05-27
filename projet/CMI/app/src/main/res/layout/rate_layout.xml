@@ -21,7 +21,6 @@
         android:layout_gravity="center"
         android:numStars="5"
         android:stepSize="0.5"
-        android:rating="0"
         android:isIndicator="false"
         android:layout_below="@+id/rate_dialog_title"
         android:layout_centerHorizontal="true" />

@@ -315,6 +315,12 @@ public class BookDetailsActivity extends AppCompatActivity {
                             return;
                         }
                         Toast.makeText(BookDetailsActivity.this, "Votre évaluation a bien été supprimée", Toast.LENGTH_SHORT).show();
+                        evaluationPerso = null;
+                        comment.setText("");
+                        ratingBar.setRating(0);
+                        // On rafraîchit la note
+                        setNoteLivre();
+                        // et les évaluations
                         setEvaluations();
                     }
 
