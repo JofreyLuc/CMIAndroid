@@ -27,6 +27,7 @@
     <string name="book_search_activity_label">Rechercher un livre</string>
     <string name="grid_title">Ma bibliothèque</string>
     <string name="top_title">Top 10</string>
+    <string name="disconnect_activity_label">Déconnexion</string>
     <!-- Fin strings de MainActivity -->
 
     <!-- Strings de SearchActivity -->

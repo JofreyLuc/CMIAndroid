@@ -43,4 +43,8 @@ public final class CredentialsUtilities {
     public static boolean isSignedIn(Context context){
         return (getCurrentUser(context) != null);
     }
+
+    public static void disconnect(Context context){
+        setDefaults(SHARED_PREFERENCES_USER, null, context);
+    }
 }

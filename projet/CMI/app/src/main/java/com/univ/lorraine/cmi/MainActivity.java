@@ -182,6 +182,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (CredentialsUtilities.isSignedIn(getApplicationContext())){
             menu.findItem(R.id.action_login).setVisible(false);
             menu.findItem(R.id.action_signup).setVisible(false);
+            menu.findItem(R.id.action_disconnect).setVisible(true);
+        } else {
+            menu.findItem(R.id.action_login).setVisible(true);
+            menu.findItem(R.id.action_signup).setVisible(true);
+            menu.findItem(R.id.action_disconnect).setVisible(false);
         }
 
         return super.onCreateOptionsMenu(menu);
@@ -221,6 +226,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 i = new Intent(getApplicationContext(), SignupActivity.class);
                 startActivity(i);
                 return true;
+
             default:
                 return false;
         }
