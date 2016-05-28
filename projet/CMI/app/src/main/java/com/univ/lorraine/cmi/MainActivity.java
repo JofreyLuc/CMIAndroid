@@ -41,6 +41,7 @@ import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Annotation;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.database.model.Livre;
+import com.univ.lorraine.cmi.database.model.Utilisateur;
 import com.univ.lorraine.cmi.reader.ReaderActivity;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
@@ -131,6 +132,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         recyclerView = (RecyclerView) findViewById(R.id.top_recyclerview);
         recyclerView.setAdapter(new TopRecyclerAdapter(livresTop, getApplicationContext()));
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+
+        //TEST
+        Utilisateur user = CredentialsUtilities.getCurrentUser(getApplicationContext());
+        if (user != null){
+            Toast.makeText(getApplicationContext(), user.toString(), Toast.LENGTH_LONG).show();
+        }
+        //TEST
     }
 
     @Override
