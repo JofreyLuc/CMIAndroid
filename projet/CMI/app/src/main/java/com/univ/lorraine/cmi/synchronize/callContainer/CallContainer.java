@@ -69,7 +69,6 @@ public abstract class CallContainer<O, R> {
         beforeExecuteCall();
         try {
             response = executeCall(service);
-            onCallFailed();
 
             if (responseCodeIsFailed(response.code()))
                 onCallFailed();
