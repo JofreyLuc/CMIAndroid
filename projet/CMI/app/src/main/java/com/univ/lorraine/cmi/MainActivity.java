@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         recyclerView = (RecyclerView) findViewById(R.id.top_recyclerview);
         recyclerView.setAdapter(new TopRecyclerAdapter(livresTop, getApplicationContext()));
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        
+
     }
 
     @Override
@@ -180,8 +180,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         inflater.inflate(R.menu.menu_biblio_perso, menu);
 
         if (CredentialsUtilities.isSignedIn(getApplicationContext())){
-            findViewById(R.id.action_signup).setVisibility(View.INVISIBLE);
-            findViewById(R.id.action_login).setVisibility(View.INVISIBLE);
+            menu.findItem(R.id.action_login).setVisible(false);
+            menu.findItem(R.id.action_signup).setVisible(false);
         }
 
         return super.onCreateOptionsMenu(menu);
