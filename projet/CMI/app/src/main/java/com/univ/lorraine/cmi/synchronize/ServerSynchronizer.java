@@ -72,6 +72,12 @@ public abstract class ServerSynchronizer extends AsyncTask<Void, Integer, Boolea
 
                     // Nouvelle bibliotèque
                     if (bibliothequesMobile.isEmpty()) {
+                        // On récupère le livre correspondant
+                        Response<Livre> livreResponse = service.getLivre(biblioServeur.getLivre().getIdServeur()).execute();
+                        Livre livreServeur = livreResponse.body();
+                        if (livreServeur == null)
+                            throw new IOException();
+                        biblioServeur.setLivre(livreServeur);
                         // Ajout de la bibliothèque et du livre
                         BookUtilities.sauverBibliotheque(biblioServeur, dbhelper);
                         // Téléchargement de l'epub et création du dossier
