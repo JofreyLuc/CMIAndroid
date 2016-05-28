@@ -31,8 +31,8 @@ public interface CallMeIshmaelService {
 
     // Inscription
 
-    @POST("users/signin")
-    Call<Utilisateur> signin(@Body Utilisateur utilisateur);
+    @POST("users/signup")
+    Call<Utilisateur> signup(@Body Utilisateur utilisateur);
 
     // Utilisateur
 

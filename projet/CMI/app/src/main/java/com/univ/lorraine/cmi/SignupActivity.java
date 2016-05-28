@@ -4,11 +4,19 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.univ.lorraine.cmi.database.model.Utilisateur;
+import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -67,18 +75,35 @@ public class SignupActivity extends AppCompatActivity {
             progressDialog.setMessage(getString(R.string.signup_progress_dialog));
             progressDialog.show();
 
-            String name = pseudoText.getText().toString();
+            String pseudo = pseudoText.getText().toString();
             String email = emailText.getText().toString();
             String password = passwordText.getText().toString();
+            final Utilisateur send = new Utilisateur();
 
-            // TODO: Implement your own signup logic here.
+            send.setPseudo(pseudo);
+            send.setEmail(email);
+            send.setPassword(password);
 
             new android.os.Handler().postDelayed(
                     new Runnable() {
                         public void run() {
-                            // On complete call either onSignupSuccess or onSignupFailed
-                            // depending on success
-                            onSignupSuccess();
+                            CallMeIshmaelServiceProvider.getService()
+                                    .signup(send)
+                                    .enqueue(new Callback<Utilisateur>() {
+                                        @Override
+                                        public void onResponse(Call<Utilisateur> call, Response<Utilisateur> response) {
+                                            if (response.body() == null) onSignupFailed();
+                                            else onSignupSuccess(response.body());
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<Utilisateur> call, Throwable t) {
+                                            Log.e("EXCSIGNUP", "", t);
+                                            Toast.makeText(getApplicationContext(), "Erreur connexion serveur.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+
+
                             // onSignupFailed();
                             progressDialog.dismiss();
                         }
@@ -87,17 +112,19 @@ public class SignupActivity extends AppCompatActivity {
     }
 
 
-    public void onSignupSuccess() {
+    public void onSignupSuccess(Utilisateur newUser) {
         signupButton.setEnabled(true);
+
+        // Sauvegarde du nouveau currentUser
+        CredentialsUtilities.setCurrentUser(getApplicationContext(), newUser);
+
         setResult(RESULT_OK, null);
-        Toast.makeText(SignupActivity.this, "Sign up SUCCESS", Toast.LENGTH_SHORT).show();
-        //TODO on success
+        Toast.makeText(SignupActivity.this, "Incription réussie !", Toast.LENGTH_SHORT).show();
     }
 
     public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Sign up failed", Toast.LENGTH_LONG).show();
-
         signupButton.setEnabled(true);
+        Toast.makeText(getBaseContext(), "Impossible de finaliser l'inscription", Toast.LENGTH_LONG).show();
     }
 
     public boolean validate() {
