@@ -36,6 +36,8 @@ public class Utilisateur {
 
     public static final String TOKEN_JSON_NAME_JSON = "token";
 
+    public static final String TOKENEXPIRE_JSON_NAME = "tokenExpire";
+
     @Expose
     @SerializedName(ID_UTILISATEUR_JSON_NAME)
     private Long idUtilisateur;
@@ -87,6 +89,10 @@ public class Utilisateur {
     @Expose
     @SerializedName(TOKEN_JSON_NAME_JSON)
     private String token;
+
+    @Expose
+    @SerializedName(TOKENEXPIRE_JSON_NAME)
+    private Date tokenExpire;
 
     public Utilisateur() {}
 
@@ -177,6 +183,14 @@ public class Utilisateur {
     public String getToken() { return token; }
 
     public void setToken(String token) { this.token = token; }
+
+    public Date getTokenExpire() {
+        return tokenExpire;
+    }
+
+    public void setTokenExpire(String tokenExpire) {
+        this.tokenExpire = tokenExpire;
+    }
 
     public boolean isPossibiliteSuivi() {
         return possibiliteSuivi;
