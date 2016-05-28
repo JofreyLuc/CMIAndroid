@@ -39,4 +39,8 @@ public final class CredentialsUtilities {
     public static String getCurrentToken(Context context){
         return getCurrentUser(context).getToken();
     }
+
+    public static boolean isSignedIn(Context context){
+        return (getCurrentUser(context) != null);
+    }
 }

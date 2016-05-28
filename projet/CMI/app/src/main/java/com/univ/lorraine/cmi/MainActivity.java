@@ -134,12 +134,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
 
-        //TEST
-        Utilisateur user = CredentialsUtilities.getCurrentUser(getApplicationContext());
-        if (user != null){
-            Toast.makeText(getApplicationContext(), user.toString(), Toast.LENGTH_LONG).show();
+        if (CredentialsUtilities.isSignedIn(getApplicationContext())){
+            findViewById(R.id.action_signup).setVisibility(View.INVISIBLE);
+            findViewById(R.id.action_login).setVisibility(View.INVISIBLE);
         }
-        //TEST
     }
 
     @Override
@@ -220,7 +218,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 return true;
             case R.id.action_signup:
                 // Lancement de la page d'inscription
-                exempleMiseEnCacheRequete(); //Exemple cache
                 i = new Intent(getApplicationContext(), SignupActivity.class);
                 startActivity(i);
                 return true;
