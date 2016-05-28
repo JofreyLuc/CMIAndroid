@@ -86,16 +86,11 @@ public abstract class ServerSynchronizer extends AsyncTask<Void, Integer, Boolea
                     // Bibliothèque déjà présente
                     else {
                         Bibliotheque biblioMobile = bibliothequesMobile.get(0);
-                        Log.d("SYNC", "Biblio serveur: "+biblioServeur);
-                        Log.d("SYNC", "Biblio mobile: "+biblioMobile);
                         // Si la bibliothèque du serveur est plus à jour que celle sur mobile
                         if (biblioServeur.getDateModification().after(biblioMobile.getDateModification())) {
-                            Log.d("SYNC", "Modif à faire");
                             // Mise à jour de la bibliothèque
                             biblioServeur.setIdBibliotheque(biblioMobile.getIdBibliotheque());
                             biblioServeur.setLivre(biblioMobile.getLivre());
-                            Log.d("SYNC", "Biblio serveur: "+biblioServeur);
-                            Log.d("SYNC", "Biblio mobile: " + biblioMobile);
                             bibliothequeDao.update(biblioServeur);
                         }
                     }
