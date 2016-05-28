@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.database.model.Evaluation;
 import com.univ.lorraine.cmi.retrofit.jsonAdapter.BibliothequeJsonAdapter;
+import com.univ.lorraine.cmi.retrofit.jsonAdapter.BooleanJsonAdapter;
 import com.univ.lorraine.cmi.retrofit.jsonAdapter.EvaluationJsonAdapter;
 
 import java.io.IOException;
@@ -55,6 +56,7 @@ public class CallMeIshmaelServiceProvider {
                 .setLenient()
                 .registerTypeAdapter(Bibliotheque.class, new BibliothequeJsonAdapter())
                 .registerTypeAdapter(Evaluation.class, new EvaluationJsonAdapter())
+                .registerTypeAdapter(boolean.class, new BooleanJsonAdapter())
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -79,6 +81,7 @@ public class CallMeIshmaelServiceProvider {
                     .setLenient()
                     .registerTypeAdapter(Bibliotheque.class, new BibliothequeJsonAdapter())
                     .registerTypeAdapter(Evaluation.class, new EvaluationJsonAdapter())
+                    .registerTypeAdapter(boolean.class, new BooleanJsonAdapter())
                     .create();
 
             Retrofit retrofit = new Retrofit.Builder()
