@@ -1,17 +1,23 @@
 package com.univ.lorraine.cmi.synchronize;
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.squareup.picasso.Downloader;
+import com.univ.lorraine.cmi.BookUtilities;
+import com.univ.lorraine.cmi.Utilities;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Annotation;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
+import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -24,12 +30,15 @@ import retrofit2.Response;
  */
 public abstract class ServerSynchronizer extends AsyncTask<Void, Integer, Boolean> {
 
+    Context context;
+
     CmidbaOpenDatabaseHelper dbhelper;
 
     Long idUser;
 
-    public ServerSynchronizer(CmidbaOpenDatabaseHelper dbh) {
+    public ServerSynchronizer(Context cont, CmidbaOpenDatabaseHelper dbh) {
         super();
+        context = cont;
         dbhelper = dbh;
         // TEMPORAIRE
         idUser = Long.valueOf(1);
@@ -54,6 +63,7 @@ public abstract class ServerSynchronizer extends AsyncTask<Void, Integer, Boolea
                 List<Bibliotheque> bibliothequesServeur = biblioResponse.body();
 
                 Dao<Bibliotheque, Long> bibliothequeDao = dbhelper.getBibliothequeDao();
+                Dao<Livre, Long> livreDao = dbhelper.getLivreDao();
                 List<Long> listeIdBibliothequesServeur = new ArrayList<Long> ();
                 // Pour chaque bibliothèque
                 for(Bibliotheque biblioServeur : bibliothequesServeur) {
@@ -62,9 +72,10 @@ public abstract class ServerSynchronizer extends AsyncTask<Void, Integer, Boolea
 
                     // Nouvelle bibliotèque
                     if (bibliothequesMobile.isEmpty()) {
-                        // Ajout de la bibliothèque
-                        // Ajout du livre
+                        // Ajout de la bibliothèque et du livre
+                        BookUtilities.sauverBibliotheque(biblioServeur, dbhelper);
                         // Téléchargement de l'epub et création du dossier
+                        BookUtilities.downloadBook(context,biblioServeur.getLivre());
                     }
                     // Bibliothèque déjà présente
                     else {
@@ -126,12 +137,17 @@ public abstract class ServerSynchronizer extends AsyncTask<Void, Integer, Boolea
                 QueryBuilder<Bibliotheque, Long> queryBuilder = bibliothequeDao.queryBuilder();
                 Where<Bibliotheque, Long> where = queryBuilder.where();
                 where.isNotNull(Bibliotheque.ID_SERVEUR_FIELD_NAME);                          // WHERE idServeur NOT NULL
+                where.and();
                 where.notIn(Bibliotheque.ID_SERVEUR_FIELD_NAME, listeIdBibliothequesServeur); // AND NOT IN (...)
                 List<Bibliotheque> bibliothequesASupprimer = queryBuilder.query();
-                bibliothequeDao.delete(bibliothequesASupprimer);                              // Delete résultats
                 // + Cascade sur les annotations de ces bibliothèque
                 for (Bibliotheque biblioASupprimer : bibliothequesASupprimer) {
+                    // Suppression du livre de la base
+                    livreDao.delete(biblioASupprimer.getLivre());
+                    // Suppression de la bibliothèque de la base
+                    bibliothequeDao.delete(biblioASupprimer);
                     // Suppression dossier epub
+                    Utilities.deleteRecursive(new File(Utilities.getBookDirPath(context, biblioASupprimer.getLivre())));
                 }
 
             } catch (IOException e) {
