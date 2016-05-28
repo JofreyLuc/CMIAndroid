@@ -126,6 +126,7 @@ public abstract class ServerSynchronizer extends AsyncTask<Void, Integer, Boolea
                 QueryBuilder<Bibliotheque, Long> queryBuilder = bibliothequeDao.queryBuilder();
                 Where<Bibliotheque, Long> where = queryBuilder.where();
                 where.isNotNull(Bibliotheque.ID_SERVEUR_FIELD_NAME);                          // WHERE idServeur NOT NULL
+                where.and();
                 where.notIn(Bibliotheque.ID_SERVEUR_FIELD_NAME, listeIdBibliothequesServeur); // AND NOT IN (...)
                 List<Bibliotheque> bibliothequesASupprimer = queryBuilder.query();
                 bibliothequeDao.delete(bibliothequesASupprimer);                              // Delete résultats
