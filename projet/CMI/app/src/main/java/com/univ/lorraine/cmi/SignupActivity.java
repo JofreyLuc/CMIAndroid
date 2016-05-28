@@ -112,17 +112,15 @@ public class SignupActivity extends AppCompatActivity {
 
 
     public void onSignupSuccess(Utilisateur newUser) {
-        //signupButton.setEnabled(true);
-
         // Sauvegarde du nouveau currentUser
         CredentialsUtilities.setCurrentUser(getApplicationContext(), newUser);
+        CallMeIshmaelServiceProvider.setHeaderAuthorization(CredentialsUtilities.getCurrentToken(getApplicationContext()));
 
         setResult(RESULT_OK, null);
         Toast.makeText(SignupActivity.this, "Incription réussie !", Toast.LENGTH_SHORT).show();
     }
 
     public void onSignupFailed() {
-        //signupButton.setEnabled(true);
         Toast.makeText(getBaseContext(), "Impossible de finaliser l'inscription", Toast.LENGTH_LONG).show();
     }
 

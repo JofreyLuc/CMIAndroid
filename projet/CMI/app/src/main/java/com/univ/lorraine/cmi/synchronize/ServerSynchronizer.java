@@ -9,6 +9,7 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.squareup.picasso.Downloader;
 import com.univ.lorraine.cmi.BookUtilities;
+import com.univ.lorraine.cmi.CredentialsUtilities;
 import com.univ.lorraine.cmi.Utilities;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Annotation;
@@ -40,8 +41,7 @@ public abstract class ServerSynchronizer extends AsyncTask<Void, Integer, Boolea
         super();
         context = cont;
         dbhelper = dbh;
-        // TEMPORAIRE
-        idUser = Long.valueOf(1);
+        idUser = CredentialsUtilities.getCurrentUserId();
     }
 
     @Override

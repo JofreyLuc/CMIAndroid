@@ -115,6 +115,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginSuccess() {
         Toast.makeText(LoginActivity.this, "Connexion réussie !", Toast.LENGTH_SHORT).show();
+        CallMeIshmaelServiceProvider.setHeaderAuthorization(CredentialsUtilities.getCurrentToken(getApplicationContext()));
         this.setResult(RESULT_OK);
     }
 

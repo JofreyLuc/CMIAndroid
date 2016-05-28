@@ -288,8 +288,7 @@ public class BookDetailsActivity extends AppCompatActivity {
     }
 
     public void modifierEvaluationLivre(double rating, String comment) {
-        //TODO idUser
-        Long idUser = (long) 1;
+        Long idUser = CredentialsUtilities.getCurrentUserId();
         evaluationPerso.setNote(rating);
         evaluationPerso.setCommentaire(comment);
         evaluationPerso.setDateModification(new Date());
@@ -320,8 +319,7 @@ public class BookDetailsActivity extends AppCompatActivity {
     }
 
     public void envoyerEvaluationLivre(double rating, String comment) {
-        //TODO idUser
-        Long idUser = (long) 1;
+        Long idUser = CredentialsUtilities.getCurrentUserId();
         Evaluation evaluation = new Evaluation(idUser, livre, rating, comment);
         // On envoie l'évaluation au serveur
         CallMeIshmaelServiceProvider
@@ -377,8 +375,7 @@ public class BookDetailsActivity extends AppCompatActivity {
     }
 
     public void supprimerEvaluationPerso() {
-        //TODO idUser
-        final Long idUser = (long) 1;
+        final Long idUser = CredentialsUtilities.getCurrentUserId();
         CallMeIshmaelServiceProvider
                 .getService()
                 .deleteEvaluation(idUser, livre.getIdServeur(), evaluationPerso.getIdEvaluation())

@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         recyclerView.setAdapter(new TopRecyclerAdapter(livresTop, getApplicationContext()));
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
+        CredentialsUtilities.initialiseUserId(getApplicationContext());
     }
 
     @Override
@@ -228,6 +229,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 return true;
             case R.id.action_disconnect:
                 CredentialsUtilities.disconnect(getApplicationContext());
+                CallMeIshmaelServiceProvider.unsetHeaderAuthorization();
                 invalidateOptionsMenu();
             default:
                 return false;
