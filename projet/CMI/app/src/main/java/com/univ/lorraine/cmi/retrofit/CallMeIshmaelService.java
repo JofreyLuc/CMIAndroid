@@ -36,11 +36,12 @@ public interface CallMeIshmaelService {
 
     // Utilisateur
 
+    // Privée
     @GET("users/{idUser}")
     Call<Utilisateur> getUtilisateur(@Path("idUser") Long idUtilisateur);
 
-    @PUT("users")
-    Call<ResponseBody> updateUtilisateur(@Body Utilisateur utilisateur);
+    @PUT("users/{idUser}")
+    Call<ResponseBody> updateUtilisateur(@Path("idUser") Long idUtilisateur, @Body Utilisateur utilisateur);
 
     // Livre
 

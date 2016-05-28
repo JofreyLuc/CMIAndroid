@@ -96,23 +96,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Charge la file de requêtes en avance
+        // Charge la file de requêtes en attente
         CallContainerQueue.getInstance().load(getSharedPreferences(getPackageName(), Context.MODE_PRIVATE));
-        Log.d("TEST", CallContainerQueue.getInstance().toString());
-
-        // Test synchronizer
-        new ServerSynchronizer(this, getHelper()) {
-            @Override
-            protected void onPreExecute() {
-                Log.e("SYNC", "Début synchronisation");
-            }
-
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                rafraichirAffichageBibliotheque();
-                Log.e("SYNC", "Fin synchronisation");
-            }
-        }.execute();
 
         setContentView(R.layout.activity_main);
         setTitle(R.string.main_activity_label_alt);
@@ -143,7 +128,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onResume() {
         super.onResume();
-        rafraichirAffichageBibliotheque();
+        // On synchronise les données du serveur
+        new ServerSynchronizer(this, getHelper()) {
+            @Override
+            protected void onPreExecute() {
+                Toast.makeText(MainActivity.this, "Tentative de synchronisation avec le serveur...", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            protected void onPostExecute(Boolean succes) {
+                rafraichirAffichageBibliotheque();
+
+                if (succes)
+                    Toast.makeText(MainActivity.this, "Synchronisation effectuée", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(MainActivity.this, "Échec de la synchronisation", Toast.LENGTH_SHORT).show();
+            }
+        }.execute();
     }
 
     /**
@@ -211,7 +212,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 return true;
             case R.id.action_signup:
                 // Lancement de la page d'inscription
-                exempleMiseEnCacheRequete(); //Exemple cache
                 i = new Intent(getApplicationContext(), SignupActivity.class);
                 startActivity(i);
                 return true;
@@ -489,59 +489,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         rafraichirAffichageBibliotheque();
     }
 
-    void exempleMiseEnCacheRequete() {
-        /*Log.d("TEST", "Test mise en cache");
-        CallMeIshmaelService cmiservice = CallMeIshmaelServiceProvider.getService();
-        final Bibliotheque bibliotheque = bibliotheques.get(0); // Biblio sur laquelle on veut faire un update
-        Call<ResponseBody> call = cmiservice.updateBibliotheque(Long.valueOf(1), bibliotheque);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                // Traitement après réussite
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                System.out.println(t.toString());
-                // EN CAS DE CONNEXION INTERNET ABSENTE EGALEMENT
-                // Ajout du call raté dans file
-                CallContainerQueue.getInstance().enqueue(
-                        new BibliothequeUpdateCall(call, bibliotheque)
-                );
-            }
-        });
-
-        // A PART, lors d'une connexion retrouvée par exemple
-        //CallContainerQueue.getInstance().execute();
-        // Test serialize json
-        CallContainer test = new BibliothequeUpdateCall(Long.valueOf(1), bibliotheque);
-        CallContainerQueue.getInstance().enqueue(test);
-        CallContainerQueue.getInstance().enqueue(new BibliothequeUpdateCall(Long.valueOf(1), bibliotheque));*/
-    }
-
-    void testRetrofitUser(){
-        final CallMeIshmaelService cmiservice = CallMeIshmaelServiceProvider.getService();
-
-        Call<Livre> call = cmiservice.getLivre(Long.valueOf(1));
-        call.enqueue(new Callback<Livre>() {
-            @Override
-            public void onResponse(Call<Livre> call, Response<Livre> response) {
-                Log.e("STA", "" + response.code());
-                try {
-                    Log.e("ERR", response.errorBody().string());
-                    //Log.e("BOOK", response.body().getTitre());
-                } catch (IOException e){
-                    Log.e("EXC", e.getMessage());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Livre> call, Throwable t) {
-                System.out.println(t.toString());
-            }
-        });
-    }
-
     /**
      * Classe gérant les items de la GridView
      */
@@ -611,6 +558,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             ProgressBar BarreProgressionLecture = (ProgressBar)grid_item.findViewById(R.id.book_reading_progress_bar);
             int progressionLecture = (int)(bibliotheque.getPositionLecture() * 100);
             BarreProgressionLecture.setProgress(progressionLecture);
+
+            // On cache le bandeau web si le livre est importe localement
+            if (livre.estImporteLocalement())
+                grid_item.findViewById(R.id.bandeau_web).setVisibility(View.GONE);
 
             return grid_item;
         }
