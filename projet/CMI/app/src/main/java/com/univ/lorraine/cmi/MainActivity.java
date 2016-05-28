@@ -45,6 +45,7 @@ import com.univ.lorraine.cmi.reader.ReaderActivity;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
 import com.univ.lorraine.cmi.synchronize.CallContainerQueue;
+import com.univ.lorraine.cmi.synchronize.ServerSynchronizer;
 import com.univ.lorraine.cmi.synchronize.callContainer.CallContainer;
 import com.univ.lorraine.cmi.synchronize.callContainer.annotation.AnnotationCreateCall;
 import com.univ.lorraine.cmi.synchronize.callContainer.bibliotheque.AbstractBibliothequeCall;
@@ -99,6 +100,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         CallContainerQueue.getInstance().load(getSharedPreferences(getPackageName(), Context.MODE_PRIVATE));
         Log.d("TEST", CallContainerQueue.getInstance().toString());
 
+        // Test synchronizer
+        new ServerSynchronizer(this, getHelper()) {
+            @Override
+            protected void onPreExecute() {
+                Log.e("SYNC", "Début synchronisation");
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                rafraichirAffichageBibliotheque();
+                Log.e("SYNC", "Fin synchronisation");
+            }
+        }.execute();
+
         setContentView(R.layout.activity_main);
         setTitle(R.string.main_activity_label_alt);
 
@@ -128,8 +143,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onResume() {
         super.onResume();
-        setBibliotheques();
-        gridView.setAdapter(new ImageAdapter(this));
+        rafraichirAffichageBibliotheque();
     }
 
     /**
@@ -264,9 +278,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             bibliotheques.clear();
             Dao<Bibliotheque, Long> daobibliotheque = getHelper().getBibliothequeDao();
             List<Bibliotheque> lb = daobibliotheque.queryForAll();
-            for (Bibliotheque b : lb) {
-                bibliotheques.add(b);
-            }
+            bibliotheques.addAll(lb);
         } catch (SQLException e) {
             Log.e("EXC", e.getMessage());
         }
@@ -362,8 +374,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             // Retour depuis le reader
             case READER_CODE :
                 // On met à jour les bibliothèques afin que les changements soient pris en compte
-                setBibliotheques();
-                gridView.setAdapter(new ImageAdapter(this));    // Màj des vues
+                rafraichirAffichageBibliotheque();
                 break;
         }
     }
@@ -416,8 +427,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Log.e("Exc", e.getMessage());
         }
         // Mise à jour de la liste de bibliothèques et des vues
-        setBibliotheques();
-        gridView.setAdapter(new ImageAdapter(this));
+        rafraichirAffichageBibliotheque();
     }
 
     /**
@@ -476,8 +486,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             e.printStackTrace();
         }
         // On met à jour l'affichage de la bibliothèque
-        setBibliotheques();
-        gridView.setAdapter(new ImageAdapter(this));    // Màj des vues
+        rafraichirAffichageBibliotheque();
     }
 
     void exempleMiseEnCacheRequete() {
@@ -605,6 +614,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             return grid_item;
         }
+    }
+
+    private void rafraichirAffichageBibliotheque() {
+        setBibliotheques();
+        gridView.setAdapter(new ImageAdapter(this));    // Màj des vues
     }
 }
 
