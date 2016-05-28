@@ -207,4 +207,25 @@ public class Utilisateur {
     public void setInscriptionValidee(boolean inscriptionValidee) {
         this.inscriptionValidee = inscriptionValidee;
     }
+
+
+    @Override
+    public String toString() {
+        return "Utilisateur{" +
+                "idUtilisateur=" + idUtilisateur +
+                ", facebookId='" + facebookId + '\'' +
+                ", googleId='" + googleId + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", pseudo='" + pseudo + '\'' +
+                ", nom='" + nom + '\'' +
+                ", prenom='" + prenom + '\'' +
+                ", dateNaissance=" + dateNaissance +
+                ", sexe=" + sexe +
+                ", possibiliteSuivi=" + possibiliteSuivi +
+                ", inscriptionValidee=" + inscriptionValidee +
+                ", token='" + token + '\'' +
+                ", tokenExpire=" + tokenExpire +
+                '}';
+    }
 }
