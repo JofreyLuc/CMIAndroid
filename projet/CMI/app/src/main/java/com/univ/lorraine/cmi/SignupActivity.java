@@ -84,30 +84,21 @@ public class SignupActivity extends AppCompatActivity {
             send.setEmail(email);
             send.setPassword(password);
 
-            new android.os.Handler().postDelayed(
-                    new Runnable() {
-                        public void run() {
-                            CallMeIshmaelServiceProvider.getService()
-                                    .signup(send)
-                                    .enqueue(new Callback<Utilisateur>() {
-                                        @Override
-                                        public void onResponse(Call<Utilisateur> call, Response<Utilisateur> response) {
-                                            if (response.body() == null) onSignupFailed();
-                                            else onSignupSuccess(response.body());
-                                        }
-
-                                        @Override
-                                        public void onFailure(Call<Utilisateur> call, Throwable t) {
-                                            Log.e("EXCSIGNUP", "", t);
-                                            Toast.makeText(getApplicationContext(), "Erreur connexion serveur.", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-
-
-                            // onSignupFailed();
-                            progressDialog.dismiss();
+            CallMeIshmaelServiceProvider.getService()
+                    .signup(send)
+                    .enqueue(new Callback<Utilisateur>() {
+                        @Override
+                        public void onResponse(Call<Utilisateur> call, Response<Utilisateur> response) {
+                            if (response.body() == null) onSignupFailed();
+                            else onSignupSuccess(response.body());
                         }
-                    }, 3000);
+
+                        @Override
+                        public void onFailure(Call<Utilisateur> call, Throwable t) {
+                            Log.e("EXCSIGNUP", "", t);
+                            Toast.makeText(getApplicationContext(), "Erreur connexion serveur.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
         }
     }
 
