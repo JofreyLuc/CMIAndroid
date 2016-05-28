@@ -42,9 +42,7 @@ public class SignupActivity extends AppCompatActivity {
 
         signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                signup();
-            }
+            public void onClick(View v) { signup(); }
         });
 
         loginLink.setOnClickListener(new View.OnClickListener() {
@@ -61,7 +59,7 @@ public class SignupActivity extends AppCompatActivity {
     public void signup() {
 
         if (!validate()) {
-            //onSignupFailed();
+            Toast.makeText(getApplicationContext(), "Champ(s) invalide(s)", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -89,14 +87,19 @@ public class SignupActivity extends AppCompatActivity {
                     .enqueue(new Callback<Utilisateur>() {
                         @Override
                         public void onResponse(Call<Utilisateur> call, Response<Utilisateur> response) {
-                            if (response.body() == null) onSignupFailed();
-                            else onSignupSuccess(response.body());
+                            progressDialog.dismiss();
+                            if (response.code() == 409){
+                                emailAlreadyTaken();
+                            } else {
+                                if (response.body() == null) onSignupFailed();
+                                else onSignupSuccess(response.body());
+                            }
                         }
 
                         @Override
                         public void onFailure(Call<Utilisateur> call, Throwable t) {
-                            Log.e("EXCSIGNUP", "", t);
-                            Toast.makeText(getApplicationContext(), "Erreur connexion serveur.", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
+                            Toast.makeText(getApplicationContext(), "Erreur connexion serveur", Toast.LENGTH_SHORT).show();
                         }
                     });
         }
@@ -104,7 +107,7 @@ public class SignupActivity extends AppCompatActivity {
 
 
     public void onSignupSuccess(Utilisateur newUser) {
-        signupButton.setEnabled(true);
+        //signupButton.setEnabled(true);
 
         // Sauvegarde du nouveau currentUser
         CredentialsUtilities.setCurrentUser(getApplicationContext(), newUser);
@@ -114,8 +117,12 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     public void onSignupFailed() {
-        signupButton.setEnabled(true);
+        //signupButton.setEnabled(true);
         Toast.makeText(getBaseContext(), "Impossible de finaliser l'inscription", Toast.LENGTH_LONG).show();
+    }
+
+    private void emailAlreadyTaken(){
+        Toast.makeText(getApplicationContext(), "Email déjà utilisé", Toast.LENGTH_LONG).show();
     }
 
     public boolean validate() {
