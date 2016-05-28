@@ -1,11 +1,13 @@
 package com.univ.lorraine.cmi;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -44,6 +46,9 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 signup();
+                // on cache le clavier
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(signupButton.getWindowToken(), 0);
             }
         });
 
@@ -61,14 +66,12 @@ public class SignupActivity extends AppCompatActivity {
     public void signup() {
 
         if (!validate()) {
-            //onSignupFailed();
+            Toast.makeText(getApplicationContext(), "Champ(s) invalide(s)", Toast.LENGTH_LONG).show();
             return;
         }
 
         // Si on dispose d'une connexion internet
         if (Utilities.checkNetworkAvailable(this)) {
-
-            signupButton.setEnabled(false);
 
             final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this);
             progressDialog.setIndeterminate(true);
@@ -89,14 +92,19 @@ public class SignupActivity extends AppCompatActivity {
                     .enqueue(new Callback<Utilisateur>() {
                         @Override
                         public void onResponse(Call<Utilisateur> call, Response<Utilisateur> response) {
-                            if (response.body() == null) onSignupFailed();
-                            else onSignupSuccess(response.body());
+                            progressDialog.dismiss();
+                            if (response.code() == 409){
+                                emailAlreadyTaken();
+                            } else {
+                                if (response.body() == null) onSignupFailed();
+                                else onSignupSuccess(response.body());
+                            }
                         }
 
                         @Override
                         public void onFailure(Call<Utilisateur> call, Throwable t) {
-                            Log.e("EXCSIGNUP", "", t);
-                            Toast.makeText(getApplicationContext(), "Erreur connexion serveur.", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
+                            Toast.makeText(getApplicationContext(), "Erreur connexion serveur", Toast.LENGTH_SHORT).show();
                         }
                     });
         }
@@ -104,18 +112,20 @@ public class SignupActivity extends AppCompatActivity {
 
 
     public void onSignupSuccess(Utilisateur newUser) {
-        signupButton.setEnabled(true);
-
         // Sauvegarde du nouveau currentUser
         CredentialsUtilities.setCurrentUser(getApplicationContext(), newUser);
+        CallMeIshmaelServiceProvider.setHeaderAuthorization(CredentialsUtilities.getCurrentToken(getApplicationContext()));
 
         setResult(RESULT_OK, null);
         Toast.makeText(SignupActivity.this, "Incription réussie !", Toast.LENGTH_SHORT).show();
     }
 
     public void onSignupFailed() {
-        signupButton.setEnabled(true);
         Toast.makeText(getBaseContext(), "Impossible de finaliser l'inscription", Toast.LENGTH_LONG).show();
+    }
+
+    private void emailAlreadyTaken(){
+        Toast.makeText(getApplicationContext(), "Email déjà utilisé", Toast.LENGTH_LONG).show();
     }
 
     public boolean validate() {

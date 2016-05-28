@@ -44,8 +44,7 @@ import retrofit2.Response;
 public class BookUtilities {
 
     public static void supprimerBibliothequeSurServeur(final Bibliotheque bibliotheque) {
-        //TODO récupèrer l'idUser
-        final Long idUser = Long.valueOf(1);
+        final Long idUser = CredentialsUtilities.getCurrentUserId();
         CallMeIshmaelServiceProvider
                 .getService()
                 .deleteBibliotheque(idUser, bibliotheque.getIdServeur())
@@ -64,8 +63,7 @@ public class BookUtilities {
     }
 
     public static void updateBibliotheque(final Bibliotheque bibliotheque, final CmidbaOpenDatabaseHelper dbHelper) {
-        //TODO récupèrer l'idUser
-        final Long idUser = Long.valueOf(1);
+        final Long idUser = CredentialsUtilities.getCurrentUserId();
         new AsyncTask<Void, Integer, Void>() {
             @Override
             protected Void doInBackground(Void... params) {

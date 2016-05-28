@@ -41,6 +41,7 @@ import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Annotation;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.database.model.Livre;
+import com.univ.lorraine.cmi.database.model.Utilisateur;
 import com.univ.lorraine.cmi.reader.ReaderActivity;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
@@ -116,6 +117,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         recyclerView = (RecyclerView) findViewById(R.id.top_recyclerview);
         recyclerView.setAdapter(new TopRecyclerAdapter(livresTop, getApplicationContext()));
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+        CredentialsUtilities.initialiseUserId(getApplicationContext());
     }
 
     @Override
@@ -178,6 +181,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_biblio_perso, menu);
 
+        if (CredentialsUtilities.isSignedIn(getApplicationContext())){
+            menu.findItem(R.id.action_login).setVisible(false);
+            menu.findItem(R.id.action_signup).setVisible(false);
+            menu.findItem(R.id.action_disconnect).setVisible(true);
+        } else {
+            menu.findItem(R.id.action_login).setVisible(true);
+            menu.findItem(R.id.action_signup).setVisible(true);
+            menu.findItem(R.id.action_disconnect).setVisible(false);
+        }
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -215,6 +228,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 i = new Intent(getApplicationContext(), SignupActivity.class);
                 startActivity(i);
                 return true;
+            case R.id.action_disconnect:
+                CredentialsUtilities.disconnect(getApplicationContext());
+                CallMeIshmaelServiceProvider.unsetHeaderAuthorization();
+                invalidateOptionsMenu();
             default:
                 return false;
         }

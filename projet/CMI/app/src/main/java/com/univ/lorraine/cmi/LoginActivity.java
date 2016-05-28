@@ -1,14 +1,24 @@
 package com.univ.lorraine.cmi;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.univ.lorraine.cmi.database.model.Utilisateur;
+import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -32,6 +42,9 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 login();
+                //on cache le clavier
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(loginButton.getWindowToken(), 0);
             }
         });
 
@@ -50,14 +63,12 @@ public class LoginActivity extends AppCompatActivity {
     public void login() {
 
         if (!validate()) {
-            //onLoginFailed();
+            Toast.makeText(getApplicationContext(), "Champ(s) invalide(s)", Toast.LENGTH_LONG).show();
             return;
         }
 
         // Si on dispose d'une connexion internet
         if (Utilities.checkNetworkAvailable(this)) {
-
-            loginButton.setEnabled(false);
 
             final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
             progressDialog.setIndeterminate(true);
@@ -67,17 +78,28 @@ public class LoginActivity extends AppCompatActivity {
             String email = emailText.getText().toString();
             String password = passwordText.getText().toString();
 
-            // TODO: Implement your own authentication logic here.
+            Utilisateur user = new Utilisateur();
+            user.setPassword(password);
+            user.setEmail(email);
 
-            new android.os.Handler().postDelayed(
-                    new Runnable() {
-                        public void run() {
-                            // On complete call either onLoginSuccess or onLoginFailed
-                            onLoginSuccess();
-                            // onLoginFailed();
+            CallMeIshmaelServiceProvider
+                    .getService()
+                    .login(user)
+                    .enqueue(new Callback<Utilisateur>() {
+                        @Override
+                        public void onResponse(Call<Utilisateur> call, Response<Utilisateur> response) {
                             progressDialog.dismiss();
+                            if (response.code() == 401) onLoginFailed();
+                            else onLoginSuccess();
                         }
-                    }, 3000);
+
+                        @Override
+                        public void onFailure(Call<Utilisateur> call, Throwable t) {
+                            Log.e("THROWABLE", t.toString());
+                            progressDialog.dismiss();
+                            Toast.makeText(getApplicationContext(), "Erreur connexion serveur", Toast.LENGTH_SHORT).show();
+                        }
+                    });
         }
     }
 
@@ -86,24 +108,19 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
-
-                // TODO: Implement successful signup logic here
-                // By default we just finish the Activity and log them in automatically
                 this.finish();
             }
         }
     }
 
     public void onLoginSuccess() {
-        loginButton.setEnabled(true);
-        Toast.makeText(LoginActivity.this, "Login SUCCESS", Toast.LENGTH_SHORT).show();
-        //TODO on success
+        Toast.makeText(LoginActivity.this, "Connexion réussie !", Toast.LENGTH_SHORT).show();
+        CallMeIshmaelServiceProvider.setHeaderAuthorization(CredentialsUtilities.getCurrentToken(getApplicationContext()));
+        this.setResult(RESULT_OK);
     }
 
     public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
-        loginButton.setEnabled(true);
+        Toast.makeText(getBaseContext(), "Informations invalides", Toast.LENGTH_LONG).show();
     }
 
     public boolean validate() {

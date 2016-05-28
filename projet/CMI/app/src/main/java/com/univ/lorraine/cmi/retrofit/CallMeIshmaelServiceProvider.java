@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.database.model.Evaluation;
 import com.univ.lorraine.cmi.retrofit.jsonAdapter.BibliothequeJsonAdapter;
+import com.univ.lorraine.cmi.retrofit.jsonAdapter.BooleanJsonAdapter;
 import com.univ.lorraine.cmi.retrofit.jsonAdapter.EvaluationJsonAdapter;
 
 import java.io.IOException;
@@ -55,12 +56,30 @@ public class CallMeIshmaelServiceProvider {
                 .setLenient()
                 .registerTypeAdapter(Bibliotheque.class, new BibliothequeJsonAdapter())
                 .registerTypeAdapter(Evaluation.class, new EvaluationJsonAdapter())
+                .registerTypeAdapter(boolean.class, new BooleanJsonAdapter())
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(API_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(client)
+                .build();
+        service = retrofit.create(CallMeIshmaelService.class);
+    }
+
+    public static void unsetHeaderAuthorization(){
+        // Configuration du parser json
+        Gson gson = new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .setLenient()
+                .registerTypeAdapter(Bibliotheque.class, new BibliothequeJsonAdapter())
+                .registerTypeAdapter(Evaluation.class, new EvaluationJsonAdapter())
+                .registerTypeAdapter(boolean.class, new BooleanJsonAdapter())
+                .create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(API_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         service = retrofit.create(CallMeIshmaelService.class);
     }
@@ -79,6 +98,7 @@ public class CallMeIshmaelServiceProvider {
                     .setLenient()
                     .registerTypeAdapter(Bibliotheque.class, new BibliothequeJsonAdapter())
                     .registerTypeAdapter(Evaluation.class, new EvaluationJsonAdapter())
+                    .registerTypeAdapter(boolean.class, new BooleanJsonAdapter())
                     .create();
 
             Retrofit retrofit = new Retrofit.Builder()

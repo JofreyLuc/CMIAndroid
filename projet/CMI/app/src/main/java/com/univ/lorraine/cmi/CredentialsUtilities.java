@@ -16,6 +16,8 @@ public final class CredentialsUtilities {
 
     private final static String SHARED_PREFERENCES_USER = "spuser";
 
+    private static Long currentUserId;
+
     private static void setDefaults(String key, String value, Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
@@ -38,5 +40,25 @@ public final class CredentialsUtilities {
 
     public static String getCurrentToken(Context context){
         return getCurrentUser(context).getToken();
+    }
+
+    public static boolean isSignedIn(Context context){
+        return (getCurrentUser(context) != null);
+    }
+
+    public static void disconnect(Context context){
+        setDefaults(SHARED_PREFERENCES_USER, null, context);
+    }
+
+    public static Long getCurrentUserId(){
+        return currentUserId;
+    }
+
+    public static void initialiseUserId(Context context){
+        try {
+            currentUserId = getCurrentUser(context).getIdUtilisateur();
+        } catch (NullPointerException e) {
+            currentUserId = null;
+        }
     }
 }

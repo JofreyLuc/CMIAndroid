@@ -36,6 +36,8 @@ public class Utilisateur {
 
     public static final String TOKEN_JSON_NAME_JSON = "token";
 
+    public static final String TOKENEXPIRE_JSON_NAME = "tokenExpire";
+
     @Expose
     @SerializedName(ID_UTILISATEUR_JSON_NAME)
     private Long idUtilisateur;
@@ -87,6 +89,10 @@ public class Utilisateur {
     @Expose
     @SerializedName(TOKEN_JSON_NAME_JSON)
     private String token;
+
+    @Expose
+    @SerializedName(TOKENEXPIRE_JSON_NAME)
+    private Date tokenExpire;
 
     public Utilisateur() {}
 
@@ -178,6 +184,14 @@ public class Utilisateur {
 
     public void setToken(String token) { this.token = token; }
 
+    public Date getTokenExpire() {
+        return tokenExpire;
+    }
+
+    public void setTokenExpire(Date tokenExpire) {
+        this.tokenExpire = tokenExpire;
+    }
+
     public boolean isPossibiliteSuivi() {
         return possibiliteSuivi;
     }
@@ -192,5 +206,26 @@ public class Utilisateur {
 
     public void setInscriptionValidee(boolean inscriptionValidee) {
         this.inscriptionValidee = inscriptionValidee;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Utilisateur{" +
+                "idUtilisateur=" + idUtilisateur +
+                ", facebookId='" + facebookId + '\'' +
+                ", googleId='" + googleId + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", pseudo='" + pseudo + '\'' +
+                ", nom='" + nom + '\'' +
+                ", prenom='" + prenom + '\'' +
+                ", dateNaissance=" + dateNaissance +
+                ", sexe=" + sexe +
+                ", possibiliteSuivi=" + possibiliteSuivi +
+                ", inscriptionValidee=" + inscriptionValidee +
+                ", token='" + token + '\'' +
+                ", tokenExpire=" + tokenExpire +
+                '}';
     }
 }

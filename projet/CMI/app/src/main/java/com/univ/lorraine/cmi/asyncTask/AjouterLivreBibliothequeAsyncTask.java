@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.AsyncTask;
 
 import com.univ.lorraine.cmi.BookUtilities;
+import com.univ.lorraine.cmi.CredentialsUtilities;
 import com.univ.lorraine.cmi.Utilities;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
@@ -51,8 +52,7 @@ public abstract class AjouterLivreBibliothequeAsyncTask extends AsyncTask<Void, 
     protected Bibliotheque doInBackground(Void... params) {
         beforeAjoutLivre = false;
         beforeTelechargementLivre = false;
-        //TODO récupèrer l'idUser
-        Long idUser = Long.valueOf(1);
+        Long idUser = CredentialsUtilities.getCurrentUserId();
         Bibliotheque bibliothequeServeur;
         Bibliotheque bibliotheque = new Bibliotheque(livre);
         try {
