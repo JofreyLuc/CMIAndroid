@@ -188,7 +188,7 @@ public class Utilisateur {
         return tokenExpire;
     }
 
-    public void setTokenExpire(String tokenExpire) {
+    public void setTokenExpire(Date tokenExpire) {
         this.tokenExpire = tokenExpire;
     }
 
