@@ -73,8 +73,6 @@ public class SignupActivity extends AppCompatActivity {
         // Si on dispose d'une connexion internet
         if (Utilities.checkNetworkAvailable(this)) {
 
-            signupButton.setEnabled(false);
-
             final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this);
             progressDialog.setIndeterminate(true);
             progressDialog.setMessage(getString(R.string.signup_progress_dialog));
