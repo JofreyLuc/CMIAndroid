@@ -45,6 +45,7 @@ import com.univ.lorraine.cmi.reader.ReaderActivity;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
 import com.univ.lorraine.cmi.synchronize.CallContainerQueue;
+import com.univ.lorraine.cmi.synchronize.ServerSynchronizer;
 import com.univ.lorraine.cmi.synchronize.callContainer.CallContainer;
 import com.univ.lorraine.cmi.synchronize.callContainer.annotation.AnnotationCreateCall;
 import com.univ.lorraine.cmi.synchronize.callContainer.bibliotheque.AbstractBibliothequeCall;
@@ -98,6 +99,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // Charge la file de requêtes en avance
         CallContainerQueue.getInstance().load(getSharedPreferences(getPackageName(), Context.MODE_PRIVATE));
         Log.d("TEST", CallContainerQueue.getInstance().toString());
+
+        // Test synchronizer
+        new ServerSynchronizer(getHelper()) {
+            @Override
+            protected void onPreExecute() {
+                Log.e("SYNC", "Début synchronisation");
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                Log.e("SYNC", "Fin synchronisation");
+            }
+        }.execute();
 
         setContentView(R.layout.activity_main);
         setTitle(R.string.main_activity_label_alt);

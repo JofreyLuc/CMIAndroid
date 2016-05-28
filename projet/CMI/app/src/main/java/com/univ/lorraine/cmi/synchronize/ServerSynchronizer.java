@@ -22,7 +22,7 @@ import retrofit2.Response;
 /**
  * Created by alexis on 20/05/2016.
  */
-public class ServerSynchronizer extends AsyncTask<Void, Integer, Void> {
+public abstract class ServerSynchronizer extends AsyncTask<Void, Integer, Boolean> {
 
     CmidbaOpenDatabaseHelper dbhelper;
 
@@ -32,21 +32,20 @@ public class ServerSynchronizer extends AsyncTask<Void, Integer, Void> {
         super();
         dbhelper = dbh;
         // TEMPORAIRE
-        idUser = Long.valueOf(5);
+        idUser = Long.valueOf(1);
     }
 
     @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
+    protected Boolean doInBackground(Void... params) {
+        return synchronize();
     }
 
     @Override
-    protected Void doInBackground(Void... params) {
-        synchronize();
-        return null;
-    }
+    protected abstract void onPreExecute();
+    @Override
+    protected abstract void onPostExecute(Boolean aBoolean);
 
-    private void synchronize() {
+    private boolean synchronize() {
         if (authenticate() && idUser != null) {
             CallMeIshmaelService service = CallMeIshmaelServiceProvider.getService();
             try {
@@ -137,10 +136,13 @@ public class ServerSynchronizer extends AsyncTask<Void, Integer, Void> {
 
             } catch (IOException e) {
                 e.printStackTrace();
+                return false;
             } catch (SQLException e) {
                 e.printStackTrace();
+                return false;
             }
         }
+        return true;
     }
 
     private boolean authenticate() {
