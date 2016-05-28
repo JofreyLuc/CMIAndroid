@@ -226,7 +226,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 i = new Intent(getApplicationContext(), SignupActivity.class);
                 startActivity(i);
                 return true;
-
+            case R.id.action_disconnect:
+                CredentialsUtilities.disconnect(getApplicationContext());
+                invalidateOptionsMenu();
             default:
                 return false;
         }
