@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Log.d("TEST", CallContainerQueue.getInstance().toString());
 
         // Test synchronizer
-        new ServerSynchronizer(getHelper()) {
+        new ServerSynchronizer(this, getHelper()) {
             @Override
             protected void onPreExecute() {
                 Log.e("SYNC", "Début synchronisation");
@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             @Override
             protected void onPostExecute(Boolean aBoolean) {
+                setBibliotheques();
                 Log.e("SYNC", "Fin synchronisation");
             }
         }.execute();
