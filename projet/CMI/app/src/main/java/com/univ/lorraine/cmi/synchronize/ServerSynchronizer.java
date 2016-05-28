@@ -93,6 +93,7 @@ public abstract class ServerSynchronizer extends AsyncTask<Void, Integer, Boolea
                             Log.d("SYNC", "Modif à faire");
                             // Mise à jour de la bibliothèque
                             biblioServeur.setIdBibliotheque(biblioMobile.getIdBibliotheque());
+                            biblioServeur.setLivre(biblioMobile.getLivre());
                             Log.d("SYNC", "Biblio serveur: "+biblioServeur);
                             Log.d("SYNC", "Biblio mobile: " + biblioMobile);
                             bibliothequeDao.update(biblioServeur);
