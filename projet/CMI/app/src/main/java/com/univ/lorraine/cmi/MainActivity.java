@@ -218,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 CredentialsUtilities.tryDisconnect(getApplicationContext(), getHelper());
                 CallMeIshmaelServiceProvider.unsetHeaderAuth();
                 invalidateOptionsMenu();
+                rafraichirAffichageBibliotheque();
             default:
                 return false;
         }
