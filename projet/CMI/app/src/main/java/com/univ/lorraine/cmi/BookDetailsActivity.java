@@ -487,6 +487,17 @@ public class BookDetailsActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<Evaluation>>() {
             @Override
             public void onResponse(Call<List<Evaluation>> call, Response<List<Evaluation>> response) {
+
+
+                //LOLILOL
+                if (response.code() == 401){
+                    CredentialsUtilities.refreshToken(getApplicationContext());
+                    setEvaluations();
+                    return;
+                }
+                //LOLILOL
+
+
                 if (response.body() != null) {
                     evaluations = response.body();
                     // On regarde si le commentaire de l'utilisateur se trouve parmi les commentaires

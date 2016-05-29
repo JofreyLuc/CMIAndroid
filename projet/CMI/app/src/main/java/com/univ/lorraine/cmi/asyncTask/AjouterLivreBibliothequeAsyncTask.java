@@ -9,12 +9,14 @@ import com.univ.lorraine.cmi.Utilities;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.database.model.Livre;
+import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+import retrofit2.Call;
 import retrofit2.Response;
 
 /**
