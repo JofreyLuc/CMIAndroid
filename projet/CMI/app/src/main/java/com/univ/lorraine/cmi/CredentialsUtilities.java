@@ -8,6 +8,11 @@ import android.util.StringBuilderPrinter;
 
 import com.google.gson.Gson;
 import com.univ.lorraine.cmi.database.model.Utilisateur;
+import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by jyeil_000 on 27/05/2016.
@@ -60,5 +65,32 @@ public final class CredentialsUtilities {
         } catch (NullPointerException e) {
             currentUser = null;
         }
+    }
+
+    /**
+     * Méthode utilisée pour rafraîchir le token en le demandant au serveur.
+     */
+    public static void refreshToken(final Context context) {
+        CallMeIshmaelServiceProvider
+                .getService()
+                .login(getCurrentUser())
+                .enqueue(new Callback<Utilisateur>() {
+                    @Override
+                    public void onResponse(Call<Utilisateur> call, Response<Utilisateur> response) {
+                        if (Utilities.isErrorCode(response.code()))
+                            return;
+
+                        Utilisateur utilisateur = response.body();
+                        if (utilisateur != null) {
+                            setCurrentUser(context, utilisateur);
+                            initialiseUser(context);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Utilisateur> call, Throwable t) {
+
+                    }
+                });
     }
 }
