@@ -75,8 +75,7 @@ public class CallMeIshmaelServiceProvider {
                 // Si le token a expiré
                 if (CredentialsUtilities.isTokenExpired(response.code())) {
                     // On en récupère un nouveau
-                    //String token = CredentialsUtilities.refreshToken();
-                    String token = "pd";
+                    String token = CredentialsUtilities.refreshToken();
                     if (token != null) {
                         // Crée une nouvelle requête en ajoutant le token au header
                         Request newRequest = request.newBuilder().addHeader("Auth", token).build();

@@ -108,7 +108,7 @@ public final class CredentialsUtilities {
     /**
      * Méthode utilisée pour rafraîchir le token en le demandant au serveur.
      */
-    public static String refreshToken(final Context context) {
+    public static String refreshToken() {
         Utilisateur utilisateur;
         try {
             Response<Utilisateur> response = CallMeIshmaelServiceProvider
