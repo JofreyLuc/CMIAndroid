@@ -82,6 +82,8 @@ public class CallMeIshmaelServiceProvider {
                     // On en récupère un nouveau
                     String token = CredentialsUtilities.refreshToken();
                     if (token != null) {
+                        Log.e("token", ""+token);
+                        CallMeIshmaelServiceProvider.setHeaderAuth(token);
                         // Crée une nouvelle requête en ajoutant le token au header
                         Request newRequest = request.newBuilder().addHeader("Auth", token).build();
                         // On réessaie la requête

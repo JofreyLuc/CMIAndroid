@@ -112,7 +112,7 @@ public class BookDetailsActivity extends AppCompatActivity {
         final boolean isInBdd = BookUtilities.isInBdd(livre, getHelper());
 
         // Si livre déjà téléchargé
-        if (isInBdd){
+        if (isInBdd) {
             disableBoutonAjout();
         }
 
@@ -137,8 +137,7 @@ public class BookDetailsActivity extends AppCompatActivity {
                             resultat = "Le livre " + livre.getTitre() + " a été ajouté à votre bibliothèque";
                             // On rafraîchit le bouton "Ajouter livre"
                             disableBoutonAjout();
-                        }
-                        else
+                        } else
                             resultat = "L'ajout du livre " + livre.getTitre() + " a échoué";
                         Toast.makeText(activity, resultat, Toast.LENGTH_SHORT).show();
 
@@ -179,8 +178,7 @@ public class BookDetailsActivity extends AppCompatActivity {
                             if (bibliotheque == null) {
                                 progressBar.hide();
                                 Toast.makeText(activity, erreur, Toast.LENGTH_SHORT).show();
-                            }
-                            else {
+                            } else {
                                 disableBoutonAjout();
                                 progressBar.setMessage("Lancement de la lecture...");
                                 // On lance la lecture
@@ -199,16 +197,17 @@ public class BookDetailsActivity extends AppCompatActivity {
 
                         }
                     }.execute();
-                }
-                else
+                } else
                     BookUtilities.lancerLecture(activity, livre, getHelper());
             }
         });
 
         // Si le livre est importé localement, on ne peut pas le noter et on affiche pas les commentaires/notes
-        if (livre.estImporteLocalement())
+        if (livre.estImporteLocalement()){
             findViewById(R.id.layout_eval_part).setVisibility(View.GONE);
-        else {
+        } else if (!CredentialsUtilities.isSignedIn()){
+            Toast.makeText(getApplicationContext(), "Commentaires indisponibles, connectez-vous", Toast.LENGTH_LONG).show();
+        } else {
             writeComment = (FloatingActionButton) findViewById(R.id.fab);
             writeComment.setOnClickListener(new View.OnClickListener() {
                 @Override
