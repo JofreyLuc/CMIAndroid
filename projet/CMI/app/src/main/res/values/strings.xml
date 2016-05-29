@@ -96,6 +96,9 @@
     <string name="deja_ajoute">Déjà ajouté</string>
     <string name="confirmation_suppression_eval_title">Suppression de votre évaluation</string>
     <string name="confirmation_suppression_eval_message">Êtes-vous certain de vouloir supprimer votre évaluation ?</string>
+    <string name="ask_disconnect_title">Déconnexion</string>
+    <string name="ask_disconnect_message">Des changements locaux n\'ont pas encore été envoyés au serveur. Si vous vous déconnectez maintenant, ils seront perdus. Afin que ces changements soient sauvegardés, une connexion internet est requise.</string>
+    <string name="ask_disconnect_yes">Se déconnecter</string>
     <!-- Fin string activité fin de livre -->
 
     <string-array name="langues">
