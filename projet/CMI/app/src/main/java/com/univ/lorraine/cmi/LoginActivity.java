@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
                         public void onResponse(Call<Utilisateur> call, Response<Utilisateur> response) {
                             progressDialog.dismiss();
                             if (response.code() == 401) onLoginFailed();
-                            else onLoginSuccess();
+                            else onLoginSuccess(response.body());
                         }
 
                         @Override
@@ -113,8 +113,9 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void onLoginSuccess() {
+    public void onLoginSuccess(Utilisateur newUser) {
         Toast.makeText(LoginActivity.this, "Connexion réussie !", Toast.LENGTH_SHORT).show();
+        CredentialsUtilities.setCurrentUser(getApplicationContext(), newUser);
         CallMeIshmaelServiceProvider.setHeaderAuthorization(CredentialsUtilities.getCurrentToken(getApplicationContext()));
         this.setResult(RESULT_OK);
     }
