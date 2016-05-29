@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 return true;
             case R.id.action_disconnect:
                 CredentialsUtilities.tryDisconnect(getApplicationContext());
-                CallMeIshmaelServiceProvider.unsetHeaderAuthorization();
+                CallMeIshmaelServiceProvider.unsetHeaderAuth();
                 invalidateOptionsMenu();
             default:
                 return false;

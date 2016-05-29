@@ -55,11 +55,11 @@ public class CallMeIshmaelServiceProvider {
         return logInterceptor;
     }
 
-    private static Interceptor createAuthorizationInterceptor(final String token) {
+    private static Interceptor createAuthInterceptor(final String token) {
         return new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
-                Request newRequest = chain.request().newBuilder().addHeader("Authorization", token).build();
+                Request newRequest = chain.request().newBuilder().addHeader("Auth", token).build();
                 return chain.proceed(newRequest);
             }
         };
@@ -79,7 +79,7 @@ public class CallMeIshmaelServiceProvider {
                     String token = "pd";
                     if (token != null) {
                         // Crée une nouvelle requête en ajoutant le token au header
-                        Request newRequest = request.newBuilder().addHeader("Authorization", token).build();
+                        Request newRequest = request.newBuilder().addHeader("Auth", token).build();
                         // On réessaie la requête
                         response = chain.proceed(newRequest);
                     }
@@ -97,9 +97,9 @@ public class CallMeIshmaelServiceProvider {
         return builder.build();
     }
 
-    public static void setHeaderAuthorization(final String token) {
-        // Création de l'AuthorizationInterceptor qui va ajouter le token Authorization dans le header de chaque call
-        Interceptor authorizationInterceptor = createAuthorizationInterceptor(token);
+    public static void setHeaderAuth(final String token) {
+        // Création de l'AuthInterceptor qui va ajouter le token Auth dans le header de chaque call
+        Interceptor authorizationInterceptor = createAuthInterceptor(token);
 
         // Création du client
         OkHttpClient client = createClient(httpLoggingInterceptor, authorizationInterceptor);
@@ -113,7 +113,7 @@ public class CallMeIshmaelServiceProvider {
         service = retrofit.create(CallMeIshmaelService.class);
     }
 
-    public static void unsetHeaderAuthorization() {
+    public static void unsetHeaderAuth() {
         // On crée à nouveau le service retrofit sans l'interceptor sur le client
         service = null;
         getService();
