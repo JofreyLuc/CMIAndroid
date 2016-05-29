@@ -46,8 +46,8 @@ public final class CredentialsUtilities {
         setDefaults(SHARED_PREFERENCES_USER, new Gson().toJson(utilisateur), context);
     }
 
-    public static String getCurrentToken(Context context){
-        return getCurrentUser(context).getToken();
+    public static String getCurrentToken(){
+        return getCurrentUser().getToken();
     }
 
     public static boolean isSignedIn(){
