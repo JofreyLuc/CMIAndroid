@@ -117,9 +117,8 @@ public class SignupActivity extends AppCompatActivity {
         CredentialsUtilities.setCurrentUser(getApplicationContext(), newUser);
         CredentialsUtilities.initialiseUser(getApplicationContext());
         CallMeIshmaelServiceProvider.setHeaderAuth(CredentialsUtilities.getCurrentToken());
-
-        setResult(RESULT_OK, null);
         Toast.makeText(SignupActivity.this, "Incription réussie !", Toast.LENGTH_SHORT).show();
+        setResult(RESULT_OK, null);
     }
 
     public void onSignupFailed() {
