@@ -68,22 +68,10 @@ public class CallMeIshmaelServiceProvider {
         service = retrofit.create(CallMeIshmaelService.class);
     }
 
-    public static void unsetHeaderAuthorization(){
-        // Configuration du parser json
-        Gson gson = new GsonBuilder()
-                .excludeFieldsWithoutExposeAnnotation()
-                .setLenient()
-                .setDateFormat(DATE_FORMAT)
-                .registerTypeAdapter(Bibliotheque.class, new BibliothequeJsonAdapter())
-                .registerTypeAdapter(Evaluation.class, new EvaluationJsonAdapter())
-                .registerTypeAdapter(boolean.class, new BooleanJsonAdapter())
-                .create();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(API_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-        service = retrofit.create(CallMeIshmaelService.class);
+    public static void unsetHeaderAuthorization() {
+        // On crée à nouveau le service retrofit sans l'interceptor sur le client
+        service = null;
+        getService();
     }
 
     public static synchronized CallMeIshmaelService getService() {
@@ -98,6 +86,7 @@ public class CallMeIshmaelServiceProvider {
             Gson gson = new GsonBuilder()
                     .excludeFieldsWithoutExposeAnnotation()
                     .setLenient()
+                    .setDateFormat(DATE_FORMAT)
                     .registerTypeAdapter(Bibliotheque.class, new BibliothequeJsonAdapter())
                     .registerTypeAdapter(Evaluation.class, new EvaluationJsonAdapter())
                     .registerTypeAdapter(boolean.class, new BooleanJsonAdapter())
