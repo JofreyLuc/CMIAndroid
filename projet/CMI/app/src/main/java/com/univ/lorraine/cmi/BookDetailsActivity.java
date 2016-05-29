@@ -179,6 +179,7 @@ public class BookDetailsActivity extends AppCompatActivity {
                                 Toast.makeText(activity, erreur, Toast.LENGTH_SHORT).show();
                             }
                             else {
+                                disableBoutonAjout();
                                 progressBar.setMessage("Lancement de la lecture...");
                                 // On lance la lecture
                                 BookUtilities.lancerLecture(activity, bibliotheque);
