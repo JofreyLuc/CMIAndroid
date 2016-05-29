@@ -47,6 +47,7 @@ public final class CredentialsUtilities {
     }
 
     public static String getCurrentToken(){
+        if (getCurrentUser() == null) return null;
         return getCurrentUser().getToken();
     }
 
