@@ -115,22 +115,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onResume() {
         super.onResume();
         // On synchronise les données du serveur
-        new ServerSynchronizer(this, getHelper()) {
-            @Override
-            protected void onPreExecute() {
-                Toast.makeText(MainActivity.this, "Tentative de synchronisation avec le serveur...", Toast.LENGTH_SHORT).show();
-            }
+        // Si l'utilisateur est connecté
+        if (CredentialsUtilities.isSignedIn()) {
+            new ServerSynchronizer(this, getHelper()) {
+                @Override
+                protected void onPreExecute() {
+                    Toast.makeText(MainActivity.this, "Tentative de synchronisation avec le serveur...", Toast.LENGTH_SHORT).show();
+                }
 
-            @Override
-            protected void onPostExecute(Boolean succes) {
-                rafraichirAffichageBibliotheque();
+                @Override
+                protected void onPostExecute(Boolean succes) {
+                    rafraichirAffichageBibliotheque();
 
-                if (succes)
-                    Toast.makeText(MainActivity.this, "Synchronisation effectuée", Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(MainActivity.this, "Échec de la synchronisation", Toast.LENGTH_SHORT).show();
-            }
-        }.execute();
+                    if (succes)
+                        Toast.makeText(MainActivity.this, "Synchronisation effectuée", Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(MainActivity.this, "Échec de la synchronisation", Toast.LENGTH_SHORT).show();
+                }
+            }.execute();
+        }
         invalidateOptionsMenu();
     }
 
