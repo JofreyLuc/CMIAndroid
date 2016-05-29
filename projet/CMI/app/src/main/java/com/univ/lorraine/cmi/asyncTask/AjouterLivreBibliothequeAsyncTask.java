@@ -52,7 +52,7 @@ public abstract class AjouterLivreBibliothequeAsyncTask extends AsyncTask<Void, 
     protected Bibliotheque doInBackground(Void... params) {
         beforeAjoutLivre = false;
         beforeTelechargementLivre = false;
-        Long idUser = CredentialsUtilities.getCurrentUser().getIdUtilisateur();
+        Long idUser = CredentialsUtilities.getCurrentUserId();
         Bibliotheque bibliothequeServeur;
         Bibliotheque bibliotheque = new Bibliotheque(livre);
         try {

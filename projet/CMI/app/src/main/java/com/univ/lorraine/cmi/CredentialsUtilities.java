@@ -54,6 +54,11 @@ public final class CredentialsUtilities {
         return currentUser;
     }
 
+    public static Long getCurrentUserId(){
+        if (getCurrentUser() == null) return null;
+        return getCurrentUser().getIdUtilisateur();
+    }
+
     public static void initialiseUser(Context context){
         try {
             currentUser = getCurrentUser(context);
