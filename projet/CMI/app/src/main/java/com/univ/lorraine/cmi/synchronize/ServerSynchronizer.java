@@ -41,7 +41,7 @@ public abstract class ServerSynchronizer extends AsyncTask<Void, Integer, Boolea
         super();
         context = cont;
         dbhelper = dbh;
-        idUser = CredentialsUtilities.getCurrentUserId();
+        idUser = CredentialsUtilities.getCurrentUser().getIdUtilisateur();
     }
 
     @Override

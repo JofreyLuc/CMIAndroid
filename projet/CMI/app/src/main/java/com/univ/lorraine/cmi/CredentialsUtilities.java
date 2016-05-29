@@ -16,7 +16,7 @@ public final class CredentialsUtilities {
 
     private final static String SHARED_PREFERENCES_USER = "spuser";
 
-    private static Long currentUserId;
+    private static Utilisateur currentUser;
 
     private static void setDefaults(String key, String value, Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -50,15 +50,15 @@ public final class CredentialsUtilities {
         setDefaults(SHARED_PREFERENCES_USER, null, context);
     }
 
-    public static Long getCurrentUserId(){
-        return currentUserId;
+    public static Utilisateur getCurrentUser(){
+        return currentUser;
     }
 
-    public static void initialiseUserId(Context context){
+    public static void initialiseUser(Context context){
         try {
-            currentUserId = getCurrentUser(context).getIdUtilisateur();
+            currentUser = getCurrentUser(context);
         } catch (NullPointerException e) {
-            currentUserId = null;
+            currentUser = null;
         }
     }
 }
