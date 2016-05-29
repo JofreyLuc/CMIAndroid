@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         CredentialsUtilities.initialiseUser(getApplicationContext());
         if (CredentialsUtilities.isSignedIn())
-            CallMeIshmaelServiceProvider.setHeaderAuth(CredentialsUtilities.getCurrentToken(this));
+            CallMeIshmaelServiceProvider.setHeaderAuth(CredentialsUtilities.getCurrentToken());
     }
 
     @Override
@@ -108,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onPause();
         // Sauvegarde la file de requêtes en attente
         CallContainerQueue.getInstance().save(getSharedPreferences(getPackageName(), Context.MODE_PRIVATE));
+        CredentialsUtilities.setCurrentUser(getApplicationContext(), CredentialsUtilities.getCurrentUser());
     }
 
     @Override
