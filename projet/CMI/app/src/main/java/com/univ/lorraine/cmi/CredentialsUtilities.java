@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
@@ -94,6 +95,7 @@ public final class CredentialsUtilities {
         BookUtilities.removeOnlineContent(context, dbHelper);
         progress.hide();
         setDefaults(SHARED_PREFERENCES_USER, null, context);
+        initialiseUser(context);
     }
 
     public static Utilisateur getCurrentUser(){
