@@ -294,7 +294,7 @@ public class BookDetailsActivity extends AppCompatActivity {
     }
 
     public void modifierEvaluationLivre(double rating, String comment) {
-        Long idUser = CredentialsUtilities.getCurrentUserId();
+        Long idUser = CredentialsUtilities.getCurrentUser().getIdUtilisateur();
         evaluationPerso.setNote(rating);
         evaluationPerso.setCommentaire(comment);
         evaluationPerso.setDateModification(new Date());
@@ -328,7 +328,7 @@ public class BookDetailsActivity extends AppCompatActivity {
     }
 
     public void envoyerEvaluationLivre(double rating, String comment) {
-        Long idUser = CredentialsUtilities.getCurrentUserId();
+        Long idUser = CredentialsUtilities.getCurrentUser().getIdUtilisateur();
         Evaluation evaluation = new Evaluation(idUser, livre, rating, comment);
         // On envoie l'évaluation au serveur
         CallMeIshmaelServiceProvider
@@ -387,7 +387,7 @@ public class BookDetailsActivity extends AppCompatActivity {
     }
 
     public void supprimerEvaluationPerso() {
-        final Long idUser = CredentialsUtilities.getCurrentUserId();
+        final Long idUser = CredentialsUtilities.getCurrentUser().getIdUtilisateur();
         CallMeIshmaelServiceProvider
                 .getService()
                 .deleteEvaluation(idUser, livre.getIdServeur(), evaluationPerso.getIdEvaluation())
@@ -479,8 +479,8 @@ public class BookDetailsActivity extends AppCompatActivity {
     }
 
     private void setEvaluations(){
-        //TODO récupérer idUser
-        final Long idUser = (long) 4;
+
+        final Long idUser = CredentialsUtilities.getCurrentUser().getIdUtilisateur();
         final CallMeIshmaelService cmiService = CallMeIshmaelServiceProvider.getService();
 
         Call<List<Evaluation>> call = cmiService.getEvaluations(livre.getIdServeur(), true);

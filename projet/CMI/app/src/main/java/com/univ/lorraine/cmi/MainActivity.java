@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         recyclerView.setAdapter(new TopRecyclerAdapter(livresTop, getApplicationContext()));
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        CredentialsUtilities.initialiseUserId(getApplicationContext());
+        CredentialsUtilities.initialiseUser(getApplicationContext());
     }
 
     @Override
@@ -190,7 +190,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             menu.findItem(R.id.action_signup).setVisible(true);
             menu.findItem(R.id.action_disconnect).setVisible(false);
         }
-
         return super.onCreateOptionsMenu(menu);
     }
 
