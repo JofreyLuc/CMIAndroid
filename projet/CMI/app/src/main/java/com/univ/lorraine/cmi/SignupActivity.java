@@ -114,7 +114,7 @@ public class SignupActivity extends AppCompatActivity {
 
     public void onSignupSuccess(Utilisateur newUser) {
         // Sauvegarde du nouveau currentUser
-        newUser.setPassword(CredentialsUtilities.getCurrentUser().getPassword());
+        newUser.setPassword(passwordText.getText().toString());
         CredentialsUtilities.setCurrentUser(getApplicationContext(), newUser);
         CredentialsUtilities.initialiseUser(getApplicationContext());
         CallMeIshmaelServiceProvider.setHeaderAuth(CredentialsUtilities.getCurrentToken());

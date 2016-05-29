@@ -115,7 +115,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginSuccess(Utilisateur newUser) {
         Toast.makeText(LoginActivity.this, "Connexion réussie !", Toast.LENGTH_SHORT).show();
-        newUser.setPassword(CredentialsUtilities.getCurrentUser().getPassword());
+        newUser.setPassword(passwordText.getText().toString());
         CredentialsUtilities.setCurrentUser(getApplicationContext(), newUser);
         CredentialsUtilities.initialiseUser(getApplicationContext());
         CallMeIshmaelServiceProvider.setHeaderAuth(CredentialsUtilities.getCurrentToken());
