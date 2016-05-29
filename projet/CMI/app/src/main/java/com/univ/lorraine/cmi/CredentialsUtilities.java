@@ -11,6 +11,8 @@ import com.univ.lorraine.cmi.database.model.Utilisateur;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
 import com.univ.lorraine.cmi.synchronize.CallContainerQueue;
 
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -105,27 +107,28 @@ public final class CredentialsUtilities {
     /**
      * Méthode utilisée pour rafraîchir le token en le demandant au serveur.
      */
-    public static void refreshToken(final Context context) {
-        CallMeIshmaelServiceProvider
-                .getService()
-                .login(getCurrentUser())
-                .enqueue(new Callback<Utilisateur>() {
-                    @Override
-                    public void onResponse(Call<Utilisateur> call, Response<Utilisateur> response) {
-                        if (Utilities.isErrorCode(response.code()))
-                            return;
+    public static String refreshToken(final Context context) {
+        Utilisateur utilisateur;
+        try {
+            Response<Utilisateur> response = CallMeIshmaelServiceProvider
+                    .getService()
+                    .login(getCurrentUser())
+                    .execute();
 
-                        Utilisateur utilisateur = response.body();
-                        if (utilisateur != null) {
-                            setCurrentUser(context, utilisateur);
-                            initialiseUser(context);
-                        }
-                    }
+            if (Utilities.isErrorCode(response.code()))
+                return null;
 
-                    @Override
-                    public void onFailure(Call<Utilisateur> call, Throwable t) {
+            utilisateur = response.body();
+            if (utilisateur == null)
+                return null;
 
-                    }
-                });
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        setCurrentUser(context, utilisateur);
+        initialiseUser(context);
+
+        return utilisateur.getToken();
     }
 }

@@ -490,11 +490,11 @@ public class BookDetailsActivity extends AppCompatActivity {
 
 
                 //LOLILOL
-                if (response.code() == 401){
+                /*if (response.code() == 401){
                     CredentialsUtilities.refreshToken(getApplicationContext());
                     setEvaluations();
                     return;
-                }
+                }*/
                 //LOLILOL
 
 

@@ -2,6 +2,7 @@ package com.univ.lorraine.cmi.retrofit;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.univ.lorraine.cmi.CredentialsUtilities;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
 import com.univ.lorraine.cmi.database.model.Evaluation;
 import com.univ.lorraine.cmi.retrofit.jsonAdapter.BibliothequeJsonAdapter;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -54,14 +56,38 @@ public class CallMeIshmaelServiceProvider {
     }
 
     private static Interceptor createAuthorizationInterceptor(final String token) {
-        Interceptor authorizationInterceptor = new Interceptor() {
+        return new Interceptor() {
             @Override
-            public okhttp3.Response intercept(Chain chain) throws IOException {
+            public Response intercept(Chain chain) throws IOException {
                 Request newRequest = chain.request().newBuilder().addHeader("Authorization", token).build();
                 return chain.proceed(newRequest);
             }
         };
-        return authorizationInterceptor;
+    }
+
+    private static Interceptor createTokenRefreshInterceptor() {
+        return new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request request = chain.request();
+                // Essaie la requête
+                Response response = chain.proceed(request);
+                // Si le token a expiré
+                if (CredentialsUtilities.isTokenExpired(response.code())) {
+                    // On en récupère un nouveau
+                    //String token = CredentialsUtilities.refreshToken();
+                    String token = "pd";
+                    if (token != null) {
+                        // Crée une nouvelle requête en ajoutant le token au header
+                        Request newRequest = request.newBuilder().addHeader("Authorization", token).build();
+                        // On réessaie la requête
+                        response = chain.proceed(newRequest);
+                    }
+                }
+                // On passe la réponse
+                return response;
+            }
+        };
     }
 
     private static OkHttpClient createClient(Interceptor... interceptors) {
