@@ -1,14 +1,15 @@
 package com.univ.lorraine.cmi;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
-import android.util.StringBuilderPrinter;
 
 import com.google.gson.Gson;
 import com.univ.lorraine.cmi.database.model.Utilisateur;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
+import com.univ.lorraine.cmi.synchronize.CallContainerQueue;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,7 +52,32 @@ public final class CredentialsUtilities {
         return (getCurrentUser() != null);
     }
 
-    public static void disconnect(Context context){
+    public static void tryDisconnect(final Context context) {
+        // Si il reste des requêtes en attente
+        if (!CallContainerQueue.getInstance().isEmpty()) {
+            new AlertDialog.Builder(context)
+                    .setTitle(R.string.ask_disconnect_title)
+                    .setMessage(R.string.ask_disconnect_message)
+                    .setPositiveButton(R.string.ask_disconnect_yes,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    CallContainerQueue.getInstance().clear();
+                                    disconnect(context);
+                                }
+                            })
+                    .setNegativeButton(R.string.confirmation_suppression_no,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // Ne rien faire
+                                }
+                            })
+                    .show();
+        }
+        else
+            disconnect(context);
+    }
+
+    public static void disconnect(Context context) {
         setDefaults(SHARED_PREFERENCES_USER, null, context);
     }
 
