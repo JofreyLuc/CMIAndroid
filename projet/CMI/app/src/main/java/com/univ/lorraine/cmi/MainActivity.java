@@ -148,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     Toast.makeText(MainActivity.this, "Échec de la synchronisation", Toast.LENGTH_SHORT).show();
             }
         }.execute();
+        invalidateOptionsMenu();
     }
 
     /**
