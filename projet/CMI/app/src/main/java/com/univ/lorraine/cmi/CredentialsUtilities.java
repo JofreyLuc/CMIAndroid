@@ -67,6 +67,10 @@ public final class CredentialsUtilities {
         }
     }
 
+    public static boolean isTokenExpired(int code) {
+        return code == 401;
+    }
+
     /**
      * Méthode utilisée pour rafraîchir le token en le demandant au serveur.
      */
