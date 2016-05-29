@@ -119,6 +119,7 @@ public class LoginActivity extends AppCompatActivity {
         CredentialsUtilities.initialiseUser(getApplicationContext());
         CallMeIshmaelServiceProvider.setHeaderAuth(CredentialsUtilities.getCurrentToken());
         this.setResult(RESULT_OK);
+        finish();
     }
 
     public void onLoginFailed() {

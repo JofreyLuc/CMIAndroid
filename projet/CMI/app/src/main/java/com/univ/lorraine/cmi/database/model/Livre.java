@@ -21,7 +21,7 @@ import nl.siegmann.epublib.domain.Metadata;
 @DatabaseTable(tableName = "livre")
 public class Livre implements Parcelable {
 
-    public static final Long IDSERVEUR_NONE = Long.valueOf(-1);
+    public static final Long IDSERVEUR_NONE = null;
 
     // json Strings
 
