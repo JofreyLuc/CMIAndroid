@@ -29,13 +29,13 @@ import retrofit2.Response;
 /**
  * Created by alexis on 20/05/2016.
  */
-public abstract class ServerSynchronizer extends AsyncTask<Void, Integer, Boolean> {
+public abstract class FromServerSynchronizer extends AsyncTask<Void, Integer, Boolean> {
 
     Context context;
 
     CmidbaOpenDatabaseHelper dbhelper;
 
-    public ServerSynchronizer(Context cont, CmidbaOpenDatabaseHelper dbh) {
+    public FromServerSynchronizer(Context cont, CmidbaOpenDatabaseHelper dbh) {
         super();
         context = cont;
         dbhelper = dbh;
@@ -153,7 +153,7 @@ public abstract class ServerSynchronizer extends AsyncTask<Void, Integer, Boolea
                 // Suppression de la bibliothèque de la base
                 bibliothequeDao.delete(biblioASupprimer);
                 // Suppression dossier epub
-                Utilities.deleteRecursive(new File(Utilities.getBookDirPath(context, biblioASupprimer.getLivre())));
+                BookUtilities.supprimerDossierLivre(context, biblioASupprimer.getLivre());
             }
 
         } catch (IOException e) {

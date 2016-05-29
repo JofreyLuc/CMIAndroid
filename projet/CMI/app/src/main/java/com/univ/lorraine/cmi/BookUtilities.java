@@ -12,6 +12,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Annotation;
 import com.univ.lorraine.cmi.database.model.Bibliotheque;
@@ -179,6 +181,43 @@ public class BookUtilities {
             Log.e("EXC", e.getMessage());
             return false;
         }
+    }
+
+    public static void supprimerDossierLivre(Context context, Livre livre) {
+        Utilities.deleteRecursive(new File(Utilities.getBookDirPath(context, livre)));
+    }
+
+    public static void removeOnlineContent(Context context, CmidbaOpenDatabaseHelper dbHelper) {
+        try {
+            // On supprime les livres web
+            Dao<Livre, Long> daoLivre = dbHelper.getLivreDao();
+            QueryBuilder<Livre, Long> livreQB = daoLivre.queryBuilder();
+            Where<Livre, Long> livreWhere = livreQB.where();
+            livreWhere.isNotNull(Livre.ID_SERVEUR_FIELD_NAME);       // WHERE idServeur NOT NULL
+            List<Livre> livresASupprimer = livreQB.query();
+            for (Livre livre : livresASupprimer) {
+                supprimerDossierLivre(context, livre);
+                daoLivre.delete(livre);
+            }
+
+            // On supprime les bibliothèques web
+            Dao<Bibliotheque, Long> daoBibliotheque = dbHelper.getBibliothequeDao();
+            QueryBuilder<Bibliotheque, Long> bibliothequeQB = daoBibliotheque.queryBuilder();
+            Where<Bibliotheque, Long> Bibliothequewhere = bibliothequeQB.where();
+            Bibliothequewhere.isNotNull(Bibliotheque.ID_SERVEUR_FIELD_NAME);       // WHERE idServeur NOT NULL
+            daoBibliotheque.delete(bibliothequeQB.query());
+
+            // On supprime les annotations webs
+            Dao<Annotation, Long> daoAnnotation = dbHelper.getAnnotationDao();
+            QueryBuilder<Annotation, Long> annotationQB = daoAnnotation.queryBuilder();
+            Where<Annotation, Long> Annotationwhere = annotationQB.where();
+            Annotationwhere.isNotNull(Annotation.ID_SERVEUR_FIELD_NAME);       // WHERE idServeur NOT NULL
+            daoAnnotation.delete(annotationQB.query());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

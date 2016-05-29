@@ -37,7 +37,7 @@ import com.univ.lorraine.cmi.database.model.Livre;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelService;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
 import com.univ.lorraine.cmi.synchronize.CallContainerQueue;
-import com.univ.lorraine.cmi.synchronize.ServerSynchronizer;
+import com.univ.lorraine.cmi.synchronize.FromServerSynchronizer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // On synchronise les données du serveur
         // Si l'utilisateur est connecté
         if (CredentialsUtilities.isSignedIn()) {
-            new ServerSynchronizer(this, getHelper()) {
+            new FromServerSynchronizer(this, getHelper()) {
                 @Override
                 protected void onPreExecute() {
                     Toast.makeText(MainActivity.this, "Tentative de synchronisation avec le serveur...", Toast.LENGTH_SHORT).show();
@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 startActivity(i);
                 return true;
             case R.id.action_disconnect:
-                CredentialsUtilities.tryDisconnect(getApplicationContext());
+                CredentialsUtilities.tryDisconnect(getApplicationContext(), getHelper());
                 CallMeIshmaelServiceProvider.unsetHeaderAuth();
                 invalidateOptionsMenu();
             default:
@@ -469,7 +469,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 BookUtilities.supprimerBibliothequeSurServeur(bibliotheque);
 
             // Suppression du dossier local du livre (contenant l'epub et la couverture)
-            Utilities.deleteRecursive(new File(Utilities.getBookDirPath(getApplicationContext(), livre)));
+            BookUtilities.supprimerDossierLivre(getApplicationContext(), livre);
 
             // Suppression des annotations de ce livre
             Dao<Annotation, Long> daoannotation = getHelper().getAnnotationDao();
