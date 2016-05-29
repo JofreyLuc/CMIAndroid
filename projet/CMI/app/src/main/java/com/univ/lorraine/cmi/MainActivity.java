@@ -215,7 +215,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 startActivity(i);
                 return true;
             case R.id.action_disconnect:
-                CredentialsUtilities.tryDisconnect(getApplicationContext());
+                //Déconnexion
+                CredentialsUtilities.tryDisconnect(this);
                 CallMeIshmaelServiceProvider.unsetHeaderAuth();
                 invalidateOptionsMenu();
             default:
@@ -230,7 +231,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // On récupère la bibliotheque lié à cet item de la gridview
         final Bibliotheque bibliotheque = (Bibliotheque)((View)v.getParent().getParent()).getTag();
         final Livre livre = bibliotheque.getLivre();
-        Log.e("INFOLIVRE", livre.toString());
 
         // Popup des options
         PopupMenu popup = new PopupMenu(this, v);

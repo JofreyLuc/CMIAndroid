@@ -86,6 +86,7 @@ public class BookDetailsActivity extends AppCompatActivity {
         // Récupération du livre via les extras de l'intent
         Bundle bundle = getIntent().getBundleExtra("bundle");
         livre = bundle.getParcelable("livre");
+        Log.e("FIRST", livre.toString());
         boolean demande_evaluation = bundle.getBoolean("evaluer");
 
         // Titre de l'activité
@@ -150,6 +151,7 @@ public class BookDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Si le livre n'est pas déjà dans la base locale, on l'ajoute et on le lit
+                Log.e("BOUTON", livre.toString());
                 if (!BookUtilities.isInBdd(livre, getHelper())) {
                     //BookUtilities.ajouterLivreBibliothequeEtLire(activity, livre, dbHelper);
                     final ProgressDialog progressBar = new ProgressDialog(activity);

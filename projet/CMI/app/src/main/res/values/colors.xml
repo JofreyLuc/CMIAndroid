@@ -5,6 +5,7 @@
     <color name="colorAccent">#0000FF</color>
     <color name="colorBackground">#FFFFFF</color>
     <color name="colorBorders">#FFDB0B</color>
+    <color name="colorBordersDark">#D7B700</color>
     <color name="colorText">#FFFFFF</color>
     <color name="colorTest">#ff69b4</color>
     <!-- Book_reading_progress_bar colors -->

@@ -1,5 +1,6 @@
 package com.univ.lorraine.cmi;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -56,17 +57,17 @@ public final class CredentialsUtilities {
         return (getCurrentUser() != null);
     }
 
-    public static void tryDisconnect(final Context context) {
+    public static void tryDisconnect(final Activity activity) {
         // Si il reste des requêtes en attente
         if (!CallContainerQueue.getInstance().isEmpty()) {
-            new AlertDialog.Builder(context)
+            new AlertDialog.Builder(activity)
                     .setTitle(R.string.ask_disconnect_title)
                     .setMessage(R.string.ask_disconnect_message)
                     .setPositiveButton(R.string.ask_disconnect_yes,
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     CallContainerQueue.getInstance().clear();
-                                    disconnect(context);
+                                    disconnect(activity.getApplicationContext());
                                 }
                             })
                     .setNegativeButton(R.string.confirmation_suppression_no,
@@ -78,7 +79,7 @@ public final class CredentialsUtilities {
                     .show();
         }
         else {
-            disconnect(context);
+            disconnect(activity.getApplicationContext());
         }
     }
 
