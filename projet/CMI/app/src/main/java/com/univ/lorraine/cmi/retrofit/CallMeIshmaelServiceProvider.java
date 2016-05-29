@@ -1,5 +1,7 @@
 package com.univ.lorraine.cmi.retrofit;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.univ.lorraine.cmi.CredentialsUtilities;
@@ -34,6 +36,8 @@ public class CallMeIshmaelServiceProvider {
     private static GsonConverterFactory gsonConverterFactory = createGsonConverterFactory();
 
     private static HttpLoggingInterceptor httpLoggingInterceptor = createHttpLoggingInterceptor();
+
+    private static Interceptor tokenRefreshInterceptor = createTokenRefreshInterceptor();
 
     private static GsonConverterFactory createGsonConverterFactory() {
         // Configuration du parser json
@@ -74,6 +78,7 @@ public class CallMeIshmaelServiceProvider {
                 Response response = chain.proceed(request);
                 // Si le token a expiré
                 if (CredentialsUtilities.isTokenExpired(response.code())) {
+                    Log.d("LOLLLLLLLLLLLLLLL", "tokenRefresh");
                     // On en récupère un nouveau
                     String token = CredentialsUtilities.refreshToken();
                     if (token != null) {
@@ -101,7 +106,9 @@ public class CallMeIshmaelServiceProvider {
         Interceptor authorizationInterceptor = createAuthInterceptor(token);
 
         // Création du client
-        OkHttpClient client = createClient(httpLoggingInterceptor, authorizationInterceptor);
+        OkHttpClient client = createClient(httpLoggingInterceptor,
+                authorizationInterceptor,
+                tokenRefreshInterceptor);
 
         // Création de l'instance retrofit
         Retrofit retrofit = new Retrofit.Builder()
@@ -120,8 +127,8 @@ public class CallMeIshmaelServiceProvider {
 
     public static synchronized CallMeIshmaelService getService() {
         if (service == null) {
-            // Création du client avec seulement le logInterceptor
-            OkHttpClient client = createClient(httpLoggingInterceptor);
+            // Création du client avec seulement le logInterceptor et le tokenRefresh
+            OkHttpClient client = createClient(httpLoggingInterceptor, tokenRefreshInterceptor);
 
             // Création de l'instance retrofit
             Retrofit retrofit = new Retrofit.Builder()
