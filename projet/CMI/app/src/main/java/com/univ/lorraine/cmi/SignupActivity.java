@@ -103,6 +103,7 @@ public class SignupActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<Utilisateur> call, Throwable t) {
+                            Log.e("FAILURE", t.toString());
                             progressDialog.dismiss();
                             Toast.makeText(getApplicationContext(), "Erreur connexion serveur", Toast.LENGTH_SHORT).show();
                         }

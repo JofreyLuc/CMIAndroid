@@ -47,8 +47,8 @@ public final class CredentialsUtilities {
         return getCurrentUser(context).getToken();
     }
 
-    public static boolean isSignedIn(Context context){
-        return (getCurrentUser(context) != null);
+    public static boolean isSignedIn(){
+        return (getCurrentUser() != null);
     }
 
     public static void disconnect(Context context){
@@ -57,6 +57,11 @@ public final class CredentialsUtilities {
 
     public static Utilisateur getCurrentUser(){
         return currentUser;
+    }
+
+    public static Long getCurrentUserId(){
+        if (getCurrentUser() == null) return null;
+        return getCurrentUser().getIdUtilisateur();
     }
 
     public static void initialiseUser(Context context){

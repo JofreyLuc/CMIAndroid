@@ -148,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     Toast.makeText(MainActivity.this, "Échec de la synchronisation", Toast.LENGTH_SHORT).show();
             }
         }.execute();
+        invalidateOptionsMenu();
     }
 
     /**
@@ -181,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_biblio_perso, menu);
 
-        if (CredentialsUtilities.isSignedIn(getApplicationContext())){
+        if (CredentialsUtilities.isSignedIn()){
             menu.findItem(R.id.action_login).setVisible(false);
             menu.findItem(R.id.action_signup).setVisible(false);
             menu.findItem(R.id.action_disconnect).setVisible(true);
