@@ -1,5 +1,6 @@
 package com.univ.lorraine.cmi;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -16,6 +17,7 @@ import com.univ.lorraine.cmi.synchronize.CallContainerQueue;
 
 import java.io.IOException;
 
+import nl.siegmann.epublib.epub.Main;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -58,17 +60,17 @@ public final class CredentialsUtilities {
         return (getCurrentUser() != null);
     }
 
-    public static void tryDisconnect(final Context context, final CmidbaOpenDatabaseHelper dbHelper) {
+    public static void tryDisconnect(final Activity activity, final CmidbaOpenDatabaseHelper dbHelper) {
         // Si il reste des requêtes en attente
         if (!CallContainerQueue.getInstance().isEmpty()) {
-            new AlertDialog.Builder(context)
+            new AlertDialog.Builder(activity)
                     .setTitle(R.string.ask_disconnect_title)
                     .setMessage(R.string.ask_disconnect_message)
                     .setPositiveButton(R.string.ask_disconnect_yes,
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     CallContainerQueue.getInstance().clear();
-                                    disconnect(context, dbHelper);
+                                    disconnect(activity, dbHelper);
                                 }
                             })
                     .setNegativeButton(R.string.confirmation_suppression_no,
@@ -80,11 +82,11 @@ public final class CredentialsUtilities {
                     .show();
         }
         else
-            disconnect(context, dbHelper);
+            disconnect(activity, dbHelper);
     }
 
-    public static void disconnect(Context context, CmidbaOpenDatabaseHelper dbHelper) {
-        ProgressDialog progress = new ProgressDialog(context);
+    public static void disconnect(Activity activity, CmidbaOpenDatabaseHelper dbHelper) {
+        ProgressDialog progress = new ProgressDialog(activity);
         progress.setMessage("Suppression du contenu lié au compte...");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progress.setIndeterminate(true);
@@ -92,10 +94,10 @@ public final class CredentialsUtilities {
         progress.setCancelable(false);
         progress.setCanceledOnTouchOutside(false);
         progress.show();
-        BookUtilities.removeOnlineContent(context, dbHelper);
+        BookUtilities.removeOnlineContent(activity, dbHelper);
         progress.hide();
-        setDefaults(SHARED_PREFERENCES_USER, null, context);
-        initialiseUser(context);
+        setDefaults(SHARED_PREFERENCES_USER, null, activity);
+        initialiseUser(activity);
     }
 
     public static Utilisateur getCurrentUser(){

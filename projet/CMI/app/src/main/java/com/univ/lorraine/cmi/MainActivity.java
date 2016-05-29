@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 startActivity(i);
                 return true;
             case R.id.action_disconnect:
-                CredentialsUtilities.tryDisconnect(getApplicationContext(), getHelper());
+                CredentialsUtilities.tryDisconnect(this, getHelper());
                 CallMeIshmaelServiceProvider.unsetHeaderAuth();
                 invalidateOptionsMenu();
                 rafraichirAffichageBibliotheque();
