@@ -147,7 +147,8 @@ public final class CredentialsUtilities {
             e.printStackTrace();
             return null;
         }
-        currentUser = utilisateur;
+        currentUser.setToken(utilisateur.getToken());
+        currentUser.setTokenExpire(utilisateur.getTokenExpire());
 
         return utilisateur.getToken();
     }
