@@ -70,7 +70,7 @@ public class BookDetailsActivity extends AppCompatActivity {
     private RatingBar ratingBar;
     // TextView cliquable pour envoyer le commentaire
     private TextView envoyer;
-// Commentaire
+    // Commentaire
     private EditText comment;
 
     private RecyclerView evalsView;
@@ -234,6 +234,12 @@ public class BookDetailsActivity extends AppCompatActivity {
 
             // On rafraîchit la note
             setNoteLivre();
+
+            if (!Utilities.checkNetworkAvailable(this)) {
+                findViewById(R.id.rating_bar).setVisibility(View.INVISIBLE);
+                findViewById(R.id.note_layout).setVisibility(View.INVISIBLE);
+                findViewById(R.id.evaluer_layout).setVisibility(View.INVISIBLE);
+            }
         }
     }
 
@@ -313,6 +319,9 @@ public class BookDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         Log.e("ERR", "", t);
+                        findViewById(R.id.rating_bar).setVisibility(View.INVISIBLE);
+                        findViewById(R.id.note_layout).setVisibility(View.INVISIBLE);
+                        findViewById(R.id.evaluer_layout).setVisibility(View.INVISIBLE);
                         Toast.makeText(BookDetailsActivity.this, "Erreur lors de l'envoi de l'évaluation au serveur", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -349,7 +358,10 @@ public class BookDetailsActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<Evaluation> call, Throwable t) {
-                        Log.e("ERR", "", t);
+                        Log.e("ERR",t.toString());
+                        findViewById(R.id.rating_bar).setVisibility(View.INVISIBLE);
+                        findViewById(R.id.note_layout).setVisibility(View.INVISIBLE);
+                        findViewById(R.id.evaluer_layout).setVisibility(View.INVISIBLE);
                         Toast.makeText(BookDetailsActivity.this, "Erreur lors de l'envoi de l'évaluation au serveur", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -467,6 +479,7 @@ public class BookDetailsActivity extends AppCompatActivity {
     }
 
     private void setEvaluations(){
+
         final Long idUser = CredentialsUtilities.getCurrentUser().getIdUtilisateur();
         final CallMeIshmaelService cmiService = CallMeIshmaelServiceProvider.getService();
 
