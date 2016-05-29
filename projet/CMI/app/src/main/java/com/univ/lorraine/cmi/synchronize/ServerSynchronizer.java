@@ -61,7 +61,8 @@ public abstract class ServerSynchronizer extends AsyncTask<Void, Integer, Boolea
                 // On récupère les bibliothèques de l'utilisateur sur le serveur
                 Response<List<Bibliotheque>> biblioResponse = service.getBibliotheques(idUser).execute();
                 List<Bibliotheque> bibliothequesServeur = biblioResponse.body();
-
+                if (bibliothequesServeur == null)
+                    throw new IOException();
                 Dao<Bibliotheque, Long> bibliothequeDao = dbhelper.getBibliothequeDao();
                 Dao<Livre, Long> livreDao = dbhelper.getLivreDao();
                 List<Long> listeIdBibliothequesServeur = new ArrayList<Long> ();
