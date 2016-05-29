@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         CredentialsUtilities.initialiseUser(getApplicationContext());
+        CallMeIshmaelServiceProvider.setHeaderAuth(CredentialsUtilities.getCurrentToken(this));
     }
 
     @Override
