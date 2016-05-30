@@ -220,11 +220,9 @@ public class Livre implements Parcelable {
         if (meta.getLanguage() == null) this.langue = "";
         else this.langue = meta.getLanguage();
 
-        //TEMPORAIRE
         this.idServeur = IDSERVEUR_NONE;
         this.lienDLEpub = "";
-        this.noteMoyenne = 2;
-        //TEMPORAIRE
+        this.noteMoyenne = 0;
     }
 
     public boolean estImporteLocalement() {
