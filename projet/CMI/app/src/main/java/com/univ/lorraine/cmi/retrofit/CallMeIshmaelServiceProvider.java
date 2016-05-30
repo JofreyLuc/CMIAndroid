@@ -77,16 +77,15 @@ public class CallMeIshmaelServiceProvider {
                 // Essaie la requête
                 Response response = chain.proceed(request);
                 // Si le token a expiré
-                if (CredentialsUtilities.isTokenExpired(response.code())) {
-                    Log.d("LOLLLLLLLLLLLLLLL", "tokenRefresh");
-                    // On en récupère un nouveau
-                    String token = CredentialsUtilities.refreshToken();
-                    if (token != null) {
-                        // Crée une nouvelle requête en ajoutant le token au header
-                        Request newRequest = request.newBuilder().addHeader("Auth", token).build();
-                        // On réessaie la requête
-                        response = chain.proceed(newRequest);
-                    }
+                    if (CredentialsUtilities.isTokenExpired(response.code())) {
+                        // On en récupère un nouveau
+                        String token = CredentialsUtilities.refreshToken();
+                        if (token != null) {
+                            // Crée une nouvelle requête en ajoutant le token au header
+                            Request newRequest = request.newBuilder().addHeader("Auth", token).build();
+                            // On réessaie la requête
+                            response = chain.proceed(newRequest);
+                        }
                 }
                 // On passe la réponse
                 return response;
