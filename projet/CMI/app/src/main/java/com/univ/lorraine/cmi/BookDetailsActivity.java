@@ -272,7 +272,7 @@ public class BookDetailsActivity extends AppCompatActivity {
 
     private void disableBoutonAjout() {
         boutonAjout.setEnabled(false);
-        boutonAjout.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorBordersDark));
+        boutonAjout.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
         boutonAjout.setText(R.string.button_add_inactive);
         boutonLecture.setText(R.string.button_readNow_alt);
     }
