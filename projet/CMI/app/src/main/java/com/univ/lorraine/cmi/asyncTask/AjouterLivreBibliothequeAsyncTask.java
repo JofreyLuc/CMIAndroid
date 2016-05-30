@@ -55,30 +55,31 @@ public abstract class AjouterLivreBibliothequeAsyncTask extends AsyncTask<Void, 
         beforeAjoutLivre = false;
         beforeTelechargementLivre = false;
         Long idUser = CredentialsUtilities.getCurrentUserId();
-        Bibliotheque bibliothequeServeur;
         Bibliotheque bibliotheque = new Bibliotheque(livre);
         try {
-            // On envoie la création de cette bibliothèque au serveur
-            Response<Bibliotheque> response = CallMeIshmaelServiceProvider
-                    .getService()
-                    .createBibliotheque(idUser, bibliotheque)
-                    .execute();
+            // Si l'utilisateur est connecté
+            if (CredentialsUtilities.isSignedIn()) {
+                // On envoie la création de cette bibliothèque au serveur
+                Response<Bibliotheque> response = CallMeIshmaelServiceProvider
+                        .getService()
+                        .createBibliotheque(idUser, bibliotheque)
+                        .execute();
 
+                // Erreur
+                if (Utilities.isErrorCode(response.code()))
+                    return null;
+
+                bibliotheque = response.body();
+                if (bibliotheque == null)
+                    return null;
+
+                bibliotheque.setLivre(livre);
+            }
             beforeAjoutLivre = true;
             publishProgress();
 
-            // Erreur
-            if (Utilities.isErrorCode(response.code()))
-                return null;
-
-            bibliothequeServeur = response.body();
-            if (bibliothequeServeur == null)
-                return null;
-
-            bibliothequeServeur.setLivre(livre);
-
             // On sauvegarde le livre et la bibliothèque dans la BDD locale
-            BookUtilities.sauverBibliotheque(bibliothequeServeur, dbHelper);
+            BookUtilities.sauverBibliotheque(bibliotheque, dbHelper);
 
             beforeTelechargementLivre = true;
             publishProgress();
@@ -93,7 +94,7 @@ public abstract class AjouterLivreBibliothequeAsyncTask extends AsyncTask<Void, 
             e.printStackTrace();
             return null;
         }
-        return bibliothequeServeur;
+        return bibliotheque;
     }
 
     @Override

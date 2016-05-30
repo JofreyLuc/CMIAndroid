@@ -125,8 +125,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 @Override
                 protected void onPostExecute(Boolean succes) {
-                    rafraichirAffichageBibliotheque();
-
                     if (succes)
                         Toast.makeText(MainActivity.this, "Synchronisation effectuée", Toast.LENGTH_SHORT).show();
                     else
@@ -135,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }.execute();
         }
         invalidateOptionsMenu();
+        rafraichirAffichageBibliotheque();
     }
 
     /**
@@ -465,7 +464,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Livre livre = bibliotheque.getLivre();
         try {
             // Suppression de la bibliothèque sur le serveur
-            if (!livre.estImporteLocalement())  // Si le livre n'est pas importé localement
+            // Si le livre n'est pas importé localement
+            // et que l'utilisateur est connecté
+            if (!livre.estImporteLocalement() && CredentialsUtilities.isSignedIn())
                 BookUtilities.supprimerBibliothequeSurServeur(bibliotheque);
 
             // Suppression du dossier local du livre (contenant l'epub et la couverture)

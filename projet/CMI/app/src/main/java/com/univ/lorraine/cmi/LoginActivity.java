@@ -13,6 +13,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Utilisateur;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
 
@@ -23,6 +25,9 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
 
     private static final int REQUEST_SIGNUP = 0;
+
+    // Helper permettant d'interagir avec la database
+    private CmidbaOpenDatabaseHelper dbhelper = null;
 
     EditText emailText;
     EditText passwordText;
@@ -58,6 +63,29 @@ public class LoginActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    /**
+     * Overriden in order to close the database
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (dbhelper != null){
+            OpenHelperManager.releaseHelper();
+            dbhelper = null;
+        }
+    }
+
+    /**
+     * Retourne le databaseHelper (crée si il n'existe pas)
+     * @return dbhelper
+     */
+    private CmidbaOpenDatabaseHelper getHelper(){
+        if (dbhelper == null){
+            dbhelper = OpenHelperManager.getHelper(this, CmidbaOpenDatabaseHelper.class);
+        }
+        return dbhelper;
     }
 
     public void login() {
@@ -120,6 +148,8 @@ public class LoginActivity extends AppCompatActivity {
         CredentialsUtilities.initialiseUser(getApplicationContext());
         CallMeIshmaelServiceProvider.setHeaderAuth(CredentialsUtilities.getCurrentToken());
         this.setResult(RESULT_OK);
+        // On supprime les livres web
+        BookUtilities.removeOnlineContent(this, getHelper());
         finish();
     }
 

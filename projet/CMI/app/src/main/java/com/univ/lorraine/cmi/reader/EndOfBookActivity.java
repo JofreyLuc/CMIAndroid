@@ -45,6 +45,11 @@ public class EndOfBookActivity extends AppCompatActivity {
 
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
+        // On cache la status bar (fullscreen)
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
+
         bibliotheque = getIntent().getBundleExtra("bundle").getParcelable("bibliotheque");
         final Livre livre = bibliotheque.getLivre();
 
@@ -61,13 +66,12 @@ public class EndOfBookActivity extends AppCompatActivity {
         auteur.setText(livre.getAuteur());
 
         // Si le livre est local, on cache Evaluer et voir évaluations
-        //TODO décommenter ICI
-        /*if (livre.estImporteLocalement()) {
+        if (livre.estImporteLocalement()) {
             evaluer.setEnabled(false);
             evaluer.setVisibility(View.GONE);
             voir_evaluations.setEnabled(false);
             voir_evaluations.setVisibility(View.GONE);
-        }*/
+        }
 
         // On passe à l'activité d'évaluation
         evaluer.setOnClickListener(new View.OnClickListener() {

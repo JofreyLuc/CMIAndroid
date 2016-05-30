@@ -79,7 +79,8 @@ public class BookUtilities {
                     e.printStackTrace();
                 }
                 // Si le livre est présent sur le serveur
-                if (!bibliotheque.getLivre().estImporteLocalement()) {
+                // et que l'utilisateur est connecté
+                if (!bibliotheque.getLivre().estImporteLocalement() && CredentialsUtilities.isSignedIn()) {
                     // Mise à jour de la bibliothèque sur le serveur
                     CallMeIshmaelServiceProvider
                             .getService()
@@ -109,7 +110,6 @@ public class BookUtilities {
 
         livreDao.create(bibliotheque.getLivre());
         bibliothequeDao.create(bibliotheque);
-        Log.d("BIBLIOTHEQUE", bibliotheque.toString());
     }
 
     public static void downloadBook(Context context, Livre livre) throws IOException {

@@ -45,7 +45,7 @@ public class ReaderActivity extends AppCompatActivity {
     /** ReflowableControl hérite de RelativeLayout.
      * Permet la lecture des fichiers epub.
      */
-    private ReflowableControlCustom rv;
+    private ReflowableControl rv;
 
     /**
      * Bouton Highlight
@@ -197,7 +197,7 @@ public class ReaderActivity extends AppCompatActivity {
         float density = metrics.density;
 
         // Création de l'objet ReflowableControl
-        rv = new ReflowableControlCustom(this);
+        rv = new ReflowableControl(this);
 
         // Passe le répertoire de base.
         rv.setBaseDirectory(Utilities.getBookStoragePath(getApplicationContext()));

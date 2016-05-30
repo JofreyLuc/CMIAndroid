@@ -13,9 +13,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.univ.lorraine.cmi.database.CmidbaOpenDatabaseHelper;
 import com.univ.lorraine.cmi.database.model.Utilisateur;
 import com.univ.lorraine.cmi.retrofit.CallMeIshmaelServiceProvider;
 
+import nl.siegmann.epublib.domain.Book;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -23,6 +26,9 @@ import retrofit2.Response;
 public class SignupActivity extends AppCompatActivity {
 
     private static final int REQUEST_LOGIN = 0;
+
+    // Helper permettant d'interagir avec la database
+    private CmidbaOpenDatabaseHelper dbhelper = null;
 
     EditText pseudoText;
     EditText emailText;
@@ -61,6 +67,29 @@ public class SignupActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    /**
+     * Overriden in order to close the database
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (dbhelper != null){
+            OpenHelperManager.releaseHelper();
+            dbhelper = null;
+        }
+    }
+
+    /**
+     * Retourne le databaseHelper (crée si il n'existe pas)
+     * @return dbhelper
+     */
+    private CmidbaOpenDatabaseHelper getHelper(){
+        if (dbhelper == null){
+            dbhelper = OpenHelperManager.getHelper(this, CmidbaOpenDatabaseHelper.class);
+        }
+        return dbhelper;
     }
 
     public void signup() {
@@ -120,6 +149,8 @@ public class SignupActivity extends AppCompatActivity {
         CallMeIshmaelServiceProvider.setHeaderAuth(CredentialsUtilities.getCurrentToken());
         Toast.makeText(SignupActivity.this, "Incription réussie !", Toast.LENGTH_SHORT).show();
         setResult(RESULT_OK, null);
+        // On supprime les livres web
+        BookUtilities.removeOnlineContent(this, getHelper());
         finish();
     }
 
